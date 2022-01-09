@@ -11,5 +11,5 @@
 TBD
 
 ## Useful Links
-Google Docs: https://drive.google.com/drive/folders/1-ji_W6FZ46F6Ge3nmcZqJ8UrlpsPyltQ?usp=sharing
-WES Class of 2022 Capstone Teams: https://docs.google.com/spreadsheets/d/1Gnh-VgBrSMdh_0yvVi7Vff0CtjAGNh_qJtP50RM2fc4/edit#gid=634347005
+- Google Docs: https://drive.google.com/drive/folders/1-ji_W6FZ46F6Ge3nmcZqJ8UrlpsPyltQ?usp=sharing
+- WES Class of 2022 Capstone Teams: https://docs.google.com/spreadsheets/d/1Gnh-VgBrSMdh_0yvVi7Vff0CtjAGNh_qJtP50RM2fc4/edit#gid=634347005
