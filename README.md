@@ -1,6 +1,6 @@
 # Summary
-Project: V2X Motorcycle HUD
-WES Cohort 9 (2020-2022)
+- Project: V2X Motorcycle HUD
+- WES Cohort 9 (2020-2022)
 
 # Students
 - Ryan Hiser: rhiser@ucsd.edu
