@@ -14,7 +14,7 @@ c = 3e8; % Speed of light (m/s)
 
 %% Variable to select
 
-tau = 4e-9; % length of transmitted pulse (smallest pulse i.e. chip)
+tau = 2e-9; % length of transmitted pulse (smallest pulse i.e. chip)
 
 fprintf('\n---------- Chosen Variable Values -------\n');
 fprintf('Pulse Width (tau): %d ns\n',tau*10^9);
@@ -31,7 +31,7 @@ fprintf('Pulse Repetition Frequency (PRF): %f kHz\n',PRF/1000);
 
 %% Range Resolution
 delta_R = 0.5*tau*c; 
-fprintf('Range Resolution: %f m\n',delta_R);
+fprintf('Range Resolution: %f m or %f ft\n',delta_R, delta_R*3.28084);
 
 B_HF = 1/tau; % Bandwith increases with decreasing pulse width
 
