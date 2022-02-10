@@ -6,11 +6,11 @@ clearvars
 % openExample('comm/QPSKTransmitterAndReceiverSimulinkExample')
 
 %% Baseband params
-bb_ini = baseband_init();
+bb_ini = v2x_baseband_init();
 
 %% Simulation
 % Parameters
-sim_name = 'baseband_tb';
+sim_name = 'v2x_baseband_tb';
 seed = 123;
 Ts = 1;
 Tsim = Ts * 5;
