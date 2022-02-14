@@ -1,28 +1,22 @@
 %% Main function
-function ini = baseband_init()
-    % Preamble
-    ini.preamble = repmat(get_barker(13), 1, 3)';
-    ini.preamble_len = length(ini.preamble);
-    ini.detect_thresh = 0.7 * length(ini.preamble);
+function ini = v2x_baseband_init()
+    % Scrambler params
+    ini.scramb_params = get_scramb_params();
+
+    % Preamble params
+    ini.preamble_params = get_preamble_params();
     
-    % Data packet length (each var in terms of # bits)
-    ini.info_len = get_info_len();
-    ini.audio_len = get_audio_len();
-    ini.data_len = ini.info_len + ini.audio_len;
+    % Packet params
+    ini.pkt_params = get_pkt_params();
 
     % Encoder params
-    [ini.encoder_n, ini.encoder_k] = get_encoder_params();
-    ini.encoder_out_len = (ini.encoder_n/ini.encoder_k) * ini.data_len;
+    ini.enc_params = get_enc_params(ini.pkt_params.data_len);
     
     % Mapper params
-    ini.demapper_out_len = ini.encoder_out_len/2; % 2 bits per symbol
+    ini.map_params = get_map_params(ini.enc_params.out_len);
 
     % TX output/RX input frame length
-    ini.tx_frame_len = ini.preamble_len + ini.demapper_out_len;
-    ini.rx_frame_len = ini.tx_frame_len;
-
-    % Scrambler params
-    [ini.scramb_seed, ini.scramb_tap] = get_scramb_params();
+    ini.intfc_params = get_intfc_params(ini.preamble_params.len, ini.map_params.map_out_len);
 end
 
 %% Helper Function
@@ -61,15 +55,38 @@ function audio_len = get_audio_len()
     audio_len = f_audio*t_audio;
 end
 
-function [scramb_seed, scramb_tap] = get_scramb_params()
+function scramb_params = get_scramb_params()
     % Choosing order 16, (2^16 = 65535) > (144 + 44100)
     % https://en.wikipedia.org/wiki/Linear-feedback_shift_register#Example_polynomials_for_maximal_LFSRs
-    scramb_seed = 0; % zeros(1, 16);
-    scramb_tap = 'z^16 + z^15 + z^13 + z^4 + 1';
+    scramb_params.seed = 0; % zeros(1, 16);
+    scramb_params.tap = 'z^16 + z^15 + z^13 + z^4 + 1';
 end
 
-function [n, k] = get_encoder_params()
+function preamble_params = get_preamble_params()
+    preamble_params.seq = repmat(get_barker(13), 1, 3)';
+    preamble_params.len = length(preamble_params.seq);
+    preamble_params.thresh = 0.7 * preamble_params.len;
+end
+
+function pkt_params = get_pkt_params()
+    % Data packet length (each var in terms of # bits)
+    pkt_params.info_len = get_info_len();
+    pkt_params.audio_len = get_audio_len();
+    pkt_params.data_len = pkt_params.info_len + pkt_params.audio_len;
+end
+
+function enc_params = get_enc_params(data_len)
     % Default MATLAB N, K for RS Encoder/Decoder
-    n = 7;
-    k = 3;
+    enc_params.n = 7;
+    enc_params.k = 3;
+    enc_params.out_len = (enc_params.n/enc_params.k) * data_len;
+end
+
+function map_params = get_map_params(data_len)
+    map_params.map_out_len = data_len/2; % 2 bits per symbol
+end
+
+function intfc_params = get_intfc_params(preamble_len, map_out_len)
+    intfc_params.tx_frame_len = preamble_len + map_out_len;
+    intfc_params.rx_frame_len = intfc_params.tx_frame_len;
 end

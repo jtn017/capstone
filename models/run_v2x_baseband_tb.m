@@ -17,4 +17,5 @@ Tsim = Ts * 5;
 
 % Run sim
 open(sim_name);
+set_param(sim_name, 'StopTime', num2str(Tsim))
 sim(sim_name, Tsim);
