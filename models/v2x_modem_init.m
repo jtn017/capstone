@@ -21,7 +21,9 @@ function srrc_params = get_srrc_params()
     % Default MATLAB params for SRRC
     srrc_params.rolloff = 0.2;
     srrc_params.filt_span = 10;
-    srrc_params.interp = 8;
+    srrc_params.sps = 8;
     srrc_params.decim = 1;
     srrc_params.lin_amp = 1;
+    srrc_params.shift = -11;
+%     srrc_params.shift = floor(srrc_params.sps * 3/2 - 1));
 end
