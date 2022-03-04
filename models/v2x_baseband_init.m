@@ -1,5 +1,8 @@
 %% Main function
 function ini = v2x_baseband_init()
+    % Data frame period
+    ini.T = 0.01;
+
     % Packet params
     ini.pkt_params = get_pkt_params();
 
@@ -56,13 +59,9 @@ end
 
 function audio_len = get_audio_len()
     f_audio   = 44.1e3;
-    t_audio   = 1; % 1 second of captured data
-    audio_len = f_audio*t_audio;
-
-%     f_audio   = 44.1e3;
-%     t_audio   = 0.01; % 0.01 second of captured data
-%     audio_bits = 16; % 16 bits -> 1 channel, 2 channels for stereo
-%     audio_len = f_audio*t_audio*audio_bits;
+    t_audio   = 0.01; % 0.01 second of captured data
+    audio_bits = 16; % 16 bits -> 1 channel, 2 channels for stereo
+    audio_len = f_audio*t_audio*audio_bits;
 end
 
 function pkt_params = get_pkt_params()
