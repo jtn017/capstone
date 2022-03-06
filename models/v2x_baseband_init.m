@@ -18,13 +18,9 @@ function ini = v2x_baseband_init()
     % Preamble params
     ini.preamble_params = get_preamble_params();
 
-    % Guard Interval params
-    ini.guard_params = get_guard_params();
-
     % TX output/RX input frame length
     ini.intfc_params = get_intfc_params(ini.preamble_params.len, ...
-                                        ini.map_params.map_out_len, ...
-                                        ini.guard_params.len);
+                                        ini.map_params.map_out_len);
 end
 
 %% Helper Function
@@ -95,13 +91,7 @@ function preamble_params = get_preamble_params()
     preamble_params.thresh = 0.7 * preamble_params.len;
 end
 
-function guard_params = get_guard_params()
-    guard_params.seq = repmat(get_barker(7), 1, 3)';
-    guard_params.len = length(guard_params.seq);
-end
-
-
-function intfc_params = get_intfc_params(preamble_len, map_out_len, guard_len)
-    intfc_params.tx_frame_len = preamble_len + map_out_len + guard_len;
+function intfc_params = get_intfc_params(preamble_len, map_out_len)
+    intfc_params.tx_frame_len = preamble_len + map_out_len;
     intfc_params.rx_frame_len = intfc_params.tx_frame_len;
 end
