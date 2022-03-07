@@ -1,0 +1,8 @@
+This file is the manifest for the generated code from model 'V2X_TX_Baseband'.
+C:\Users\jacob\Documents\Important\UCSD\2021-2022 Year\WES Capstone\capstone\models\src\V2X_TX_Baseband_ert_rtw\V2X_TX_Baseband.c
+C:\Users\jacob\Documents\Important\UCSD\2021-2022 Year\WES Capstone\capstone\models\src\V2X_TX_Baseband_ert_rtw\V2X_TX_Baseband_data.c
+C:\Users\jacob\Documents\Important\UCSD\2021-2022 Year\WES Capstone\capstone\models\src\V2X_TX_Baseband_ert_rtw\ert_main.c
+C:\Users\jacob\Documents\Important\UCSD\2021-2022 Year\WES Capstone\capstone\models\src\V2X_TX_Baseband_ert_rtw\V2X_TX_Baseband.h
+C:\Users\jacob\Documents\Important\UCSD\2021-2022 Year\WES Capstone\capstone\models\src\V2X_TX_Baseband_ert_rtw\rtwtypes.h
+C:\Users\jacob\Documents\Important\UCSD\2021-2022 Year\WES Capstone\capstone\models\src\V2X_TX_Baseband_ert_rtw\defines.txt
+C:\Users\jacob\Documents\Important\UCSD\2021-2022 Year\WES Capstone\capstone\models\src\V2X_TX_Baseband_ert_rtw\V2X_TX_Baseband_manifest.txt

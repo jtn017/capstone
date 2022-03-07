@@ -1,0 +1,26 @@
+%implements s0_b0_sf8ld_ModelInitialize "C"
+
+%function ModelInitialize(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%<SLibInsertAsyncTaskInitializeCode(system)>
+%<SLibWriteMachineInitialize()>
+%<SLibCG_TrackDW(0)>\
+%<SLibCGIRDumpSystemUserCode(0, "Start", "Header")>\
+%<SLibCGIRDumpSystemUserCode(0, "Start", "Body")>\
+%<SLibCGIRDumpSystemUserCode(0, "Start", "Trailer")>\
+/* InitializeConditions for S-Function (sdspupfir2): '<S3>/FIR Interpolation' */
+/*@>6b11*/memset(&/*@>72b2*/rtDW->/*@>7b92*/FIRInterpolation_TapDelayBuff/*@>67aa*/[/*@>679a*/0], /*@>7b83*/0, /*@>67a8*/10U/*@>67b0*/ * /*@>67af*/sizeof(creal_T));
+%<SLibInsertInitPeriodicCStatesFcn(system)>
+%closefile cfgTxt
+%<cfgTxt>
+%endfunction
+%function ModelInitializeFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void ModelInitialize(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 1, fcnProtoType)>
+%endfunction

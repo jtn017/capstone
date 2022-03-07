@@ -86,9 +86,13 @@ function map_params = get_map_params(data_len)
 end
 
 function preamble_params = get_preamble_params()
-    preamble_params.seq = repmat(get_barker(13), 1, 3)';
+%     preamble_params.seq = repmat(get_barker(13), 1, 3)';
+%     preamble_params.len = length(preamble_params.seq);
+%     preamble_params.thresh = 0.7 * preamble_params.len;
+
+    preamble_params.seq = repmat(pngen(6, 32), 1, 2)'; % 64 bit sequence
     preamble_params.len = length(preamble_params.seq);
-    preamble_params.thresh = 0.7 * preamble_params.len;
+    preamble_params.thresh = 0.5 * preamble_params.len;
 end
 
 function intfc_params = get_intfc_params(preamble_len, map_out_len)
