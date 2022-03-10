@@ -33,10 +33,21 @@ Tsim = Ts * 3;
 sim_name = 'v2x_modem_tb';
 open(sim_name);
 set_param(sim_name, 'StopTime', num2str(Tsim))
-sim(sim_name, Tsim);
+sim_out = sim(sim_name, Tsim);
+
+%% Save to CSV
+save_to_csv = 1;
+
+% V2X TX Baseband
+if save_to_csv
+    v2x_tx_bb_in  = squeeze(sim_out.logsout.getElement('v2x_tx_bb_in').Values.Data);
+    v2x_tx_bb_out = squeeze(sim_out.logsout.getElement('v2x_tx_bb_out').Values.Data);
+    writematrix(v2x_tx_bb_in_mat,  'data/v2x_tx_bb_in.csv')
+    writematrix(v2x_tx_bb_out_mat, 'data/v2x_tx_bb_out.csv')
+end
 
 %% Build script
-if 1
+if 0
     % Models
     v2x_tx_bb_fp  = 'v2x_modem_tb/V2X_TX_Baseband';
     v2x_tx_mod_fp = 'v2x_modem_tb/V2X_TX_Modulator';
