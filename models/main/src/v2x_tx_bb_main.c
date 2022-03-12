@@ -14,26 +14,14 @@ static RT_MODEL rtM_;
 static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
-/* '<Root>/data_frame' */
-static boolean_T rtU_data_frame[7200];
-
-/* '<Root>/tx_frame' */
-static creal_T rtY_tx_frame[8464];
-
-/* '<Root>/tx_in' */
-static boolean_T rtY_tx_in[7200];
-
-/* '<Root>/scrambler_out' */
-static boolean_T rtY_scrambler_out[7200];
-
-/* '<Root>/encoder_out' */
-static boolean_T rtY_encoder_out[16800];
-
-/* '<Root>/mapper_out' */
-static creal_T rtY_mapper_out[8400];
-
-/* '<Root>/preamble_out' */
-static creal_T rtY_preamble_out[8464];
+// V2X_TX_Baseband IO
+static boolean_T rtU_data_frame[7200]; /* '<Root>/data_frame' */
+static creal_T rtY_tx_frame[8464]; /* '<Root>/tx_frame' */
+static boolean_T rtY_tx_in[7200]; /* '<Root>/tx_in' */
+static boolean_T rtY_scrambler_out[7200]; /* '<Root>/scrambler_out' */
+static boolean_T rtY_encoder_out[16800]; /* '<Root>/encoder_out' */
+static creal_T rtY_mapper_out[8400]; /* '<Root>/mapper_out' */
+static creal_T rtY_preamble_out[8464]; /* '<Root>/preamble_out' */
 
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -106,13 +94,15 @@ int_T main(int_T argc, const char *argv[])
    *
    *  rt_OneStep(rtM);
    */
-  printf("Warning: The simulation will run forever. "
-         "Generated ERT main won't simulate model step behavior. "
-         "To change this behavior select the 'MAT-file logging' option.\n");
-  fflush((NULL));
-  while (1) {
-    /*  Perform application tasks here */
-  }
+  // TODO: Re-enable? or repurpose at a later time
+  // printf("Warning: The simulation will run forever. "
+  //        "Generated ERT main won't simulate model step behavior. "
+  //        "To change this behavior select the 'MAT-file logging' option.\n");
+  // fflush((NULL));
+  // while (1) {
+  //   /*  Perform application tasks here */
+  // }
+  rt_OneStep(rtM);
 
   /* The option 'Remove error status field in real-time model data structure'
    * is selected, therefore the following code does not need to execute.
