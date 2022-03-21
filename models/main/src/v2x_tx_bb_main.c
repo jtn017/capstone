@@ -1,116 +1,136 @@
 /*
- * Adapted from ert_main.c
+ * Main file...
 */
 #include <stddef.h>
-#include <stdio.h>            /* This example main program uses printf/fflush */
-#include "V2X_TX_Baseband.h"           /* Model's header file */
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Auto-generated files
+#include "rtwtypes.h"
+
+// Custom files
+#include "v2x_constants.h"
 #include "v2x_tx_bb_main.h"
+#include "v2x_tx_bb_wrapper.h"
 
-// Included until we figure out the makefile linking
-#include "V2X_TX_Baseband.c"
-#include "V2X_TX_Baseband_data.c" 
+// ---------------------- Debug functions ----------------------
+#if DEBUG_BUILD
+// Test IO
+static creal_T test_tx_bb_out[TX_BB_OUT_LEN];
 
-static RT_MODEL rtM_;
-static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
-static DW rtDW;                        /* Observable states */
+// Function prototype
+const char* getfield(char* line, int num);
+void load_csv(int frame_num);
+int compare_actual_vs_exp(creal_T* output_frame);
 
-// V2X_TX_Baseband IO
-static boolean_T rtU_data_frame[7200]; /* '<Root>/data_frame' */
-static creal_T rtY_tx_frame[8464]; /* '<Root>/tx_frame' */
-static boolean_T rtY_tx_in[7200]; /* '<Root>/tx_in' */
-static boolean_T rtY_scrambler_out[7200]; /* '<Root>/scrambler_out' */
-static boolean_T rtY_encoder_out[16800]; /* '<Root>/encoder_out' */
-static creal_T rtY_mapper_out[8400]; /* '<Root>/mapper_out' */
-static creal_T rtY_preamble_out[8464]; /* '<Root>/preamble_out' */
-
-/*
- * Associating rt_OneStep with a real-time clock or interrupt service routine
- * is what makes the generated code "real-time".  The function rt_OneStep is
- * always associated with the base rate of the model.  Subrates are managed
- * by the base rate from inside the generated code.  Enabling/disabling
- * interrupts and floating point context switches are target specific.  This
- * example code indicates where these should take place relative to executing
- * the generated code step function.  Overrun behavior should be tailored to
- * your application needs.  This example simply sets an error status in the
- * real-time model and returns from rt_OneStep.
- */
-void rt_OneStep(RT_MODEL *const rtM);
-void rt_OneStep(RT_MODEL *const rtM)
+// Function declarations
+const char* getfield(char* line, int num)
 {
-  static boolean_T OverrunFlag = false;
-
-  /* Disable interrupts here */
-
-  /* Check for overrun */
-  if (OverrunFlag) {
-    return;
-  }
-
-  OverrunFlag = true;
-
-  /* Save FPU context here (if necessary) */
-  /* Re-enable timer or interrupt here */
-  /* Set model inputs here */
-
-  /* Step the model */
-  V2X_TX_Baseband_step(rtM, rtU_data_frame, rtY_tx_frame, rtY_tx_in,
-                       rtY_scrambler_out, rtY_encoder_out, rtY_mapper_out,
-                       rtY_preamble_out);
-
-  /* Get model outputs here */
-
-  /* Indicate task complete */
-  OverrunFlag = false;
-
-  /* Disable interrupts here */
-  /* Restore FPU context here (if necessary) */
-  /* Enable interrupts here */
+    const char* tok;
+    for (tok = strtok(line, ",");
+            tok && *tok;
+            tok = strtok(NULL, ",\n"))
+    {
+        if (!--num)
+            return tok;
+    }
+    return NULL;
 }
 
-/*
- * The example "main" function illustrates what is required by your
- * application code to initialize, execute, and terminate the generated code.
- * Attaching rt_OneStep to a real-time clock is target specific.  This example
- * illustrates how you do this relative to initializing the model.
- */
-int_T main(int_T argc, const char *argv[])
+void load_csv(int frame_num)
 {
-  RT_MODEL *const rtM = rtMPtr;
+    // Load expected output
+    FILE* outstream_real = fopen("data/v2x_tx_bb_out_real.csv", "r");
+    FILE* outstream_imag = fopen("data/v2x_tx_bb_out_imag.csv", "r");
+    char line_real[1024];
+    char line_imag[1024];
+    for (int n = 0; n < TX_BB_OUT_LEN; n++)
+    {
+        // Real
+        fgets(line_real, sizeof(line_real), outstream_real);
+        char* tmp_real = strdup(line_real);
+        test_tx_bb_out[n].re = (real_T) strtof(getfield(tmp_real, frame_num), NULL);
+        free(tmp_real);
 
-  /* Unused arguments */
-  (void)(argc);
-  (void)(argv);
+        // Imag
+        fgets(line_imag, sizeof(line_imag), outstream_imag);
+        char* tmp_imag = strdup(line_imag);
+        test_tx_bb_out[n].im = (real_T) strtof(getfield(tmp_imag, frame_num), NULL);
+        free(tmp_imag);
+    }
+    fclose(outstream_real);
+    fclose(outstream_imag);
 
-  /* Pack model data into RTM */
-  rtM->dwork = &rtDW;
+    // Return
+    return;
+}
 
-  /* Initialize model */
-  V2X_TX_Baseband_initialize(rtM, rtU_data_frame, rtY_tx_frame, rtY_tx_in,
-    rtY_scrambler_out, rtY_encoder_out, rtY_mapper_out, rtY_preamble_out);
+int compare_actual_vs_exp(creal_T* output_frame)
+{
+    // Error flag
+    int ret_val = 0;
 
-  /* Attach rt_OneStep to a timer or interrupt service routine with
-   * period 0.01 seconds (the model's base sample time) here.  The
-   * call syntax for rt_OneStep is
-   *
-   *  rt_OneStep(rtM);
-   */
-  // TODO: Re-enable? or repurpose at a later time
-  // printf("Warning: The simulation will run forever. "
-  //        "Generated ERT main won't simulate model step behavior. "
-  //        "To change this behavior select the 'MAT-file logging' option.\n");
-  // fflush((NULL));
-  // while (1) {
-  //   /*  Perform application tasks here */
-  // }
-  rt_OneStep(rtM);
+    // Compare expected output (real)
+    for (int n = 0; n < 150; n++)
+    {
+        if (abs(output_frame[n].re - test_tx_bb_out[n].re) > ERROR_TOL)
+        {
+            printf("ERROR: actual[%d].re: %f, expected[%d].re: %f\n",
+                  n, output_frame[n].re, n, test_tx_bb_out[n].re);
+            ret_val = -2;
+            break;
+        }
+    }
 
-  /* The option 'Remove error status field in real-time model data structure'
-   * is selected, therefore the following code does not need to execute.
-   */
-#if 0
+    // Compare expected output (imag)
+    for (int n = 0; n < TX_BB_OUT_LEN; n++)
+    {
+        if (abs(output_frame[n].im - test_tx_bb_out[n].im) > ERROR_TOL)
+        {
+            printf("ERROR: actual[%d].re: %f, expected[%d].re: %f\n",
+                  n, output_frame[n].im, n, test_tx_bb_out[n].im);
+            ret_val = -3;
+            break;
+        }
+    }
 
-  /* Disable rt_OneStep here */
+    // Return
+    return ret_val;
+}
 #endif
 
-  return 0;
+// ---------------------- Main ----------------------
+int_T main(int_T argc, const char *argv[])
+{
+    // Unused arguments
+    (void)(argc);
+    (void)(argv);
+
+    // Get TX baseband output
+    creal_T output_frame[TX_BB_OUT_LEN];
+#if DEBUG_BUILD
+    // Set mumber of frames to compare
+    int num_frames = 4;
+    for (int i = 1; i <= num_frames; i++)
+    {
+        load_csv(i);
+        get_tx_output_frame(output_frame, i);
+        int ret_val = compare_actual_vs_exp(output_frame);
+
+        if (ret_val != 0)
+        {
+            printf("Frame %d does NOT match recorded CSV!\n", i);
+        }
+        else
+        {
+            printf("Frame %d matches recorded CSV!\n", i);
+        }
+    }
+#else
+    get_tx_output_frame(output_frame, 0);
+#endif
+
+    return 0;
 }

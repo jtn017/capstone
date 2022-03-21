@@ -2,13 +2,9 @@
  * Adapted from ert_main.c
 */
 #include <stddef.h>
-#include <stdio.h>            /* This example main program uses printf/fflush */
-#include "V2X_TX_Baseband.h"           /* Model's header file */
+#include <stdio.h>
+#include "V2X_TX_Baseband.h"
 #include "v2x_tx_bb_main.h"
-
-// Included until we figure out the makefile linking
-#include "V2X_TX_Baseband.c"
-#include "V2X_TX_Baseband_data.c"
 
 // Other libraries...
 #include <stdbool.h>
@@ -119,7 +115,8 @@ int compareOut(void)
     {
         if (rtY_tx_in[n] != test_tx_bb_in[n])
         {
-            printf("ERROR: rtU_data_frame[%d]: %d, test_tx_bb_in[%d]: %d\n", n, rtY_tx_in[n], n, test_tx_bb_in[n]);
+            printf("ERROR: rtU_data_frame[%d]: %d, test_tx_bb_in[%d]: %d\n",
+                    n, rtY_tx_in[n], n, test_tx_bb_in[n]);
             ret_val = -1;
             break;
         }
@@ -128,10 +125,10 @@ int compareOut(void)
     // Compare expected output (real)
     for (int n = 0; n < TX_BB_OUT_SZ; n++)
     {
-        // printf("rtY_tx_frame.re[%d]: %f, test_tx_bb_out.re[%d]: %f\n", n, rtY_tx_frame[n].re, n, test_tx_bb_out[n].re);
         if (abs(rtY_tx_frame[n].re - test_tx_bb_out[n].re) > ERROR_TOL)
         {
-            printf("ERROR: rtY_tx_frame[%d].re: %f, test_tx_bb_out[%d].re: %f\n", n, rtY_tx_frame[n].re, n, test_tx_bb_out[n].re);
+            printf("ERROR: rtY_tx_frame[%d].re: %f, test_tx_bb_out[%d].re: %f\n",
+                    n, rtY_tx_frame[n].re, n, test_tx_bb_out[n].re);
             ret_val = -2;
             break;
         }
@@ -140,7 +137,6 @@ int compareOut(void)
     // Compare expected output (imag)
     for (int n = 0; n < TX_BB_OUT_SZ; n++)
     {
-        // printf("rtY_tx_frame.im[%d]: %f, test_tx_bb_out.im[%d]: %f\n", n, rtY_tx_frame[n].im, n, test_tx_bb_out[n].im);
         if (abs(rtY_tx_frame[n].im - test_tx_bb_out[n].im) > ERROR_TOL)
         {
             printf("ERROR! Value at line %d, ending comparison\n", n);
