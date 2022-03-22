@@ -10,8 +10,6 @@
 
 // Auto-generated files
 #include "V2X_TX_Baseband.h"
-// #include "V2X_TX_Baseband_data.c"
-#include "v2x_tx_bb_main.h"
 
 // Custom files
 #include "v2x_tx_bb_wrapper.h"
@@ -32,7 +30,7 @@ static creal_T rtY_mapper_out[8400]; /* '<Root>/mapper_out' */
 static creal_T rtY_preamble_out[8464]; /* '<Root>/preamble_out' */
 
 // ---------------------- Function prototype ----------------------
-void rt_OneStep(RT_MODEL *const rtM);
+void v2x_tx_bb_one_step(RT_MODEL *const rtM);
 int get_tx_input_frame(int frame_num);
 int get_info_packet(bool info_packet[INFO_PKT_LEN]);
 int get_audio_packet(bool audio_packet[INFO_PKT_LEN]);
@@ -106,7 +104,7 @@ int get_tx_input_frame(int frame_num)
     return 0;
 }
 
-void rt_OneStep(RT_MODEL *const rtM)
+void v2x_tx_bb_one_step(RT_MODEL *const rtM)
 {
     static boolean_T OverrunFlag = false;
 
@@ -139,7 +137,7 @@ void rt_OneStep(RT_MODEL *const rtM)
 }
 
 // ---------------------- External functions ----------------------
-int get_tx_output_frame(creal_T* output_frame, int frame_num)
+int get_tx_bb_out_frame(creal_T* output_frame, int frame_num)
 {
     // Pack model data into RTM
     RT_MODEL *const rtM = rtMPtr;
@@ -149,7 +147,7 @@ int get_tx_output_frame(creal_T* output_frame, int frame_num)
     V2X_TX_Baseband_initialize(rtM, rtU_data_frame, rtY_tx_frame, rtY_tx_in,
     rtY_scrambler_out, rtY_encoder_out, rtY_mapper_out, rtY_preamble_out);
     get_tx_input_frame(frame_num);
-    rt_OneStep(rtM);
+    v2x_tx_bb_one_step(rtM);
 
     // Save output to external value
     memcpy(output_frame, rtY_tx_frame, TX_BB_OUT_LEN*sizeof(rtY_tx_frame[0]));
