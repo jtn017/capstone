@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Modulator'.
  *
- * Model version                  : 1.134
+ * Model version                  : 1.138
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar  6 18:32:06 2022
+ * C/C++ source code generated on : Sun Mar 27 16:30:36 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -20,24 +20,62 @@
  */
 
 #include "V2X_TX_Modulator.h"
+#ifndef UCHAR_MAX
+#include <limits.h>
+#endif
+
+#if ( UCHAR_MAX != (0xFFU) ) || ( SCHAR_MAX != (0x7F) )
+#error Code was generated for compiler with different sized uchar/char. \
+Consider adjusting Test hardware word size settings on the \
+Hardware Implementation pane to match your compiler word sizes as \
+defined in limits.h of the compiler. Alternatively, you can \
+select the Test hardware is the same as production hardware option and \
+select the Enable portable word sizes option on the Code Generation > \
+Verification pane for ERT based targets, which will disable the \
+preprocessor word size checks.
+#endif
+
+#if ( USHRT_MAX != (0xFFFFU) ) || ( SHRT_MAX != (0x7FFF) )
+#error Code was generated for compiler with different sized ushort/short. \
+Consider adjusting Test hardware word size settings on the \
+Hardware Implementation pane to match your compiler word sizes as \
+defined in limits.h of the compiler. Alternatively, you can \
+select the Test hardware is the same as production hardware option and \
+select the Enable portable word sizes option on the Code Generation > \
+Verification pane for ERT based targets, which will disable the \
+preprocessor word size checks.
+#endif
+
+#if ( UINT_MAX != (0xFFFFFFFFU) ) || ( INT_MAX != (0x7FFFFFFF) )
+#error Code was generated for compiler with different sized uint/int. \
+Consider adjusting Test hardware word size settings on the \
+Hardware Implementation pane to match your compiler word sizes as \
+defined in limits.h of the compiler. Alternatively, you can \
+select the Test hardware is the same as production hardware option and \
+select the Enable portable word sizes option on the Code Generation > \
+Verification pane for ERT based targets, which will disable the \
+preprocessor word size checks.
+#endif
+
+/* Skipping ulong/long check: insufficient preprocessor integer range. */
 
 /* Model step function */
-void V2X_TX_Modulator_step(RT_MODEL *const rtM, creal_T rtU_tx_frame[8464],
-  creal_T rtY_mod_frame[67712], creal_T rtY_ps_out[67712])
+void V2X_TX_Modulator_step(RT_MODEL *const rtM, creal_T rtU_v2x_tx_bb_out[8464],
+  cint16_T rtY_mod_frame[67712], creal_T rtY_ps_out[67712])
 {
   DW *rtDW = rtM->dwork;
+  real_T accumulator_im;
+  real_T accumulator_re;
   int32_T i;
   int32_T j;
   int32_T m;
 
   /* S-Function (sdspupfir2): '<S3>/FIR Interpolation' incorporates:
+   *  DataTypeConversion: '<S1>/convert'
    *  Inport: '<Root>/ tx_frame'
-   *  Outport: '<Root>/ps_out'
    */
   /* Loop over each input channel */
   for (m = 0; m < 8; m++) {
-    real_T accumulator_im;
-    real_T accumulator_re;
     int32_T coefArrayIdx;
     int32_T oIdx;
     oIdx = m;
@@ -53,9 +91,9 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, creal_T rtU_tx_frame[8464],
         accumulator_re_tmp = i - j;
         accumulator_re_tmp_0 =
           rtConstP.FIRInterpolation_FILTER_COEFF[coefArrayIdx + j];
-        accumulator_re += rtU_tx_frame[accumulator_re_tmp].re *
+        accumulator_re += rtU_v2x_tx_bb_out[accumulator_re_tmp].re *
           accumulator_re_tmp_0;
-        accumulator_im += rtU_tx_frame[accumulator_re_tmp].im *
+        accumulator_im += rtU_v2x_tx_bb_out[accumulator_re_tmp].im *
           accumulator_re_tmp_0;
       }
 
@@ -68,8 +106,8 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, creal_T rtU_tx_frame[8464],
           rtDW->FIRInterpolation_TapDelayBuff[j].im;
       }
 
-      rtY_mod_frame[oIdx].re = accumulator_re;
-      rtY_mod_frame[oIdx].im = accumulator_im;
+      rtY_ps_out[oIdx].re = accumulator_re;
+      rtY_ps_out[oIdx].im = accumulator_im;
       oIdx += 8;
     }
 
@@ -78,34 +116,59 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, creal_T rtU_tx_frame[8464],
       accumulator_re = 0.0;
       accumulator_im = 0.0;
       for (j = 0; j < 11; j++) {
-        accumulator_re += rtU_tx_frame[(i - j) + 10].re *
+        accumulator_re += rtU_v2x_tx_bb_out[(i - j) + 10].re *
           rtConstP.FIRInterpolation_FILTER_COEFF[coefArrayIdx + j];
-        accumulator_im += rtU_tx_frame[(i - j) + 10].im *
+        accumulator_im += rtU_v2x_tx_bb_out[(i - j) + 10].im *
           rtConstP.FIRInterpolation_FILTER_COEFF[coefArrayIdx + j];
       }
 
-      rtY_mod_frame[oIdx].re = accumulator_re;
-      rtY_mod_frame[oIdx].im = accumulator_im;
+      rtY_ps_out[oIdx].re = accumulator_re;
+      rtY_ps_out[oIdx].im = accumulator_im;
       oIdx += 8;
     }
   }
 
   /* Update delay line for next frame */
   for (i = 0; i < 10; i++) {
-    rtDW->FIRInterpolation_TapDelayBuff[9 - i] = rtU_tx_frame[i + 8454];
+    rtDW->FIRInterpolation_TapDelayBuff[9 - i] = rtU_v2x_tx_bb_out[i + 8454];
   }
 
   /* End of S-Function (sdspupfir2): '<S3>/FIR Interpolation' */
 
-  /* Outport: '<Root>/ps_out' incorporates:
-   *  S-Function (sdspupfir2): '<S3>/FIR Interpolation'
-   */
-  memcpy(&rtY_ps_out[0], &rtY_mod_frame[0], 67712U * sizeof(creal_T));
+  /* Outport: '<Root>/mod_frame' */
+  for (i = 0; i < 67712; i++) {
+    /* DataTypeConversion: '<S1>/convert' incorporates:
+     *  S-Function (sdspupfir2): '<S3>/FIR Interpolation'
+     */
+    accumulator_re = floor(rtY_ps_out[i].re * 1024.0);
+    accumulator_im = floor(rtY_ps_out[i].im * 1024.0);
+    if (accumulator_re < 2048.0) {
+      if (accumulator_re >= -2048.0) {
+        rtY_mod_frame[i].re = (int16_T)accumulator_re;
+      } else {
+        rtY_mod_frame[i].re = -2048;
+      }
+    } else {
+      rtY_mod_frame[i].re = 2047;
+    }
+
+    if (accumulator_im < 2048.0) {
+      if (accumulator_im >= -2048.0) {
+        rtY_mod_frame[i].im = (int16_T)accumulator_im;
+      } else {
+        rtY_mod_frame[i].im = -2048;
+      }
+    } else {
+      rtY_mod_frame[i].im = 2047;
+    }
+  }
+
+  /* End of Outport: '<Root>/mod_frame' */
 }
 
 /* Model initialize function */
-void V2X_TX_Modulator_initialize(RT_MODEL *const rtM, creal_T rtU_tx_frame[8464],
-  creal_T rtY_mod_frame[67712], creal_T rtY_ps_out[67712])
+void V2X_TX_Modulator_initialize(RT_MODEL *const rtM, creal_T rtU_v2x_tx_bb_out
+  [8464], cint16_T rtY_mod_frame[67712], creal_T rtY_ps_out[67712])
 {
   DW *rtDW = rtM->dwork;
 
@@ -116,10 +179,10 @@ void V2X_TX_Modulator_initialize(RT_MODEL *const rtM, creal_T rtU_tx_frame[8464]
                 sizeof(DW));
 
   /* external inputs */
-  (void)memset(&rtU_tx_frame[0], 0, 8464U * sizeof(creal_T));
+  (void)memset(&rtU_v2x_tx_bb_out[0], 0, 8464U * sizeof(creal_T));
 
   /* external outputs */
-  (void)memset(&rtY_mod_frame[0], 0, 67712U * sizeof(creal_T));
+  (void)memset(&rtY_mod_frame[0], 0, 67712U * sizeof(cint16_T));
   (void)memset(&rtY_ps_out[0], 0, 67712U * sizeof(creal_T));
 
   /* InitializeConditions for S-Function (sdspupfir2): '<S3>/FIR Interpolation' */

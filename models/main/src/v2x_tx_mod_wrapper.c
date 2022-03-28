@@ -22,7 +22,7 @@ static DW rtDW;                        /* Observable states */
 
 // ---------------------- V2X_TX_Modulator IO ----------------------
 static creal_T rtU_tx_frame[8464]; /* '<Root>/ tx_frame' */
-static creal_T rtY_mod_frame[67712]; /* '<Root>/mod_frame' */
+static cint16_T rtY_mod_frame[67712]; /* '<Root>/mod_frame' */
 static creal_T rtY_ps_out[67712]; /* '<Root>/ps_out' */
 
 // ---------------------- Function prototype ----------------------
@@ -60,7 +60,7 @@ void v2x_tx_mod_one_step(RT_MODEL *const rtM)
 }
 
 // ---------------------- External functions ----------------------
-int get_tx_mod_out_frame(creal_T* input_frame, creal_T* output_frame)
+int get_tx_mod_out_frame(creal_T* input_frame, cint16_T* output_frame)
 {
     // Pack model data into RTM
     RT_MODEL *const rtM = rtMPtr;

@@ -1,4 +1,4 @@
-%implements s0_b0_xf8ld_Outputs "C"
+%implements s0_b0_ftyoe_Outputs "C"
 
 %function Outputs(block, system) Output
 %assign cfgTxt = ""
@@ -28,7 +28,7 @@ int32_T j;
 %<SLibCG_TrackEO(1)>\
 %<SLibCG_TrackEO(0)>\
 %<SLibCG_TrackEI(0)>\
-/* {S!d322}S-Function (scompskdemod): '<S3>/QPSK Demodulator Baseband' incorporates:
+/* {S!d34}S-Function (scompskdemod): '<S3>/QPSK Demodulator Baseband' incorporates:
  *  Inport: '<Root>/rx_frame'
  */
 /*@>26818*/for (/*@>66641*/iIdx = /*@>66640*/0; /*@>6664b*/iIdx < /*@>66649*/8400; /*@>66647*/iIdx/*@>6664f*/++) {
@@ -54,7 +54,7 @@ int32_T j;
     /*@>3180d*/rtY_decoder_in/*@>2d019*/[/*@>46d12*/decoder_in_tmp/*@>2d01b*/ + /*@>31812*/1]/*@>2d018*/ = /*@>31813*/RSDecoder_OmegaZActual_idx_0/*@>2d025*/ % /*@>31815*/2;
     /*@>3181b*/rtY_decoder_in/*@>2d034*/[decoder_in_tmp]/*@>2d033*/ = (/*@>370e0*/RSDecoder_OmegaZActual_idx_0/*@>370de*/ >> /*@>370e1*/1)/*@>2d040*/ % /*@>31822*/2;
 }
-/* {S!d324}S-Function (scominttobit): '<S6>/Bit to Integer Converter' incorporates:
+/* {S!d36}S-Function (scominttobit): '<S6>/Bit to Integer Converter' incorporates:
  *  S-Function (scompskdemod): '<S3>/QPSK Demodulator Baseband'
  */
 /* Bit to Integer Conversion */
@@ -64,9 +64,9 @@ int32_T j;
     /*@>60f93*/rtDW->/*@>6762d*/BittoIntegerConverter/*@>40124*/[/*@>40127*/RSDecoder_OmegaZActual_idx_0]/*@>2cff9*/ = (/*@>37eca*/(uint32_T)/*@>5f153*/rtY_decoder_in/*@>5f155*/[/*@>5f152*/iIdx]/*@>370f7*/ << /*@>370fa*/1U/*@>370f6*/ | /*@>370fb*/(uint32_T)/*@>5f15b*/rtY_decoder_in/*@>5f15d*/[/*@>5f159*/iIdx/*@>5f157*/ + /*@>5f15a*/1])/*@>31a06*/ << /*@>31803*/1U/*@>31a05*/ | /*@>31a08*/(uint32_T)/*@>5f163*/rtY_decoder_in/*@>5f165*/[/*@>5f161*/iIdx/*@>5f15f*/ + /*@>5f162*/2];
     /*@>31808*/iIdx/*@>66652*/ += /*@>3180c*/3;
 }
-/* {E!d324}End of S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
+/* {E!d36}End of S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
 
-/* {S!d326}S-Function (scomberlekamp): '<S6>/RS Decoder' incorporates:
+/* {S!d38}S-Function (scomberlekamp): '<S6>/RS Decoder' incorporates:
  *  S-Function (scominttobit): '<S6>/Bit to Integer Converter'
  */
 /* start of COMM_DoBerlekamp()  */
@@ -928,9 +928,9 @@ int32_T j;
         }
     }
 }
-/* {E!d326}End of S-Function (scomberlekamp): '<S6>/RS Decoder' */
+/* {E!d38}End of S-Function (scomberlekamp): '<S6>/RS Decoder' */
 
-/* {S!d328}S-Function (scominttobit): '<S6>/Integer to Bit Converter' incorporates:
+/* {S!d40}S-Function (scominttobit): '<S6>/Integer to Bit Converter' incorporates:
  *  S-Function (scomberlekamp): '<S6>/RS Decoder'
  */
 /*  end of COMM_DoBerlekamp()  */
@@ -944,18 +944,18 @@ int32_T j;
     /*@>61038*/rtDW->/*@>6765d*/IntegertoBitConverter/*@>2bf8e*/[/*@>37253*/iIdx/*@>46680*/ - /*@>3119a*/2]/*@>2bf8d*/ = /*@>339a2*/(int8_T)(/*@>3119b*/u/*@>31ab8*/ & /*@>3119d*/1U);
     /*@>6104a*/rtDW->/*@>67663*/IntegertoBitConverter/*@>2bfaa*/[/*@>37f92*/iIdx/*@>46684*/ - /*@>311ac*/3]/*@>2bfa9*/ = /*@>339c1*/(int8_T)(/*@>37263*/u/*@>37261*/ >> /*@>37264*/1U/*@>31ab7*/ & /*@>311af*/1U);
 }
-/* {E!d328}End of S-Function (scominttobit): '<S6>/Integer to Bit Converter' */
+/* {E!d40}End of S-Function (scominttobit): '<S6>/Integer to Bit Converter' */
 /*@>20a1d*/for (/*@>661c3*/RSDecoder_OmegaZActual_idx_0 = /*@>661c2*/0; /*@>661cd*/RSDecoder_OmegaZActual_idx_0 < /*@>661cb*/7200; /*@>661c9*/RSDecoder_OmegaZActual_idx_0/*@>66655*/++) {
-    /* {S!d330}DataTypeConversion: '<S7>/Conversion' incorporates:
+    /* {S!d42}DataTypeConversion: '<S7>/Conversion' incorporates:
  *  S-Function (scominttobit): '<S6>/Integer to Bit Converter'
  */
     /*@>30d6d*/rtY_descrambler_in/*@>23021*/[/*@>30d6b*/RSDecoder_OmegaZActual_idx_0]/*@>20a0e*/ = /*@>34237*/(uint8_T)/*@>6102f*/rtDW->/*@>6765a*/IntegertoBitConverter/*@>5f187*/[/*@>5f184*/RSDecoder_OmegaZActual_idx_0];
-    /* {S!d332}DataTypeConversion: '<S4>/Data Type Conversion' incorporates:
+    /* {S!d44}DataTypeConversion: '<S4>/Data Type Conversion' incorporates:
  *  DataTypeConversion: '<S7>/Conversion'
  */
     /*@>61041*/rtDW->/*@>67660*/DataTypeConversion/*@>23059*/[/*@>30d63*/RSDecoder_OmegaZActual_idx_0]/*@>20a2b*/ = (/*@>5f18b*/rtY_descrambler_in/*@>5f18d*/[/*@>5f18a*/RSDecoder_OmegaZActual_idx_0]/*@>31ac0*/ != /*@>31abe*/0.0);
 }
-/* {S!d336}S-Function (scomscram2): '<S4>/Descrambler' incorporates:
+/* {S!d48}S-Function (scomscram2): '<S4>/Descrambler' incorporates:
  *  DataTypeConversion: '<S4>/Data Type Conversion'
  */
 /*@>58c94*/memset(&/*@>54290*/shiftReg/*@>54291*/[/*@>5428d*/0], /*@>66016*/0, /*@>54296*/sizeof(int32_T)/*@>65c22*/ << /*@>65c21*/4U);
@@ -973,19 +973,19 @@ int32_T j;
         /*@>30d44*/shiftReg/*@>2324f*/[/*@>30d42*/RSDecoder_OmegaZActual_idx_0/*@>28630*/ + /*@>3115a*/1]/*@>5771*/ = /*@>5f1c5*/shiftReg/*@>5f1c7*/[/*@>5f1c4*/RSDecoder_OmegaZActual_idx_0];
     }
     /*@>30d4b*/shiftReg/*@>2321a*/[/*@>30d4a*/0U]/*@>5776*/ = inv;
-    /* {S!d334}Outport: '<Root>/rx_out' incorporates:
+    /* {S!d46}Outport: '<Root>/rx_out' incorporates:
  *  DataTypeConversion: '<S4>/Data Type Conversion'
  *  S-Function (scomscram2): '<S4>/Descrambler'
  */
     /*@>30d59*/rtY_rx_out/*@>230f7*/[/*@>30d57*/j]/*@>20a48*/ = /*@>5f1cb*/rtY_data_frame/*@>5f1cd*/[/*@>5f1ca*/j];
 }
-/* {E!d336}End of S-Function (scomscram2): '<S4>/Descrambler' */
+/* {E!d48}End of S-Function (scomscram2): '<S4>/Descrambler' */
 
-/* {S!d338}Outport: '<Root>/rx_in' incorporates:
+/* {S!d50}Outport: '<Root>/rx_in' incorporates:
  *  Inport: '<Root>/rx_frame'
  */
 /*@>58ca1*/memcpy(&/*@>530b4*/rtY_rx_in/*@>530b5*/[/*@>530a4*/0], &/*@>530bc*/rtU_rx_frame/*@>530bd*/[/*@>530b1*/0], /*@>530b3*/8464U/*@>530c0*/ * /*@>530bf*/sizeof(creal_T));
-/* {S!d340}Outport: '<Root>/demapper_in' incorporates:
+/* {S!d52}Outport: '<Root>/demapper_in' incorporates:
  *  Inport: '<Root>/rx_frame'
  */
 /*@>58ca3*/memcpy(&/*@>53058*/rtY_demapper_in/*@>53059*/[/*@>53048*/0], &/*@>53062*/rtU_rx_frame/*@>53063*/[/*@>53055*/64], /*@>53057*/8400U/*@>53066*/ * /*@>53065*/sizeof(creal_T));

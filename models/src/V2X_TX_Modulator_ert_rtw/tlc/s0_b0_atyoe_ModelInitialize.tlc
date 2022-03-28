@@ -1,4 +1,4 @@
-%implements s0_b0_sf8ld_ModelInitialize "C"
+%implements s0_b0_atyoe_ModelInitialize "C"
 
 %function ModelInitialize(block, system) Output
 %assign cfgTxt = ""
@@ -11,7 +11,7 @@
 %<SLibCGIRDumpSystemUserCode(0, "Start", "Body")>\
 %<SLibCGIRDumpSystemUserCode(0, "Start", "Trailer")>\
 /* InitializeConditions for S-Function (sdspupfir2): '<S3>/FIR Interpolation' */
-/*@>6b11*/memset(&/*@>72b2*/rtDW->/*@>7b92*/FIRInterpolation_TapDelayBuff/*@>67aa*/[/*@>679a*/0], /*@>7b83*/0, /*@>67a8*/10U/*@>67b0*/ * /*@>67af*/sizeof(creal_T));
+/*@>76fa*/memset(&/*@>7fb9*/rtDW->/*@>8a26*/FIRInterpolation_TapDelayBuff/*@>7438*/[/*@>7428*/0], /*@>8a17*/0, /*@>7436*/10U/*@>743e*/ * /*@>743d*/sizeof(creal_T));
 %<SLibInsertInitPeriodicCStatesFcn(system)>
 %closefile cfgTxt
 %<cfgTxt>

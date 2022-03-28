@@ -1,4 +1,4 @@
-%implements s0_b0_nf8ld_Outputs "C"
+%implements s0_b0_xsyoe_Outputs "C"
 
 %function Outputs(block, system) Output
 %assign cfgTxt = ""
@@ -24,12 +24,12 @@ int8_T MessagePAD[3];
 %<SLibCG_TrackEO(1)>\
 %<SLibCG_TrackEO(0)>\
 %<SLibCG_TrackEI(0)>\
-/* {S!d292}S-Function (scomscram2): '<S5>/Scrambler' incorporates:
+/* {S!d2}S-Function (scomscram2): '<S5>/Scrambler' incorporates:
  *  Inport: '<Root>/data_frame'
  */
 /*@>f39d*/memset(&/*@>ee02*/shiftReg/*@>ee03*/[/*@>edff*/0], /*@>110d5*/0, /*@>ee08*/sizeof(int32_T)/*@>10fff*/ << /*@>10ffe*/4U);
 /*@>7b29*/for (/*@>1117f*/B_n_idx_0 = /*@>1117e*/0; /*@>11189*/B_n_idx_0 < /*@>11187*/7200; /*@>11185*/B_n_idx_0/*@>111ad*/++) {
-    /*@>9d5e*/tmp/*@>1219*/ = /*@>fcea*/rtU_data_frame/*@>fcec*/[/*@>fce9*/B_n_idx_0];
+    /*@>9d5e*/tmp/*@>1219*/ = /*@>fcea*/rtU_v2x_tx_bb_in/*@>fcec*/[/*@>fce9*/B_n_idx_0];
 /*@>7b5b*/    for (/*@>1119f*/i = /*@>1119e*/0; /*@>111a9*/i < /*@>111a7*/16; /*@>111a5*/i/*@>111ae*/++) {
         /*@>9d5a*/tmp/*@>111b1*/ += /*@>a039*/(uint8_T)(/*@>102c0*/rtConstP./*@>1148a*/Scrambler_Polynomial/*@>fcf4*/[/*@>fcf0*/i/*@>fcee*/ + /*@>fcf1*/1]/*@>a035*/ * /*@>fcf8*/shiftReg/*@>fcfa*/[/*@>fcf7*/i]);
     }
@@ -40,7 +40,7 @@ int8_T MessagePAD[3];
     }
     /*@>9cfd*/shiftReg/*@>1241*/[/*@>9d50*/0U]/*@>1243*/ = /*@>9d4e*/tmp;
 }
-/* {S!d294}S-Function (scominttobit): '<S6>/Bit to Integer Converter' incorporates:
+/* {S!d4}S-Function (scominttobit): '<S6>/Bit to Integer Converter' incorporates:
  *  S-Function (scomscram2): '<S5>/Scrambler'
  */
 /* Bit to Integer Conversion */
@@ -51,9 +51,9 @@ int8_T MessagePAD[3];
     /*@>9ef2*/tmp/*@>111b3*/ += /*@>9ef6*/3;
     /*@>9cff*/rtb_BittoIntegerConverter/*@>12e4*/[/*@>9d49*/i]/*@>12e6*/ = /*@>a409*/(int8_T)/*@>9d47*/B_n_idx_0;
 }
-/* {E!d294}End of S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
+/* {E!d4}End of S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
 
-/* {S!d302}S-Function (scombchrsencoder): '<S6>/RS Encoder' incorporates:
+/* {S!d12}S-Function (scombchrsencoder): '<S6>/RS Encoder' incorporates:
  *  S-Function (scominttobit): '<S6>/Bit to Integer Converter'
  */
 /*@>7954*/for (/*@>1114c*/i = /*@>1114b*/0; /*@>11156*/i < /*@>11154*/800; /*@>11152*/i/*@>111b4*/++) {
@@ -61,13 +61,13 @@ int8_T MessagePAD[3];
     int8_T MessagePAD_tmp;
     int8_T MessagePAD_tmp_0;
     int8_T MessagePAD_tmp_1;
-    /* {S!d296}S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
+    /* {S!d6}S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
     /*@>cd12*/MessagePAD_tmp/*@>cd14*/ = /*@>fd06*/rtb_BittoIntegerConverter/*@>fd08*/[/*@>fd04*/i/*@>fd02*/ * /*@>fd05*/3];
     /*@>9eb6*/MessagePAD/*@>923c*/[/*@>9ebd*/0]/*@>923b*/ = /*@>cd16*/MessagePAD_tmp;
-    /* {S!d298}S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
+    /* {S!d8}S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
     /*@>cd32*/MessagePAD_tmp_0/*@>cd34*/ = /*@>fd26*/rtb_BittoIntegerConverter/*@>fd28*/[/*@>fd23*/i/*@>fd21*/ * /*@>fd24*/3/*@>fd20*/ + /*@>fd25*/1];
     /*@>9ebe*/MessagePAD/*@>9250*/[/*@>9ec5*/1]/*@>924f*/ = /*@>cd36*/MessagePAD_tmp_0;
-    /* {S!d300}S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
+    /* {S!d10}S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
     /*@>cd52*/MessagePAD_tmp_1/*@>cd54*/ = /*@>fd30*/rtb_BittoIntegerConverter/*@>fd32*/[/*@>fd2d*/i/*@>fd2b*/ * /*@>fd2e*/3/*@>fd2a*/ + /*@>fd2f*/2];
     /*@>9ec7*/MessagePAD/*@>9264*/[/*@>9ece*/2]/*@>9263*/ = /*@>cd56*/MessagePAD_tmp_1;
     /*@>9f43*/B_n_idx_0/*@>920f*/ = /*@>110db*/0;
@@ -131,9 +131,9 @@ int8_T MessagePAD[3];
     /*@>103bf*/rtDW->/*@>114cc*/RSEncoder/*@>8f30*/[/*@>9dec*/i/*@>a041*/ * /*@>9dee*/7/*@>95c1*/ + /*@>9def*/5]/*@>8f2f*/ = /*@>8f3b*/(uint32_T)/*@>9efd*/B_n_idx_2;
     /*@>103c8*/rtDW->/*@>114cf*/RSEncoder/*@>8f46*/[/*@>9df2*/i/*@>a03e*/ * /*@>9df4*/7/*@>95c3*/ + /*@>9df5*/6]/*@>8f45*/ = /*@>8f51*/(uint32_T)/*@>9eff*/B_n_idx_3;
 }
-/* {E!d302}End of S-Function (scombchrsencoder): '<S6>/RS Encoder' */
+/* {E!d12}End of S-Function (scombchrsencoder): '<S6>/RS Encoder' */
 
-/* {S!d304}S-Function (scominttobit): '<S6>/Integer to Bit Converter' incorporates:
+/* {S!d14}S-Function (scominttobit): '<S6>/Integer to Bit Converter' incorporates:
  *  S-Function (scombchrsencoder): '<S6>/RS Encoder'
  */
 /* Integer to Bit Conversion */
@@ -146,15 +146,15 @@ int8_T MessagePAD[3];
     /*@>10380*/rtDW->/*@>114b7*/IntegertoBitConverter/*@>8ec4*/[/*@>add2*/tmp/*@>cb7e*/ - /*@>9dc8*/2]/*@>8ec3*/ = /*@>a40e*/(int8_T)(/*@>9dc9*/u/*@>a06d*/ & /*@>9dcb*/1U);
     /*@>10389*/rtDW->/*@>114ba*/IntegertoBitConverter/*@>8ee0*/[/*@>af28*/tmp/*@>cb82*/ - /*@>9dda*/3]/*@>8edf*/ = /*@>a43a*/(int8_T)(/*@>ade2*/u/*@>ade0*/ >> /*@>ade3*/1U/*@>a06c*/ & /*@>9ddd*/1U);
 }
-/* {E!d304}End of S-Function (scominttobit): '<S6>/Integer to Bit Converter' */
+/* {E!d14}End of S-Function (scominttobit): '<S6>/Integer to Bit Converter' */
 
-/* {S!d306}DataTypeConversion: '<S7>/Conversion' incorporates:
+/* {S!d16}DataTypeConversion: '<S7>/Conversion' incorporates:
  *  S-Function (scominttobit): '<S6>/Integer to Bit Converter'
  */
 /*@>684b*/for (/*@>1112a*/i = /*@>11129*/0; /*@>11134*/i < /*@>11132*/16800; /*@>11130*/i/*@>111b6*/++) {
     /*@>9ce1*/rtY_encoder_out/*@>72bb*/[/*@>9cdf*/i]/*@>683c*/ = (/*@>a52d*/(uint8_T)/*@>10377*/rtDW->/*@>114b4*/IntegertoBitConverter/*@>fd3e*/[/*@>fd3b*/i]/*@>a075*/ != /*@>a073*/0);
 }
-/* {S!d308}S-Function (scomapskmod4): '<S3>/QPSK Modulator Baseband' incorporates:
+/* {S!d18}S-Function (scomapskmod4): '<S3>/QPSK Modulator Baseband' incorporates:
  *  Concatenate: '<S4>/Matrix Concatenate'
  *  DataTypeConversion: '<S7>/Conversion'
  */
@@ -170,9 +170,9 @@ int8_T MessagePAD[3];
     /*@>9cd5*/rtY_mapper_out/*@>74de*/[/*@>9cd3*/B_n_idx_0]./*@>11481*/im/*@>15e6*/ = /*@>10300*/rtConstP./*@>11496*/QPSKModulatorBaseband_modmap/*@>fd6c*/[B_n_idx_1/*@>fd66*/ + /*@>fd69*/1];
     /*@>9d23*/B_n_idx_0/*@>111bc*/++;
 }
-/* {E!d308}End of S-Function (scomapskmod4): '<S3>/QPSK Modulator Baseband' */
+/* {E!d18}End of S-Function (scomapskmod4): '<S3>/QPSK Modulator Baseband' */
 
-/* {S!d310}Concatenate: '<S4>/Matrix Concatenate' incorporates:
+/* {S!d20}Concatenate: '<S4>/Matrix Concatenate' incorporates:
  *  Constant: '<S4>/preamble'
  *  S-Function (scomapskmod4): '<S3>/QPSK Modulator Baseband'
  */
@@ -181,14 +181,14 @@ int8_T MessagePAD[3];
     /*@>9cdd*/rtY_tx_frame/*@>737d*/[/*@>9cdb*/i]./*@>11487*/im/*@>6859*/ = /*@>9d19*/0.0;
 }
 /*@>f3aa*/memcpy(&/*@>eb44*/rtY_tx_frame/*@>eb45*/[/*@>eb2b*/64], &/*@>eb4c*/rtY_mapper_out/*@>eb4d*/[/*@>eb38*/0], /*@>eb43*/8400U/*@>eb50*/ * /*@>eb4f*/sizeof(creal_T));
-/* {S!d312}Outport: '<Root>/preamble_out' incorporates:
+/* {S!d22}Outport: '<Root>/preamble_out' incorporates:
  *  Concatenate: '<S4>/Matrix Concatenate'
  */
 /*@>f3ac*/memcpy(&/*@>eade*/rtY_preamble_out/*@>eadf*/[/*@>eace*/0], &/*@>eae6*/rtY_tx_frame/*@>eae7*/[/*@>eadb*/0], /*@>eadd*/8464U/*@>eaea*/ * /*@>eae9*/sizeof(creal_T));
-/* {S!d314}Outport: '<Root>/tx_in' incorporates:
+/* {S!d24}Outport: '<Root>/tx_in' incorporates:
  *  Inport: '<Root>/data_frame'
  */
-/*@>f3ae*/memcpy(&/*@>ea84*/rtY_tx_in/*@>ea85*/[/*@>ea74*/0], &/*@>ea8c*/rtU_data_frame/*@>ea8d*/[/*@>ea81*/0], /*@>ea83*/7200U/*@>ea90*/ * /*@>ea8f*/sizeof(boolean_T));
+/*@>f3ae*/memcpy(&/*@>ea84*/rtY_tx_in/*@>ea85*/[/*@>ea74*/0], &/*@>ea8c*/rtU_v2x_tx_bb_in/*@>ea8d*/[/*@>ea81*/0], /*@>ea83*/7200U/*@>ea90*/ * /*@>ea8f*/sizeof(boolean_T));
 %<SLibInsertSolverResetCode()>\
 %closefile cfgTxt
 %<cfgTxt>

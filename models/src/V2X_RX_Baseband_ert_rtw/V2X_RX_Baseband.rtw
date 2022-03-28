@@ -6,8 +6,8 @@ CompiledModel {
   ModelReferenceTargetType "NONE"
   Version		  "9.6 (R2021b) 14-May-2021"
   SimulinkVersion	  "10.4"
-  ModelVersion		  "1.134"
-  GeneratedOn		  "Sun Mar  6 18:32:13 2022"
+  ModelVersion		  "1.138"
+  GeneratedOn		  "Sun Mar 27 16:30:42 2022"
   HasSimStructVars	  0
   HasVariants		  0
   PreserveExternInFcnDecls 1
@@ -889,11 +889,11 @@ CompiledModel {
     tlcTargetType	    "RT"
     RelativeBuildDir	    "V2X_RX_Baseband_ert_rtw"
   }
-  RTWContext		  [-1717890912, 542]
+  RTWContext		  [762053216, 538]
   RTWCGIR		  1
   TLCBlkFcnInCGIR	  1
   SLCI			  off
-  SubsystemHdlForRightClickBuild 152.0009765625
+  SubsystemHdlForRightClickBuild 77.0001220703125
   SubsystemPathForRightClickBuild "v2x_modem_tb"
   SubsystemNameForRightClickBuild "V2X_RX_Baseband"
   LocalSharedCodeManagerFile "C:\\Users\\jacob\\Documents\\Important\\UCSD\\2021-2022 Year\\WES Capstone\\capstone\\mo"
@@ -1415,43 +1415,43 @@ CompiledModel {
       Block {
 	Name			"<Root>/rx_frame"
 	SLName			"rx_frame"
-	SID			"538"
+	SID			"541"
 	Type			Inport
       }
       Block {
 	Name			"<Root>/data_frame"
 	SLName			"data_frame"
-	SID			"539"
+	SID			"542"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/rx_in"
 	SLName			"rx_in"
-	SID			"541"
+	SID			"544"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/demapper_in"
 	SLName			"demapper_in"
-	SID			"542"
+	SID			"545"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/decoder_in"
 	SLName			"decoder_in"
-	SID			"543"
+	SID			"546"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/descrambler_in"
 	SLName			"descrambler_in"
-	SID			"544"
+	SID			"547"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/rx_out"
 	SLName			"rx_out"
-	SID			"545"
+	SID			"548"
 	Type			Outport
       }
       Block {
@@ -3909,7 +3909,7 @@ CompiledModel {
       PID		      -1
       firstEntryOfTsMapIsGCD  yes
       NumDataOutputPorts      0
-      TLCFileName	      "s0_b0_xf8ld"
+      TLCFileName	      "s0_b0_ftyoe"
       OpaqueBlockMethode {
 	HasOutputs		1
 	HasModelInitialize	1
@@ -3985,7 +3985,7 @@ CompiledModel {
     }
   }
   BlockParamChecksum	  ["2545672965U", "522913778U", "3089618842U", "2950224097U"]
-  ModelChecksum		  ["782110787U", "2127048343U", "2810221129U", "1078018122U"]
+  ModelChecksum		  ["2425642914U", "292921120U", "2807197163U", "2910465010U"]
   IncludeCodeGenSettings  1
   CGTypes {
     CGTypeDefaults {
@@ -4286,32 +4286,32 @@ CompiledModel {
     RTWCGModule {
       RateGrouping	      0
       PeriodicRateGrouping    0
-      TLCFileName	      "s0_b0_xf8ld"
+      TLCFileName	      "s0_b0_ftyoe"
       RTWFcnConst {
 	HasInstanceSetup	"no"
 	baseTidOfTasks		"[0]"
 	Outputs_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_xf8ld_Outputs"
+	  TLCFileName		  "s0_b0_ftyoe_Outputs"
 	  StackSize		  253
 	}
 	ModelInitialize_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_xf8ld_ModelInitialize"
+	  TLCFileName		  "s0_b0_ftyoe_ModelInitialize"
 	  StackSize		  0
 	}
 	ModelExternalOutputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_xf8ld_ModelExternalOutputInit"
+	  TLCFileName		  "s0_b0_ftyoe_ModelExternalOutputInit"
 	  StackSize		  4
 	}
 	ModelExternalInputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_xf8ld_ModelExternalInputInit"
+	  TLCFileName		  "s0_b0_ftyoe_ModelExternalInputInit"
 	  StackSize		  4
 	}
       }
@@ -4358,6 +4358,7 @@ CompiledModel {
       }
       Function {
 	Name			"ModelExternalInputInit"
+	IsSimulinkVariantFcn	1
 	FunctionType		"ModelExternalInputInit"
 	FcnHeaders		[0]
 	ForbidStaticMemberDecl	1

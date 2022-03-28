@@ -2,7 +2,7 @@
 #define V2X_CONSTANTS_H
 
 // Debug
-#define DEBUG_BUILD 1
+#define DEBUG_BUILD 0
 #define ERROR_TOL 0.0001
 
 // Constants
@@ -12,5 +12,8 @@
 #define TX_BB_OUT_LEN 8464
 #define TX_MOD_OUT_LEN 67712
 
+// Fixed point conversion
+// TX Modulator is sfix12_En10
+#define TX_MOD_FRACT_BITS 10
 
 #endif // V2X_CONSTANTS_H

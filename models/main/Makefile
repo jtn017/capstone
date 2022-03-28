@@ -31,10 +31,10 @@ MKDIR = $(mkdir -p)
 all: main
 
 test: $(GEN_OBJ) $(TEST_OBJ)
-	$(CC) $(CFLAGS) $(GEN_OBJ) $(TEST_OBJ) -o v2x_tx_bb_test
+	$(CC) $(CFLAGS) $(GEN_OBJ) $(TEST_OBJ) -lm -levent -o v2x_tx_bb_test
 
 main: $(GEN_OBJ) $(MAIN_OBJ) 
-	$(CC) $(CFLAGS) $(GEN_OBJ) $(MAIN_OBJ) -o v2x_tx_main
+	$(CC) $(CFLAGS) $(GEN_OBJ) $(MAIN_OBJ) -lm -levent -o v2x_tx_main
 
 # Object targets
 $(ODIR)/%.o: $(GEN_SDIR)/%.c

@@ -1,10 +1,10 @@
-%implements s0_b0_sf8ld_ModelExternalOutputInit "C"
+%implements s0_b0_atyoe_ModelExternalOutputInit "C"
 
 %function ModelExternalOutputInit(block, system) Output
 %assign cfgTxt = ""
 %openfile cfgTxt
 %assign localVarDecl = ""
-(void)memset(&rtY_mod_frame[0], 0, 67712U * sizeof(creal_T));
+(void)memset(&rtY_mod_frame[0], 0, 67712U * sizeof(cint16_T));
 (void)memset(&rtY_ps_out[0], 0, 67712U * sizeof(creal_T));
 %<SLibCG_TrackEO(1)>\
 %<SLibCG_TrackEO(0)>\

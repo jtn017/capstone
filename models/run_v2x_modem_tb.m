@@ -49,12 +49,14 @@ if save_to_csv
 
     % TX Modulator
     v2x_tx_mod_out = squeeze(sim_out.logsout.getElement('v2x_tx_mod_out').Values.Data);
-    writematrix(real(v2x_tx_mod_out), 'main/data/v2x_tx_mod_out_real.csv')
-    writematrix(imag(v2x_tx_mod_out), 'main/data/v2x_tx_mod_out_imag.csv')
+    writematrix(real(double(v2x_tx_mod_out)), 'main/data/v2x_tx_mod_out_real.csv')
+    writematrix(imag(double(v2x_tx_mod_out)), 'main/data/v2x_tx_mod_out_imag.csv')
 end
 
 %% Build script
-if 0
+build_src = 0;
+
+if build_src
     % Models
     v2x_tx_bb_fp  = 'v2x_modem_tb/V2X_TX_Baseband';
     v2x_tx_mod_fp = 'v2x_modem_tb/V2X_TX_Modulator';

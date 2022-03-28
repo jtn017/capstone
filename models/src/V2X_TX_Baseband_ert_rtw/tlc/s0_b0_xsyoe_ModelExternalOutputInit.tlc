@@ -1,15 +1,15 @@
-%implements s0_b0_xf8ld_ModelExternalOutputInit "C"
+%implements s0_b0_xsyoe_ModelExternalOutputInit "C"
 
 %function ModelExternalOutputInit(block, system) Output
 %assign cfgTxt = ""
 %openfile cfgTxt
 %assign localVarDecl = ""
-(void)memset(&rtY_data_frame[0], 0, 7200U * sizeof(boolean_T));
-(void)memset(&rtY_decoder_in[0], 0, 16800U * sizeof(real_T));
-(void)memset(&rtY_descrambler_in[0], 0, 7200U * sizeof(real_T));
-(void)memset(&rtY_rx_out[0], 0, 7200U * sizeof(boolean_T));
-(void)memset(&rtY_rx_in[0], 0, 8464U * sizeof(creal_T));
-(void)memset(&rtY_demapper_in[0], 0, 8400U * sizeof(creal_T));
+(void)memset(&rtY_tx_in[0], 0, 7200U * sizeof(boolean_T));
+(void)memset(&rtY_scrambler_out[0], 0, 7200U * sizeof(boolean_T));
+(void)memset(&rtY_encoder_out[0], 0, 16800U * sizeof(boolean_T));
+(void)memset(&rtY_tx_frame[0], 0, 8464U * sizeof(creal_T));
+(void)memset(&rtY_mapper_out[0], 0, 8400U * sizeof(creal_T));
+(void)memset(&rtY_preamble_out[0], 0, 8464U * sizeof(creal_T));
 %<SLibCG_TrackEO(5)>\
 %<SLibCG_TrackEO(4)>\
 %<SLibCG_TrackEO(3)>\

@@ -1,4 +1,4 @@
-%implements s0_b0_nf8ld_ModelInitialize "C"
+%implements s0_b0_xsyoe_ModelInitialize "C"
 
 %function ModelInitialize(block, system) Output
 %assign cfgTxt = ""

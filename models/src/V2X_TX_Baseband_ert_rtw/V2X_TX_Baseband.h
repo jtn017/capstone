@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.134
+ * Model version                  : 1.138
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar  6 18:32:02 2022
+ * C/C++ source code generated on : Sun Mar 27 16:30:25 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -78,12 +78,12 @@ extern const ConstP rtConstP;
 
 /* Model entry point functions */
 extern void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, boolean_T
-  rtU_data_frame[7200], creal_T rtY_tx_frame[8464], boolean_T rtY_tx_in[7200],
+  rtU_v2x_tx_bb_in[7200], creal_T rtY_tx_frame[8464], boolean_T rtY_tx_in[7200],
   boolean_T rtY_scrambler_out[7200], boolean_T rtY_encoder_out[16800], creal_T
   rtY_mapper_out[8400], creal_T rtY_preamble_out[8464]);
-extern void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_data_frame
-  [7200], creal_T rtY_tx_frame[8464], boolean_T rtY_tx_in[7200], boolean_T
-  rtY_scrambler_out[7200], boolean_T rtY_encoder_out[16800], creal_T
+extern void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T
+  rtU_v2x_tx_bb_in[7200], creal_T rtY_tx_frame[8464], boolean_T rtY_tx_in[7200],
+  boolean_T rtY_scrambler_out[7200], boolean_T rtY_encoder_out[16800], creal_T
   rtY_mapper_out[8400], creal_T rtY_preamble_out[8464]);
 
 /*-

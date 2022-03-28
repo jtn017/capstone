@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.134
+ * Model version                  : 1.138
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar  6 18:32:02 2022
+ * C/C++ source code generated on : Sun Mar 27 16:30:25 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -52,7 +52,7 @@
 #endif
 
 /* Model step function */
-void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_data_frame[7200],
+void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in[7200],
   creal_T rtY_tx_frame[8464], boolean_T rtY_tx_in[7200], boolean_T
   rtY_scrambler_out[7200], boolean_T rtY_encoder_out[16800], creal_T
   rtY_mapper_out[8400], creal_T rtY_preamble_out[8464])
@@ -73,7 +73,7 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_data_frame[7200],
    */
   memset(&shiftReg[0], 0, sizeof(int32_T) << 4U);
   for (B_n_idx_0 = 0; B_n_idx_0 < 7200; B_n_idx_0++) {
-    tmp = rtU_data_frame[B_n_idx_0];
+    tmp = rtU_v2x_tx_bb_in[B_n_idx_0];
     for (i = 0; i < 16; i++) {
       tmp += (uint8_T)(rtConstP.Scrambler_Polynomial[i + 1] * shiftReg[i]);
     }
@@ -257,11 +257,11 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_data_frame[7200],
   /* Outport: '<Root>/tx_in' incorporates:
    *  Inport: '<Root>/data_frame'
    */
-  memcpy(&rtY_tx_in[0], &rtU_data_frame[0], 7200U * sizeof(boolean_T));
+  memcpy(&rtY_tx_in[0], &rtU_v2x_tx_bb_in[0], 7200U * sizeof(boolean_T));
 }
 
 /* Model initialize function */
-void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, boolean_T rtU_data_frame
+void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in
   [7200], creal_T rtY_tx_frame[8464], boolean_T rtY_tx_in[7200], boolean_T
   rtY_scrambler_out[7200], boolean_T rtY_encoder_out[16800], creal_T
   rtY_mapper_out[8400], creal_T rtY_preamble_out[8464])
@@ -269,7 +269,7 @@ void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, boolean_T rtU_data_frame
   /* Registration code */
 
   /* external inputs */
-  (void)memset(&rtU_data_frame[0], 0, 7200U * sizeof(boolean_T));
+  (void)memset(&rtU_v2x_tx_bb_in[0], 0, 7200U * sizeof(boolean_T));
 
   /* external outputs */
   (void)memset(&rtY_tx_in[0], 0, 7200U * sizeof(boolean_T));

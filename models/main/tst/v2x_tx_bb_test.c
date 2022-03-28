@@ -4,7 +4,6 @@
 #include <stddef.h>
 #include <stdio.h>
 #include "V2X_TX_Baseband.h"
-#include "v2x_tx_bb_main.h"
 
 // Other libraries...
 #include <stdbool.h>
