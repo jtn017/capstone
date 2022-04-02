@@ -1,0 +1,964 @@
+%implements s0_b0_iyuze_Outputs "C"
+
+%function Outputs(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+int32_T shiftReg[16];
+int32_T RSDecoder_OmegaZ[10];
+int32_T RSDecoder_PsiZ[5];
+int32_T RSDecoder_PsiZStar[5];
+int32_T RSDecoder_TempVec2t1[5];
+int32_T RSDecoder_Errloc[4];
+int32_T RSDecoder_Syndrome[4];
+int32_T RSDecoder_OmegaZActual_idx_0;
+int32_T Temp4;
+int32_T bitIdx;
+int32_T intVal;
+int32_T inv;
+int32_T j;
+%closefile localVarDecl
+%<SLibCG_TrackDW(0)>\
+%<SLibCG_TrackEO(2)>\
+%<SLibCG_TrackEO(1)>\
+%<SLibCG_TrackEO(0)>\
+%<SLibCG_TrackEI(0)>\
+/* {S!d74}S-Function (scominttobit): '<S5>/Bit to Integer Converter' incorporates:
+ *  Inport: '<Root>/rx_frame'
+ */
+/* Bit to Integer Conversion */
+/*@>2e713*/bitIdx/*@>3d76*/ = /*@>61b7d*/128;
+/*@>248c4*/for (/*@>621aa*/RSDecoder_OmegaZActual_idx_0 = /*@>621a9*/0; /*@>621b4*/RSDecoder_OmegaZActual_idx_0 < /*@>621b2*/5600; /*@>621b0*/RSDecoder_OmegaZActual_idx_0/*@>621b8*/++) {
+    /* Input bit order is MSB first */
+    /*@>2f107*/intVal/*@>2abe2*/ = /*@>310f3*/(int32_T)((/*@>344b1*/(uint32_T)/*@>5b183*/rtU_v2x_rx_demod_out/*@>5b185*/[/*@>5b182*/bitIdx]/*@>344b0*/ << /*@>344b4*/1U/*@>344af*/ | /*@>5b18b*/rtU_v2x_rx_demod_out/*@>5b18d*/[/*@>5b189*/bitIdx/*@>5b187*/ + /*@>5b18a*/1])/*@>2f297*/ << /*@>2f10b*/1U/*@>2f296*/ | /*@>5b193*/rtU_v2x_rx_demod_out/*@>5b195*/[/*@>5b191*/bitIdx/*@>5b18f*/ + /*@>5b192*/2]);
+    /*@>2f110*/bitIdx/*@>621b9*/ += /*@>2f114*/3;
+    /*@>5ce1d*/rtDW->/*@>63115*/BittoIntegerConverter/*@>3d9d*/[/*@>2e716*/RSDecoder_OmegaZActual_idx_0]/*@>3d9f*/ = /*@>310fb*/(int8_T)/*@>2e718*/intVal;
+}
+/* {E!d74}End of S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
+
+/* {S!d76}S-Function (scomberlekamp): '<S5>/RS Decoder' incorporates:
+ *  S-Function (scominttobit): '<S5>/Bit to Integer Converter'
+ */
+/* start of COMM_DoBerlekamp()  */
+/* The function uses the algorithm  described */
+/* in Clark and Cain, Error-Correction Coding for Digital Communications, 1981 */
+/* PART I - ERROR LOCATOR POLYNOMIAL COMPUTATION */
+/* Compute syndrome series : length = 2*t */
+/*@>5ce14*/rtDW->/*@>63112*/RSDecoder_GammaZ/*@>3efa*/[/*@>2e727*/0U]/*@>3efb*/ = /*@>61b80*/1;
+/*@>5ce26*/rtDW->/*@>63118*/RSDecoder_GammaZ/*@>2aab5*/[/*@>2f117*/1]/*@>2aab4*/ = /*@>61b83*/0;
+/*@>5ce2f*/rtDW->/*@>6311b*/RSDecoder_GammaZ/*@>2aae2*/[/*@>2f11a*/2]/*@>2aae1*/ = /*@>61b86*/0;
+/*@>5ce38*/rtDW->/*@>6311e*/RSDecoder_GammaZ/*@>2ab0f*/[/*@>2f11d*/3]/*@>2ab0e*/ = /*@>61b89*/0;
+/*@>5ce41*/rtDW->/*@>63121*/RSDecoder_GammaZ/*@>2ab3c*/[/*@>2f120*/4]/*@>2ab3b*/ = /*@>61b8c*/0;
+/*@>5ce4a*/rtDW->/*@>63124*/RSDecoder_GammaZTemp/*@>3f0c*/[/*@>2e72c*/0U]/*@>3f0d*/ = /*@>61b8f*/1;
+/*@>24165*/for (/*@>61d5f*/bitIdx = /*@>61d5e*/0; /*@>61d69*/bitIdx < /*@>61d67*/800; /*@>61d65*/bitIdx/*@>621ba*/++) {
+    int32_T Temp3;
+    int32_T noErrorStatus;
+    int32_T temp;
+    /*@>2e71a*/noErrorStatus/*@>3eaa*/ = /*@>61b92*/1;
+    /*  start of assignInputs(): Populate the codeword and erasure vectors with the proper data  */
+    /* Assign message symbols. */
+    /* If there are erasures, insert zeros in the erased positions. */
+    /*@>43949*/RSDecoder_OmegaZActual_idx_0/*@>4394b*/ = /*@>2e71d*/bitIdx/*@>2f325*/ * /*@>2e71f*/7;
+    /*@>5ce65*/rtDW->/*@>63127*/RSDecoder_CCode/*@>2ab53*/[/*@>2f0d1*/0]/*@>2ab52*/ = /*@>5ce6c*/rtDW->/*@>6312a*/BittoIntegerConverter/*@>5b19b*/[/*@>5b198*/RSDecoder_OmegaZActual_idx_0];
+    /*@>5ce7e*/rtDW->/*@>63130*/RSDecoder_CCode/*@>2ab70*/[/*@>2f0e1*/1]/*@>2ab6f*/ = /*@>5ce85*/rtDW->/*@>63133*/BittoIntegerConverter/*@>5b1a9*/[/*@>5b1a5*/RSDecoder_OmegaZActual_idx_0/*@>5b1a3*/ + /*@>5b1a6*/1];
+    /*@>5ce97*/rtDW->/*@>63139*/RSDecoder_CCode/*@>2ab8d*/[/*@>2f0ec*/2]/*@>2ab8c*/ = /*@>5ce9e*/rtDW->/*@>6313c*/BittoIntegerConverter/*@>5b1b1*/[/*@>5b1ad*/RSDecoder_OmegaZActual_idx_0/*@>5b1ab*/ + /*@>5b1ae*/2];
+    /* Assign parity symbols, again accounting for erasures */
+    /* no puncturing */
+    /*  end of assignInputs()  */
+    /* Initialize Gamma(Z) = 1 : ASCENDING ORDER.  length = 2t+1 */
+    /*@>5cec2*/rtDW->/*@>63148*/RSDecoder_CCode/*@>2aa95*/[/*@>2f115*/3]/*@>2aa94*/ = /*@>5cec9*/rtDW->/*@>6314b*/BittoIntegerConverter/*@>5b1bf*/[RSDecoder_OmegaZActual_idx_0/*@>5b1b9*/ + /*@>5b1bc*/3];
+    /*@>5ced2*/rtDW->/*@>6314e*/RSDecoder_CCode/*@>2aac2*/[/*@>2f118*/4]/*@>2aac1*/ = /*@>5ced9*/rtDW->/*@>63151*/BittoIntegerConverter/*@>5b1cd*/[RSDecoder_OmegaZActual_idx_0/*@>5b1c7*/ + /*@>5b1ca*/4];
+    /*@>5cee2*/rtDW->/*@>63154*/RSDecoder_CCode/*@>2aaef*/[/*@>2f11b*/5]/*@>2aaee*/ = /*@>5cee9*/rtDW->/*@>63157*/BittoIntegerConverter/*@>5b1d5*/[RSDecoder_OmegaZActual_idx_0/*@>5b1cf*/ + /*@>5b1d2*/5];
+    /*@>5cef2*/rtDW->/*@>6315a*/RSDecoder_CCode/*@>2ab1c*/[/*@>2f11e*/6]/*@>2ab1b*/ = /*@>5cef9*/rtDW->/*@>6315d*/BittoIntegerConverter/*@>5b1dd*/[RSDecoder_OmegaZActual_idx_0/*@>5b1d7*/ + /*@>5b1da*/6];
+    /* Calculate the erasure polynomial GammaZ.GammaZ is the set of coefficients */
+    /* of the erasure polynomial in ASCENDING order, because the syndrome is */
+    /* calculated in ascending order as well. */
+    /*  start of calculateGammaZ() -- Calculate the erasure locator polynomial */
+    /*  end of calculateGammaZ()  */
+    /* Calculate the syndrome by evaluating the codeword at successive */
+    /* powers of alpha.  The syndrome is in ASCENDING order. */
+/*@>246b6*/    for (/*@>6218a*/RSDecoder_OmegaZActual_idx_0 = /*@>62189*/0; /*@>62194*/RSDecoder_OmegaZActual_idx_0 < /*@>62192*/4; /*@>62190*/RSDecoder_OmegaZActual_idx_0/*@>621c3*/++) {
+        /*@>2e75a*/Temp3/*@>3fdf*/ = /*@>61b98*/0;
+/*@>24722*/        for (/*@>6219b*/j = /*@>6219a*/6; /*@>621a5*/j >= /*@>621a3*/0; /*@>621a1*/j/*@>621c4*/--) {
+            /*  start of gf_pow():gf_pow raises x^yd  */
+            /*@>2e77b*/temp/*@>4031*/ = (/*@>34501*/RSDecoder_OmegaZActual_idx_0/*@>344ff*/ + /*@>34502*/1)/*@>344fe*/ * /*@>34504*/j/*@>2f337*/ * /*@>5c9c0*/rtConstP./*@>62f86*/RSDecoder_table2/*@>5b1fb*/[/*@>5b1f8*/1]/*@>4030*/ % /*@>2e77a*/7;
+            /*@>4034*/if (/*@>2e77d*/temp/*@>4033*/ == /*@>2e77f*/0) {
+                /*@>2e780*/temp/*@>4036*/ = /*@>61b9e*/7;
+            }
+            /*@>2e783*/intVal/*@>403a*/ = /*@>5c9cc*/rtConstP./*@>62f89*/RSDecoder_table1/*@>5b20d*/[/*@>5b209*/temp/*@>5b207*/ - /*@>5b20a*/1];
+            /*  end of gf_pow()  */
+            /* CCode[nfull-1-j] is the current input code symbol. */
+            /* Multiply it by alpha, then get the sum so far. */
+            /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+            /*@>43969*/temp/*@>4396b*/ = /*@>5cf32*/rtDW->/*@>63172*/RSDecoder_CCode/*@>5b215*/[/*@>5b210*/6/*@>5b20f*/ - /*@>5b212*/j];
+            /*@>4048*/if ((/*@>4396d*/temp/*@>4046*/ == /*@>2e786*/0)/*@>4047*/ || (/*@>2e9f9*/intVal/*@>4045*/ == /*@>2e785*/0)) {
+                /*@>2e787*/intVal/*@>404a*/ = /*@>61ba7*/0;
+            } else {
+                /*@>2e78b*/temp/*@>4055*/ = (/*@>5c9d6*/rtConstP./*@>62f8c*/RSDecoder_table2/*@>5b21d*/[temp/*@>5b217*/ - /*@>5b21a*/1]/*@>4053*/ + /*@>5c9dc*/rtConstP./*@>62f8f*/RSDecoder_table2/*@>5b225*/[/*@>5b221*/intVal/*@>5b21f*/ - /*@>5b222*/1])/*@>4054*/ % /*@>2e78a*/7;
+                /*@>4058*/if (/*@>2e78d*/temp/*@>4057*/ == /*@>2e78f*/0) {
+                    /*@>2e790*/temp/*@>405a*/ = /*@>61baa*/7;
+                }
+                /*@>2e793*/intVal/*@>405e*/ = /*@>5c9e4*/rtConstP./*@>62f92*/RSDecoder_table1/*@>5b22d*/[/*@>5b229*/temp/*@>5b227*/ - /*@>5b22a*/1];
+            }
+            /* end of gf_mul() */
+            /*@>2e797*/Temp3/*@>621c5*/ ^= /*@>2e9fb*/intVal;
+        }
+        /*@>406f*/if ((/*@>2e79b*/noErrorStatus/*@>2f331*/ != /*@>2f32f*/0)/*@>406d*/ && (/*@>342a4*/Temp3/*@>2f335*/ != /*@>2f333*/0)) {
+            /*@>2e79d*/noErrorStatus/*@>4071*/ = /*@>61b9b*/0;
+        }
+        /*@>2ea70*/RSDecoder_Syndrome/*@>27e89*/[/*@>2ea72*/RSDecoder_OmegaZActual_idx_0] = /*@>342a6*/Temp3;
+    }
+    /* Stop if all syndromes == 0 (i.e. input word is already a valid BCH/RS codeword) */
+    /*@>4075*/if (/*@>2e7a0*/noErrorStatus/*@>4074*/ == /*@>2e7a2*/1) {
+        /*  start of assignOutputs():Populate output vectors with proper data */
+        /* Corrected message.  If there is a decoding failure, return the input message. */
+        /*@>5cf02*/rtDW->/*@>63160*/RSDecoder/*@>29bb7*/[/*@>2eaba*/bitIdx/*@>2f31f*/ * /*@>2eabc*/3]/*@>29bb6*/ = /*@>29bc0*/(uint32_T)/*@>5cf09*/rtDW->/*@>63163*/RSDecoder_CCode/*@>5b1f6*/[/*@>5b1f3*/0];
+        /*@>5cf12*/rtDW->/*@>63166*/RSDecoder/*@>29bcb*/[/*@>2eac2*/bitIdx/*@>2f31c*/ * /*@>2eac4*/3/*@>29bcd*/ + /*@>2eac7*/1]/*@>29bca*/ = /*@>29bd4*/(uint32_T)/*@>5cf19*/rtDW->/*@>63169*/RSDecoder_CCode/*@>5b200*/[/*@>5b1fd*/1];
+        /*@>5cf22*/rtDW->/*@>6316c*/RSDecoder/*@>29bdf*/[/*@>2eacb*/bitIdx/*@>2f319*/ * /*@>2eacd*/3/*@>29be1*/ + /*@>2ead0*/2]/*@>29bde*/ = /*@>29be8*/(uint32_T)/*@>5cf29*/rtDW->/*@>6316f*/RSDecoder_CCode/*@>5b205*/[/*@>5b202*/2];
+        /* Optional output for # of errors corrected */
+        /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
+        /* If there is a decoding failure, return the input parity. */
+        /*  end of assignOutputs()  */
+    } else {
+        int32_T RSDecoder_OmegaZActual_idx_1;
+        boolean_T loopflag;
+        /* Calculate the error/erasure locator polynomial PsiZ */
+        /*  start of calculatePsiZ(): Calculate the error/erasure locator polynomial PsiZ */
+        /* Use the diagram in Fig. 5-8 of Clark and Cain to implement the algorithm. */
+        /* Box 1 -- Initializations */
+        /* kCC is the location of the oldest symbol in the LFSR at the point */
+        /* where the register fails. */
+        /*@>2e7a3*/noErrorStatus/*@>40de*/ = /*@>61ba1*/-1;
+        /* discrep is the convolution of PsiZ and the syndrome */
+        /* L is the length of the linear feedback shift register (LFSR) */
+        /*@>2e7a6*/RSDecoder_OmegaZActual_idx_1/*@>40e2*/ = /*@>61ba4*/0;
+        /* Connection polynomial = 1.  ASCENDING order.  deg(PsiZ) = 2*t. */
+        /* To account for erasures, PsiZ = LambdaZ * GammaZ, where LambdaZ is the */
+        /* error locator polynomial, and GammaZ is the erasure locator polynomial. */
+        /* NOTE:  PsiZ is the coefficients of the connection polynomial in order of */
+        /*        ASCENDING powers rather than the conventional descending order. */
+        /*        This is such that after the set of iterations, the inverse of */
+        /*        roots of PsiZ in descending order can be obtained directly by */
+        /*        finding the roots of PsiZ in ascending order.  PsiZ is */
+        /*        initialized as GammaZ in case there are erasures.
+ */
+        /* Initialize Psi(Z) = Gamma(Z) : ASCENDING ORDER.  length = 2t+1 */
+        /* Initialize correction polynomial D(z) = z*GammaZ : ASCENDING ORDER. */
+        /*   length = 2t+2  */
+        /*@>5cf3b*/rtDW->/*@>63175*/RSDecoder_Dz/*@>40ff*/[/*@>2e7ab*/0U]/*@>4100*/ = /*@>61bad*/0;
+/*@>2461a*/        for (/*@>62179*/RSDecoder_OmegaZActual_idx_0 = /*@>62178*/0; /*@>62183*/RSDecoder_OmegaZActual_idx_0 < /*@>62181*/5; /*@>6217f*/RSDecoder_OmegaZActual_idx_0/*@>621c6*/++) {
+            /*@>2e665*/RSDecoder_PsiZ/*@>218c2*/[/*@>2e663*/RSDecoder_OmegaZActual_idx_0]/*@>40f9*/ = /*@>5cf44*/rtDW->/*@>63178*/RSDecoder_GammaZ/*@>5b233*/[/*@>5b230*/RSDecoder_OmegaZActual_idx_0];
+            /*@>2e6dd*/RSDecoder_PsiZStar/*@>40fb*/[/*@>2e7a8*/RSDecoder_OmegaZActual_idx_0]/*@>40fc*/ = /*@>61bb0*/0;
+            /*@>5cf4d*/rtDW->/*@>6317b*/RSDecoder_Dz/*@>218fd*/[/*@>2e65b*/RSDecoder_OmegaZActual_idx_0/*@>26480*/ + /*@>2ea6d*/1]/*@>410e*/ = /*@>5cf54*/rtDW->/*@>6317e*/RSDecoder_GammaZ/*@>5b239*/[/*@>5b236*/RSDecoder_OmegaZActual_idx_0];
+        }
+        /* 2*t-numErasPuncs iterations (Diamond 3) */
+/*@>2452f*/        for (/*@>620f9*/j = /*@>620f8*/0; /*@>62103*/j < /*@>62101*/4; /*@>620ff*/j/*@>621c7*/++) {
+            /* Box 2 -- Calculate the discrepancy, which is the sum over i of */
+            /*          PsiZ(i)*Syndrome(n-i) with i going from 0 to L  */
+            /*@>2e7ad*/Temp3/*@>411b*/ = /*@>61bb3*/0;
+/*@>62160*/            for (/*@>6215c*/RSDecoder_OmegaZActual_idx_0/*@>6215b*/ = /*@>6215d*/0; /*@>62150*/RSDecoder_OmegaZActual_idx_0/*@>6214e*/ < /*@>62153*/RSDecoder_OmegaZActual_idx_1/*@>62151*/ + /*@>62154*/1; /*@>62156*/RSDecoder_OmegaZActual_idx_0/*@>621c8*/++) {
+                /*@>43979*/temp/*@>4397b*/ = /*@>2e7bf*/j/*@>4128*/ - /*@>2e7bd*/RSDecoder_OmegaZActual_idx_0;
+                /*@>412a*/if (/*@>4397d*/temp/*@>4129*/ >= /*@>2e7c1*/0) {
+                    /* Check that syndrome position is valid */
+                    /* Multiply the current Psi coefficient by the */
+                    /* (nCC-L)'th syndrome value.  Then update sum. */
+                    /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                    /*@>43991*/temp/*@>43993*/ = /*@>5b24d*/RSDecoder_Syndrome/*@>5b24f*/[temp];
+                    /*@>4139*/if ((/*@>5b260*/RSDecoder_PsiZ/*@>5b262*/[/*@>5b25f*/RSDecoder_OmegaZActual_idx_0]/*@>4137*/ == /*@>2e7c3*/0)/*@>4138*/ || (/*@>43995*/temp/*@>4136*/ == /*@>2e7c2*/0)) {
+                        /*@>2e7c4*/intVal/*@>413b*/ = /*@>61bc8*/0;
+                    } else {
+                        /*@>2e7c8*/temp/*@>4148*/ = (/*@>5ca00*/rtConstP./*@>62f95*/RSDecoder_table2/*@>5b283*/[temp/*@>5b27d*/ - /*@>5b280*/1]/*@>4146*/ + /*@>5ca06*/rtConstP./*@>62f98*/RSDecoder_table2/*@>5b294*/[/*@>5b28e*/RSDecoder_PsiZ/*@>5b28d*/[/*@>5b290*/RSDecoder_OmegaZActual_idx_0]/*@>5b28b*/ - /*@>5b291*/1])/*@>4147*/ % /*@>2e7c7*/7;
+                        /*@>414b*/if (/*@>2e7ca*/temp/*@>414a*/ == /*@>2e7cc*/0) {
+                            /*@>2e7cd*/temp/*@>414d*/ = /*@>61bd4*/7;
+                        }
+                        /*@>2e7d0*/intVal/*@>4151*/ = /*@>5ca20*/rtConstP./*@>62fa1*/RSDecoder_table1/*@>5b2c4*/[/*@>5b2c0*/temp/*@>5b2be*/ - /*@>5b2c1*/1];
+                    }
+                    /* end of gf_mul() */
+                    /*@>2e7d4*/Temp3/*@>621cb*/ ^= /*@>2e9f7*/intVal;
+                }
+            }
+            /* Diamond 1 -- Continue if the discrepancy is not equal to zero */
+            /*@>415e*/if (/*@>2e9f3*/Temp3/*@>415d*/ != /*@>2e7d6*/0) {
+                /* Box 3 -- Connection polynomial */
+                /*          PsiZ(n) = PsiZ(n-1) - discrep(n)*Dz */
+/*@>245e1*/                for (/*@>6212c*/RSDecoder_OmegaZActual_idx_0 = /*@>6212b*/0; /*@>62136*/RSDecoder_OmegaZActual_idx_0 < /*@>62134*/5; /*@>62132*/RSDecoder_OmegaZActual_idx_0/*@>621ca*/++) {
+                    /*@>2e6d9*/RSDecoder_TempVec2t1/*@>416b*/[/*@>2e7d7*/RSDecoder_OmegaZActual_idx_0]/*@>416d*/ = /*@>2e9f5*/Temp3;
+                }
+                /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                /*@>2a831*/if ((/*@>5b274*/RSDecoder_TempVec2t1/*@>5b276*/[/*@>5b273*/0]/*@>2a833*/ == /*@>2ef60*/0)/*@>2a832*/ || (/*@>5cfbd*/rtDW->/*@>631a5*/RSDecoder_Dz/*@>5b27b*/[/*@>5b278*/0]/*@>2a837*/ == /*@>2ef63*/0)) {
+                    /*@>2ef6d*/intVal/*@>2a856*/ = /*@>61bc5*/0;
+                } else {
+                    /*@>2ef64*/temp/*@>2a83f*/ = (/*@>5ca12*/rtConstP./*@>62f9b*/RSDecoder_table2/*@>5b2ad*/[/*@>5b2a8*/RSDecoder_TempVec2t1/*@>5b2a7*/[/*@>5b2a9*/0]/*@>5b2a5*/ - /*@>5b2aa*/1]/*@>2a842*/ + /*@>5ca18*/rtConstP./*@>62f9e*/RSDecoder_table2/*@>5b2bc*/[/*@>5cfdf*/rtDW->/*@>631b1*/RSDecoder_Dz/*@>5b2b6*/[/*@>5b2b8*/0]/*@>5b2b4*/ - /*@>5b2b9*/1])/*@>2a841*/ % /*@>2ef6c*/7;
+                    /*@>2a859*/if (/*@>2ef70*/temp/*@>2a85a*/ == /*@>2ef72*/0) {
+                        /*@>2ef73*/temp/*@>2a861*/ = /*@>61bd1*/7;
+                    }
+                    /*@>2ef76*/intVal/*@>2a866*/ = /*@>5ca28*/rtConstP./*@>62fa4*/RSDecoder_table1/*@>5b2cc*/[/*@>5b2c8*/temp/*@>5b2c6*/ - /*@>5b2c9*/1];
+                }
+                /* end of gf_mul() */
+                /*@>2ef7b*/RSDecoder_PsiZStar/*@>2a871*/[/*@>2ef84*/0]/*@>2a870*/ = /*@>5b2cf*/RSDecoder_PsiZ/*@>5b2d1*/[/*@>5b2ce*/0]/*@>2f317*/ ^ /*@>2ef7f*/intVal;
+                /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                /*@>2a88c*/if ((/*@>5b2d4*/RSDecoder_TempVec2t1/*@>5b2d6*/[/*@>5b2d3*/1]/*@>2a88e*/ == /*@>2ef8c*/0)/*@>2a88d*/ || (/*@>5cfe8*/rtDW->/*@>631b4*/RSDecoder_Dz/*@>5b2db*/[/*@>5b2d8*/1]/*@>2a892*/ == /*@>2ef8f*/0)) {
+                    /*@>2ef99*/intVal/*@>2a8b1*/ = /*@>61bdd*/0;
+                } else {
+                    /*@>2ef90*/temp/*@>2a89a*/ = (/*@>5ca32*/rtConstP./*@>62fa7*/RSDecoder_table2/*@>5b2ea*/[/*@>5b2e5*/RSDecoder_TempVec2t1/*@>5b2e4*/[/*@>5b2e6*/1]/*@>5b2e2*/ - /*@>5b2e7*/1]/*@>2a89d*/ + /*@>5ca38*/rtConstP./*@>62faa*/RSDecoder_table2/*@>5b2f9*/[/*@>5cff1*/rtDW->/*@>631b7*/RSDecoder_Dz/*@>5b2f3*/[/*@>5b2f5*/1]/*@>5b2f1*/ - /*@>5b2f6*/1])/*@>2a89c*/ % /*@>2ef98*/7;
+                    /*@>2a8b4*/if (/*@>2ef9c*/temp/*@>2a8b5*/ == /*@>2ef9e*/0) {
+                        /*@>2ef9f*/temp/*@>2a8bc*/ = /*@>61be0*/7;
+                    }
+                    /*@>2efa2*/intVal/*@>2a8c1*/ = /*@>5ca40*/rtConstP./*@>62fad*/RSDecoder_table1/*@>5b307*/[/*@>5b303*/temp/*@>5b301*/ - /*@>5b304*/1];
+                }
+                /* end of gf_mul() */
+                /*@>2efa7*/RSDecoder_PsiZStar/*@>2a8cc*/[/*@>2efb0*/1]/*@>2a8cb*/ = /*@>5b30a*/RSDecoder_PsiZ/*@>5b30c*/[/*@>5b309*/1]/*@>2f316*/ ^ /*@>2efab*/intVal;
+                /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                /*@>2a8e7*/if ((/*@>5b30f*/RSDecoder_TempVec2t1/*@>5b311*/[/*@>5b30e*/2]/*@>2a8e9*/ == /*@>2efb8*/0)/*@>2a8e8*/ || (/*@>5cffa*/rtDW->/*@>631ba*/RSDecoder_Dz/*@>5b316*/[/*@>5b313*/2]/*@>2a8ed*/ == /*@>2efbb*/0)) {
+                    /*@>2efc5*/intVal/*@>2a90c*/ = /*@>61bec*/0;
+                } else {
+                    /*@>2efbc*/temp/*@>2a8f5*/ = (/*@>5ca4a*/rtConstP./*@>62fb0*/RSDecoder_table2/*@>5b325*/[/*@>5b320*/RSDecoder_TempVec2t1/*@>5b31f*/[/*@>5b321*/2]/*@>5b31d*/ - /*@>5b322*/1]/*@>2a8f8*/ + /*@>5ca50*/rtConstP./*@>62fb3*/RSDecoder_table2/*@>5b334*/[/*@>5d003*/rtDW->/*@>631bd*/RSDecoder_Dz/*@>5b32e*/[/*@>5b330*/2]/*@>5b32c*/ - /*@>5b331*/1])/*@>2a8f7*/ % /*@>2efc4*/7;
+                    /*@>2a90f*/if (/*@>2efc8*/temp/*@>2a910*/ == /*@>2efca*/0) {
+                        /*@>2efcb*/temp/*@>2a917*/ = /*@>61bf2*/7;
+                    }
+                    /*@>2efce*/intVal/*@>2a91c*/ = /*@>5ca58*/rtConstP./*@>62fb6*/RSDecoder_table1/*@>5b33c*/[/*@>5b338*/temp/*@>5b336*/ - /*@>5b339*/1];
+                }
+                /* end of gf_mul() */
+                /*@>2efd3*/RSDecoder_PsiZStar/*@>2a927*/[/*@>2efdc*/2]/*@>2a926*/ = /*@>5b33f*/RSDecoder_PsiZ/*@>5b341*/[/*@>5b33e*/2]/*@>2f315*/ ^ /*@>2efd7*/intVal;
+                /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                /*@>2a942*/if ((/*@>5b36b*/RSDecoder_TempVec2t1/*@>5b36d*/[/*@>5b36a*/3]/*@>2a944*/ == /*@>2efe4*/0)/*@>2a943*/ || (/*@>5d015*/rtDW->/*@>631c3*/RSDecoder_Dz/*@>5b372*/[/*@>5b36f*/3]/*@>2a948*/ == /*@>2efe7*/0)) {
+                    /*@>2eff1*/intVal/*@>2a967*/ = /*@>61bfb*/0;
+                } else {
+                    /*@>2efe8*/temp/*@>2a950*/ = (/*@>5ca72*/rtConstP./*@>62fbf*/RSDecoder_table2/*@>5b381*/[/*@>5b37c*/RSDecoder_TempVec2t1/*@>5b37b*/[/*@>5b37d*/3]/*@>5b379*/ - /*@>5b37e*/1]/*@>2a953*/ + /*@>5ca78*/rtConstP./*@>62fc2*/RSDecoder_table2/*@>5b390*/[/*@>5d01e*/rtDW->/*@>631c6*/RSDecoder_Dz/*@>5b38a*/[/*@>5b38c*/3]/*@>5b388*/ - /*@>5b38d*/1])/*@>2a952*/ % /*@>2eff0*/7;
+                    /*@>2a96a*/if (/*@>2eff4*/temp/*@>2a96b*/ == /*@>2eff6*/0) {
+                        /*@>2eff7*/temp/*@>2a972*/ = /*@>61c01*/7;
+                    }
+                    /*@>2effa*/intVal/*@>2a977*/ = /*@>5ca8a*/rtConstP./*@>62fc8*/RSDecoder_table1/*@>5b3a6*/[/*@>5b3a2*/temp/*@>5b3a0*/ - /*@>5b3a3*/1];
+                }
+                /* end of gf_mul() */
+                /*@>2efff*/RSDecoder_PsiZStar/*@>2a982*/[/*@>2f008*/3]/*@>2a981*/ = /*@>5b3a9*/RSDecoder_PsiZ/*@>5b3ab*/[/*@>5b3a8*/3]/*@>2f314*/ ^ /*@>2f003*/intVal;
+                /* Diamond 2  */
+                /*@>439a1*/Temp3/*@>439a3*/ = /*@>2e7db*/j/*@>41a2*/ - /*@>2e7d9*/noErrorStatus;
+                /*@>41a5*/if (/*@>2e7dd*/RSDecoder_OmegaZActual_idx_1/*@>41a4*/ < /*@>439a5*/Temp3) {
+                    /* Boxes 4-7 -- Correction polynomial */
+                    /*              Dz = PsiZ(n-1) / discrep(n) */
+                    /*@>2e7e9*/noErrorStatus/*@>41b0*/ = /*@>2e7e7*/j/*@>41af*/ - /*@>2e7e5*/RSDecoder_OmegaZActual_idx_1;
+/*@>24599*/                    for (/*@>6211b*/RSDecoder_OmegaZActual_idx_0 = /*@>6211a*/0; /*@>62125*/RSDecoder_OmegaZActual_idx_0 < /*@>62123*/5; /*@>62121*/RSDecoder_OmegaZActual_idx_0/*@>621d6*/++) {
+                        intVal = /*@>5b44c*/RSDecoder_PsiZ/*@>5b44e*/[/*@>5b44b*/RSDecoder_OmegaZActual_idx_0];
+                        temp = /*@>5b452*/RSDecoder_TempVec2t1/*@>5b454*/[/*@>5b451*/RSDecoder_OmegaZActual_idx_0];
+                        /*  start of gf_div():gf_div divides the scalars x/b */
+                        /*@>41bf*/if (temp/*@>41be*/ == /*@>2e7eb*/0) {
+                            /*@>2e7ec*/temp/*@>41c2*/ = /*@>61c1c*/1;
+                        } else {
+                            /*@>2e7ee*/temp/*@>41ca*/ = /*@>5cae6*/rtConstP./*@>62fe6*/RSDecoder_table1/*@>5b47e*/[/*@>5b474*/6/*@>5b473*/ - /*@>5caec*/rtConstP./*@>62fe9*/RSDecoder_table2/*@>5b476*/[temp/*@>5b478*/ - /*@>5b47b*/1]];
+                        }
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>41d0*/if ((/*@>2e7f0*/temp/*@>41ce*/ == /*@>2e7f3*/0)/*@>41cf*/ || (intVal/*@>41cd*/ == /*@>2e7f2*/0)) {
+                            /*@>5d0b4*/rtDW->/*@>631fc*/RSDecoder_Dz/*@>18ab5*/[/*@>2e6ff*/RSDecoder_OmegaZActual_idx_0]/*@>41d2*/ = /*@>61c28*/0;
+                        } else {
+                            /*@>2e7f6*/temp/*@>41dc*/ = (/*@>5cafc*/rtConstP./*@>62fef*/RSDecoder_table2/*@>5b494*/[/*@>5b490*/temp/*@>5b48e*/ - /*@>5b491*/1]/*@>41da*/ + /*@>5cb02*/rtConstP./*@>62ff2*/RSDecoder_table2/*@>5b49c*/[intVal/*@>5b496*/ - /*@>5b499*/1])/*@>41db*/ % /*@>2e7f5*/7;
+                            /*@>41df*/if (/*@>2e7f8*/temp/*@>41de*/ == /*@>2e7fa*/0) {
+                                /*@>2e7fb*/temp/*@>41e1*/ = /*@>61c2e*/7;
+                            }
+                            /*@>5d0bd*/rtDW->/*@>631ff*/RSDecoder_Dz/*@>21e28*/[/*@>2e617*/RSDecoder_OmegaZActual_idx_0]/*@>41e5*/ = /*@>5cb22*/rtConstP./*@>62ffe*/RSDecoder_table1/*@>5b4c8*/[/*@>5b4c4*/temp/*@>5b4c2*/ - /*@>5b4c5*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*  end of gf_div() */
+                    }
+                    /*@>2e800*/RSDecoder_OmegaZActual_idx_1/*@>41ef*/ = Temp3;
+                }
+                /* Box 8 -- Reset the error/erasure locator polynomial */
+/*@>24561*/                for (/*@>6210a*/RSDecoder_OmegaZActual_idx_0 = /*@>62109*/0; /*@>62114*/RSDecoder_OmegaZActual_idx_0 < /*@>62112*/5; /*@>62110*/RSDecoder_OmegaZActual_idx_0/*@>621d4*/++) {
+                    /*@>2e638*/RSDecoder_PsiZ/*@>21be9*/[/*@>2e636*/RSDecoder_OmegaZActual_idx_0]/*@>41fd*/ = /*@>5b446*/RSDecoder_PsiZStar/*@>5b448*/[/*@>5b445*/RSDecoder_OmegaZActual_idx_0];
+                }
+            }
+            /* Box 9 -- Correction polynomial */
+            /*           Dz = z * Dz */
+            /*@>5cf5d*/rtDW->/*@>63181*/RSDecoder_Dz/*@>2a7d7*/[/*@>2f121*/4]/*@>2a7d6*/ = /*@>5cf64*/rtDW->/*@>63184*/RSDecoder_Dz/*@>5b244*/[/*@>5b241*/3];
+            /*@>5cf6d*/rtDW->/*@>63187*/RSDecoder_Dz/*@>2a7e7*/[/*@>2f122*/3]/*@>2a7e6*/ = /*@>5cf74*/rtDW->/*@>6318a*/RSDecoder_Dz/*@>5b249*/[/*@>5b246*/2];
+            /*@>5cf8d*/rtDW->/*@>63193*/RSDecoder_Dz/*@>2a7f7*/[/*@>2f123*/2]/*@>2a7f6*/ = /*@>5cf94*/rtDW->/*@>63196*/RSDecoder_Dz/*@>5b25c*/[/*@>5b259*/1];
+            /*@>5cfad*/rtDW->/*@>6319f*/RSDecoder_Dz/*@>2a807*/[/*@>2f124*/1]/*@>2a806*/ = /*@>5cfb4*/rtDW->/*@>631a2*/RSDecoder_Dz/*@>5b271*/[/*@>5b26e*/0];
+            /*@>5cfd6*/rtDW->/*@>631ae*/RSDecoder_Dz/*@>420e*/[/*@>2e802*/0U]/*@>420f*/ = /*@>61bce*/0;
+        }
+        /*  end of calculatePsiZ  */
+        /* FIND ERROR LOCATIONS */
+        /* At this point, error/erasure locator polynomial has been found,  which is PsiZ */
+        /* Find degree of Psi(Z) */
+        /*@>2e804*/Temp3/*@>4214*/ = /*@>61bb9*/0;
+        /*@>2e807*/loopflag/*@>4215*/ = /*@>2e809*/true;
+/*@>24457*/        for (/*@>620ea*/RSDecoder_OmegaZActual_idx_0 = /*@>620e9*/4; /*@>620f4*/RSDecoder_OmegaZActual_idx_0 >= /*@>620f2*/0; /*@>620f0*/RSDecoder_OmegaZActual_idx_0/*@>621c9*/--) {
+            /*@>4223*/if ((/*@>5b23d*/RSDecoder_PsiZ/*@>5b23f*/[/*@>5b23c*/RSDecoder_OmegaZActual_idx_0]/*@>4221*/ > /*@>2e80c*/0)/*@>4222*/ && /*@>2e80a*/loopflag) {
+                /*@>2e80f*/Temp3/*@>4226*/ = /*@>2e80d*/RSDecoder_OmegaZActual_idx_0;
+                /*@>2e811*/loopflag/*@>4227*/ = /*@>2e813*/false;
+            }
+        }
+        /* Degree of Psi(Z) must be equal to L and larger than 0 */
+        /* (i.e. cannot be a constant) */
+        /*@>4230*/if ((/*@>2e819*/Temp3/*@>422e*/ != /*@>2e817*/RSDecoder_OmegaZActual_idx_1)/*@>422f*/ || (/*@>2e814*/Temp3/*@>422b*/ < /*@>2e816*/1)) {
+            /*  start of assignOutputs():Populate output vectors with proper data */
+            /* Corrected message.  If there is a decoding failure, return the input message. */
+            /*@>5cf7d*/rtDW->/*@>6318d*/RSDecoder/*@>29bfb*/[/*@>2ead4*/bitIdx/*@>2f30e*/ * /*@>2ead6*/3]/*@>29bfa*/ = /*@>319ac*/(uint32_T)/*@>5cf84*/rtDW->/*@>63190*/BittoIntegerConverter/*@>5b257*/[/*@>5b253*/bitIdx/*@>5b251*/ * /*@>5b254*/7];
+            /*@>5cf9d*/rtDW->/*@>63199*/RSDecoder/*@>29c13*/[/*@>2eade*/bitIdx/*@>2f308*/ * /*@>2eae0*/3/*@>29c15*/ + /*@>2eae6*/1]/*@>29c12*/ = /*@>319ae*/(uint32_T)/*@>5cfa4*/rtDW->/*@>6319c*/BittoIntegerConverter/*@>5b26c*/[/*@>5b267*/bitIdx/*@>5b265*/ * /*@>5b268*/7/*@>5b264*/ + /*@>5b269*/1];
+            /*@>5cfc6*/rtDW->/*@>631a8*/RSDecoder/*@>29c2b*/[/*@>2eaea*/bitIdx/*@>2f302*/ * /*@>2eaec*/3/*@>29c2d*/ + /*@>2eaf2*/2]/*@>29c2a*/ = /*@>319b0*/(uint32_T)/*@>5cfcd*/rtDW->/*@>631ab*/BittoIntegerConverter/*@>5b29e*/[/*@>5b299*/bitIdx/*@>5b297*/ * /*@>5b29a*/7/*@>5b296*/ + /*@>5b29b*/2];
+            /* Optional output for # of errors corrected */
+            /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
+            /* If there is a decoding failure, return the input parity. */
+            /*  end of assignOutputs()  */
+        } else {
+            int32_T RSDecoder_OmegaZActual_idx_2;
+            int32_T RSDecoder_OmegaZActual_idx_3;
+            /* Initialize contents at pointer Errloc */
+            /*@>2ef36*/RSDecoder_Errloc/*@>2a7ab*/[/*@>2ef39*/0]/*@>2a7aa*/ = /*@>61bbc*/0;
+            /*@>2ef3a*/RSDecoder_Errloc/*@>2a7b4*/[/*@>2ef3d*/1]/*@>2a7b3*/ = /*@>61bbf*/0;
+            /*@>2ef3e*/RSDecoder_Errloc/*@>2a7bd*/[/*@>2ef41*/2]/*@>2a7bc*/ = /*@>61bc2*/0;
+            /*@>2ef42*/RSDecoder_Errloc/*@>2a7c6*/[/*@>2ef45*/3]/*@>2a7c5*/ = /*@>61bcb*/0;
+            /*  start of gf_roots()  */
+            /* This function takes in vector X, computes the roots and stores them in roots */
+            /* it returns the number of roots */
+            /*@>2e81b*/RSDecoder_OmegaZActual_idx_1/*@>42a4*/ = /*@>61bd7*/5;
+            /*@>2e81e*/noErrorStatus/*@>42a5*/ = /*@>61bda*/0;
+/*@>24405*/            for (/*@>620d9*/RSDecoder_OmegaZActual_idx_0 = /*@>620d8*/0; /*@>620e3*/RSDecoder_OmegaZActual_idx_0 < /*@>620e1*/5; /*@>620df*/RSDecoder_OmegaZActual_idx_0/*@>621cc*/++) {
+                /*@>2e630*/RSDecoder_PsiZStar/*@>21c1e*/[/*@>2e62e*/RSDecoder_OmegaZActual_idx_0]/*@>42b3*/ = /*@>5b2fd*/RSDecoder_PsiZ/*@>5b2ff*/[/*@>5b2fc*/RSDecoder_OmegaZActual_idx_0];
+            }
+            /*@>2e821*/RSDecoder_OmegaZActual_idx_0/*@>42b4*/ = /*@>61be3*/0;
+            while/*@<42b8*/ (/*@>2e824*/RSDecoder_OmegaZActual_idx_0/*@>42b6*/ < /*@>2e826*/8) {
+                /*@>2e827*/RSDecoder_OmegaZActual_idx_2/*@>42b9*/ = /*@>61be9*/0;
+/*@>620c2*/                for (/*@>620be*/j/*@>620bd*/ = /*@>620bf*/0; /*@>620b4*/j/*@>620b2*/ < /*@>620b6*/RSDecoder_OmegaZActual_idx_1; /*@>620b8*/j/*@>621ce*/++) {
+                    /*@>5d00c*/rtDW->/*@>631c0*/RSDecoder_d/*@>42c4*/[/*@>2e836*/j]/*@>42c6*/ = /*@>2e838*/RSDecoder_OmegaZActual_idx_0;
+                }
+/*@>6209c*/                for (/*@>62098*/j/*@>62097*/ = /*@>62099*/0; /*@>6208e*/j/*@>6208c*/ < /*@>62090*/RSDecoder_OmegaZActual_idx_1; /*@>62092*/j/*@>621cf*/++) {
+                    /*  start of gf_pow():gf_pow raises x^yd  */
+                    /*@>2e84a*/intVal/*@>42d5*/ = /*@>5d027*/rtDW->/*@>631c9*/RSDecoder_d/*@>5b396*/[/*@>5b393*/j];
+                    /*@>430e*/if (/*@>2e861*/intVal/*@>430d*/ == /*@>2e863*/0) {
+                        /*@>5d040*/rtDW->/*@>631d2*/RSDecoder_d/*@>18ac5*/[/*@>2e6fb*/j]/*@>4314*/ = (/*@>342ba*/j/*@>4311*/ == /*@>2e866*/0);
+                    } else {
+                        /*@>2e86a*/temp/*@>431c*/ = /*@>5ca94*/rtConstP./*@>62fcb*/RSDecoder_table2/*@>5b3bb*/[/*@>5b3b7*/intVal/*@>5b3b5*/ - /*@>5b3b8*/1]/*@>2f2fa*/ * /*@>342b8*/j/*@>431b*/ % /*@>2e869*/7;
+                        /*@>431f*/if (/*@>2e86c*/temp/*@>431e*/ == /*@>2e86e*/0) {
+                            /*@>2e86f*/temp/*@>4321*/ = /*@>61c10*/7;
+                        }
+                        /*@>5d07b*/rtDW->/*@>631e7*/RSDecoder_d/*@>221e3*/[/*@>2e5d8*/j]/*@>4325*/ = /*@>5caba*/rtConstP./*@>62fd7*/RSDecoder_table1/*@>5b40d*/[/*@>5b409*/temp/*@>5b407*/ - /*@>5b40a*/1];
+                    }
+                    /*  end of gf_pow()  */
+                }
+/*@>6206a*/                for (/*@>62066*/j/*@>62065*/ = /*@>62067*/0; /*@>6205c*/j/*@>6205a*/ < /*@>6205e*/RSDecoder_OmegaZActual_idx_1; /*@>62060*/j/*@>621d0*/++) {
+                    /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                    /*@>433c*/if ((/*@>5d059*/rtDW->/*@>631db*/RSDecoder_d/*@>5b3cb*/[/*@>5b3c8*/j]/*@>433a*/ == /*@>2e87f*/0)/*@>433b*/ || (/*@>5b3cf*/RSDecoder_PsiZStar/*@>5b3d1*/[/*@>5b3ce*/j]/*@>4339*/ == /*@>2e87e*/0)) {
+                        /*@>2e880*/intVal/*@>433e*/ = /*@>61c0d*/0;
+                    } else {
+                        /*@>2e884*/temp/*@>4349*/ = (/*@>5caac*/rtConstP./*@>62fd1*/RSDecoder_table2/*@>5b3f4*/[/*@>5d072*/rtDW->/*@>631e4*/RSDecoder_d/*@>5b3ed*/[/*@>5b3f0*/j]/*@>5b3eb*/ - /*@>5b3f1*/1]/*@>4347*/ + /*@>5cab2*/rtConstP./*@>62fd4*/RSDecoder_table2/*@>5b405*/[/*@>5b3ff*/RSDecoder_PsiZStar/*@>5b3fe*/[/*@>5b401*/j]/*@>5b3fc*/ - /*@>5b402*/1])/*@>4348*/ % /*@>2e883*/7;
+                        /*@>434c*/if (/*@>2e886*/temp/*@>434b*/ == /*@>2e888*/0) {
+                            /*@>2e889*/temp/*@>434e*/ = /*@>61c13*/7;
+                        }
+                        /*@>2e88c*/intVal/*@>4352*/ = /*@>5caca*/rtConstP./*@>62fdd*/RSDecoder_table1/*@>5b41a*/[/*@>5b416*/temp/*@>5b414*/ - /*@>5b417*/1];
+                    }
+                    /* end of gf_mul() */
+                    /*@>2e890*/RSDecoder_OmegaZActual_idx_2/*@>621d3*/ ^= /*@>2e9ed*/intVal;
+                }
+                /*@>435c*/if (/*@>2e892*/RSDecoder_OmegaZActual_idx_2/*@>435b*/ == /*@>2e894*/0) {
+                    /*@>2e6cf*/RSDecoder_Errloc/*@>435f*/[/*@>2e895*/noErrorStatus]/*@>4361*/ = /*@>2e897*/RSDecoder_OmegaZActual_idx_0;
+                    /*@>2e89c*/noErrorStatus/*@>621d2*/++;
+                    /*  start of gf_div():gf_div divides the scalars x/b */
+                    /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                    /*@>2e8a3*/intVal/*@>4391*/ = /*@>5cac2*/rtConstP./*@>62fda*/RSDecoder_table1/*@>5b412*/[/*@>5b40f*/6];
+                    /* end of gf_mul() */
+                    /*  end of gf_div() */
+                    /*  start of gf_div():gf_div divides the scalars x/b */
+                    /*@>439c*/if (/*@>2e9db*/RSDecoder_OmegaZActual_idx_0/*@>439b*/ == /*@>2e8a5*/0) {
+                        /*@>2e8a6*/temp/*@>439f*/ = /*@>61c19*/1;
+                    } else {
+                        /*@>2e8a8*/temp/*@>43a6*/ = /*@>5cad8*/rtConstP./*@>62fe0*/RSDecoder_table1/*@>5b469*/[/*@>5b45f*/6/*@>5b45e*/ - /*@>5cade*/rtConstP./*@>62fe3*/RSDecoder_table2/*@>5b461*/[/*@>5b465*/RSDecoder_OmegaZActual_idx_0/*@>5b463*/ - /*@>5b466*/1]];
+                    }
+                    /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                    /*@>43ac*/if (/*@>2e8aa*/temp/*@>43aa*/ == /*@>2e8ac*/0) {
+                        /*@>2e8ad*/RSDecoder_OmegaZActual_idx_2/*@>43ae*/ = /*@>61c22*/0;
+                    } else {
+                        /*@>2e8b1*/temp/*@>43b7*/ = /*@>5caf4*/rtConstP./*@>62fec*/RSDecoder_table2/*@>5b486*/[/*@>5b482*/temp/*@>5b480*/ - /*@>5b483*/1]/*@>43b6*/ % /*@>2e8b0*/7;
+                        /*@>43ba*/if (/*@>2e8b3*/temp/*@>43b9*/ == /*@>2e8b5*/0) {
+                            /*@>2e8b6*/temp/*@>43bc*/ = /*@>61c25*/7;
+                        }
+                        /*@>2e8b9*/RSDecoder_OmegaZActual_idx_2/*@>43c0*/ = /*@>5cb0c*/rtConstP./*@>62ff5*/RSDecoder_table1/*@>5b4a9*/[/*@>5b4a5*/temp/*@>5b4a3*/ - /*@>5b4a6*/1];
+                    }
+                    /* end of gf_mul() */
+                    /*  end of gf_div() */
+                    /*  start of gf_deconv --- de-convolves A from B  */
+                    /*@>2e8bb*/RSDecoder_OmegaZActual_idx_3/*@>43cb*/ = /*@>61c34*/0;
+/*@>62038*/                    for (/*@>62034*/Temp4/*@>62033*/ = /*@>62035*/0; /*@>6202a*/Temp4/*@>62028*/ < /*@>6202c*/RSDecoder_OmegaZActual_idx_1; /*@>6202e*/Temp4/*@>621db*/++) {
+                        /*@>5d0c6*/rtDW->/*@>63202*/RSDecoder_tmpQuotient/*@>43d7*/[/*@>2e8ca*/Temp4]/*@>43d8*/ = /*@>61c40*/0;
+                    }
+                    /*@>3ee06*/if (/*@>44a3b*/0/*@>3edff*/ < /*@>3ee04*/RSDecoder_OmegaZActual_idx_1/*@>3ee02*/ - /*@>3ee05*/1) {
+                        /*@>43e7*/if (/*@>5cb42*/rtConstP./*@>6300a*/RSDecoder_table1/*@>5b513*/[/*@>5b510*/6]/*@>43e6*/ == /*@>2e8da*/0) {
+                            /*@>2e8db*/inv/*@>43ea*/ = /*@>61c49*/1;
+                        } else {
+                            /*@>2e8dd*/inv/*@>43f1*/ = /*@>5cb54*/rtConstP./*@>63010*/RSDecoder_table1/*@>5b543*/[/*@>5b537*/6/*@>5b536*/ - /*@>5cb5a*/rtConstP./*@>63013*/RSDecoder_table2/*@>5b539*/[/*@>5cb60*/rtConstP./*@>63016*/RSDecoder_table1/*@>5b53d*/[/*@>5b53f*/6]/*@>5b53b*/ - /*@>5b540*/1]];
+                        }
+                    }
+/*@>61fea*/                    for (/*@>61fe6*/Temp4/*@>61fe5*/ = /*@>61fe7*/0; /*@>61fda*/Temp4/*@>61fd8*/ < /*@>61fdd*/RSDecoder_OmegaZActual_idx_1/*@>61fdb*/ - /*@>61fde*/1; /*@>61fe0*/Temp4/*@>621dd*/++) {
+                        int32_T z;
+                        /*  start of gf_div():gf_div divides the scalars x/b */
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>43f7*/if ((/*@>2e8df*/inv/*@>43f5*/ == /*@>2e8e2*/0)/*@>43f6*/ || (/*@>5b58f*/RSDecoder_PsiZStar/*@>5b591*/[/*@>5b58e*/RSDecoder_OmegaZActual_idx_3]/*@>43f4*/ == /*@>2e8e1*/0)) {
+                            /*@>2e8e3*/z/*@>43f9*/ = /*@>61c61*/0;
+                        } else {
+                            /*@>2e8e7*/temp/*@>4403*/ = (/*@>5cb94*/rtConstP./*@>63028*/RSDecoder_table2/*@>5b5a1*/[/*@>5b59d*/inv/*@>5b59b*/ - /*@>5b59e*/1]/*@>4401*/ + /*@>5cb9a*/rtConstP./*@>6302b*/RSDecoder_table2/*@>5b5b2*/[/*@>5b5ac*/RSDecoder_PsiZStar/*@>5b5ab*/[/*@>5b5ae*/RSDecoder_OmegaZActual_idx_3]/*@>5b5a9*/ - /*@>5b5af*/1])/*@>4402*/ % /*@>2e8e6*/7;
+                            /*@>4406*/if (/*@>2e8e9*/temp/*@>4405*/ == /*@>2e8eb*/0) {
+                                /*@>2e8ec*/temp/*@>4408*/ = /*@>61c67*/7;
+                            }
+                            /*@>2e8ef*/z/*@>440c*/ = /*@>5cbaa*/rtConstP./*@>63031*/RSDecoder_table1/*@>5b5ca*/[/*@>5b5c6*/temp/*@>5b5c4*/ - /*@>5b5c7*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*  end of gf_div() */
+/*@>62012*/                        for (/*@>6200e*/j/*@>6200d*/ = /*@>6200f*/1; /*@>62004*/j/*@>62002*/ < /*@>62006*/RSDecoder_OmegaZActual_idx_1; /*@>62008*/j/*@>621e5*/++) {
+                            /*@>5d125*/rtDW->/*@>63223*/RSDecoder_tmpQuotient/*@>22684*/[/*@>2e5a4*/j/*@>22689*/ - /*@>2e5a3*/1]/*@>4421*/ = /*@>5d12c*/rtDW->/*@>63226*/RSDecoder_tmpQuotient/*@>5b5e0*/[/*@>5b5dd*/j];
+                        }
+                        /*@>5d11c*/rtDW->/*@>63220*/RSDecoder_tmpQuotient/*@>4424*/[/*@>2e8fd*/RSDecoder_OmegaZActual_idx_1/*@>4423*/ - /*@>2e8ff*/1]/*@>4426*/ = /*@>2e9df*/z;
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>4430*/if ((/*@>2e9e1*/z/*@>442e*/ == /*@>2e901*/0)/*@>442f*/ || (/*@>2e9e3*/intVal/*@>442d*/ == /*@>2e900*/0)) {
+                            /*@>2e902*/temp/*@>4432*/ = /*@>61c73*/0;
+                        } else {
+                            /*@>2e906*/temp/*@>443b*/ = (/*@>5cbc4*/rtConstP./*@>63037*/RSDecoder_table2/*@>5b5f2*/[/*@>5b5ee*/z/*@>5b5ec*/ - /*@>5b5ef*/1]/*@>4439*/ + /*@>5cbca*/rtConstP./*@>6303a*/RSDecoder_table2/*@>5b5fa*/[/*@>5b5f6*/intVal/*@>5b5f4*/ - /*@>5b5f7*/1])/*@>443a*/ % /*@>2e905*/7;
+                            /*@>443e*/if (/*@>2e908*/temp/*@>443d*/ == /*@>2e90a*/0) {
+                                /*@>2e90b*/temp/*@>4440*/ = /*@>61c76*/7;
+                            }
+                            /*@>2e90e*/temp/*@>4444*/ = /*@>5cbd2*/rtConstP./*@>6303d*/RSDecoder_table1/*@>5b602*/[/*@>5b5fe*/temp/*@>5b5fc*/ - /*@>5b5ff*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*@>2e594*/RSDecoder_PsiZStar/*@>22880*/[/*@>2e592*/RSDecoder_OmegaZActual_idx_3]/*@>621e6*/ ^= /*@>2e9e5*/temp;
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>4454*/if ((/*@>2e9e7*/z/*@>4452*/ == /*@>2e911*/0)/*@>4453*/ || (/*@>2e9e9*/RSDecoder_OmegaZActual_idx_2/*@>4451*/ == /*@>2e910*/0)) {
+                            /*@>2e912*/z/*@>4456*/ = /*@>61c82*/0;
+                        } else {
+                            /*@>2e916*/temp/*@>445f*/ = (/*@>5cbf0*/rtConstP./*@>63049*/RSDecoder_table2/*@>5b62b*/[/*@>5b627*/z/*@>5b625*/ - /*@>5b628*/1]/*@>445d*/ + /*@>5cbf6*/rtConstP./*@>6304c*/RSDecoder_table2/*@>5b633*/[/*@>5b62f*/RSDecoder_OmegaZActual_idx_2/*@>5b62d*/ - /*@>5b630*/1])/*@>445e*/ % /*@>2e915*/7;
+                            /*@>4462*/if (/*@>2e918*/temp/*@>4461*/ == /*@>2e91a*/0) {
+                                /*@>2e91b*/temp/*@>4464*/ = /*@>61c85*/7;
+                            }
+                            /*@>2e91e*/z/*@>4468*/ = /*@>5cc08*/rtConstP./*@>63052*/RSDecoder_table1/*@>5b648*/[/*@>5b644*/temp/*@>5b642*/ - /*@>5b645*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*@>2e578*/RSDecoder_PsiZStar/*@>22b9f*/[/*@>2e576*/RSDecoder_OmegaZActual_idx_3/*@>22ba4*/ + /*@>2e575*/1]/*@>621e7*/ ^= /*@>2e9eb*/z;
+                        /*@>2e923*/RSDecoder_OmegaZActual_idx_3/*@>621e8*/++;
+                    }
+/*@>61f8e*/                    for (/*@>61f8a*/Temp4/*@>61f89*/ = /*@>61f8b*/0; /*@>61f7e*/Temp4/*@>61f7c*/ < /*@>61f81*/RSDecoder_OmegaZActual_idx_1/*@>61f7f*/ - /*@>61f82*/1; /*@>61f84*/Temp4/*@>621df*/++) {
+                        /*@>2e5bd*/RSDecoder_PsiZStar/*@>225a2*/[/*@>2e5bb*/Temp4]/*@>4487*/ = /*@>5d0f3*/rtDW->/*@>63211*/RSDecoder_tmpQuotient/*@>5b599*/[/*@>5b595*/Temp4/*@>5b593*/ + /*@>5b596*/1];
+                    }
+                    /*  end of gf_deconv  */
+                    /*@>2e935*/RSDecoder_OmegaZActual_idx_1/*@>621e1*/--;
+                    /*@>2e93a*/RSDecoder_OmegaZActual_idx_0/*@>621e2*/--;
+                }
+                /*@>2e93f*/RSDecoder_OmegaZActual_idx_0/*@>621d1*/++;
+            }
+/*@>61f30*/            for (/*@>61f2c*/j/*@>61f2b*/ = /*@>61f2d*/0; /*@>61f22*/j/*@>61f20*/ < /*@>61f24*/noErrorStatus; /*@>61f26*/j/*@>621cd*/++) {
+                /*  start of gf_div():gf_div divides the scalars x/b */
+                /*@>44a1*/if (/*@>5b345*/RSDecoder_Errloc/*@>5b347*/[/*@>5b344*/j]/*@>44a0*/ == /*@>2e94d*/0) {
+                    /*@>2e94e*/temp/*@>44a4*/ = /*@>61bf8*/1;
+                } else {
+                    /*@>2e950*/temp/*@>44ac*/ = /*@>5ca62*/rtConstP./*@>62fb9*/RSDecoder_table1/*@>5b368*/[/*@>5b35b*/6/*@>5b35a*/ - /*@>5ca68*/rtConstP./*@>62fbc*/RSDecoder_table2/*@>5b35d*/[/*@>5b362*/RSDecoder_Errloc/*@>5b361*/[/*@>5b364*/j]/*@>5b35f*/ - /*@>5b365*/1]];
+                }
+                /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                /*@>44b2*/if (/*@>2e952*/temp/*@>44b0*/ == /*@>2e954*/0) {
+                    /*@>2e6d1*/RSDecoder_Errloc/*@>18abd*/[/*@>2e6fd*/j]/*@>44b4*/ = /*@>61c04*/0;
+                } else {
+                    /*@>2e957*/temp/*@>44bd*/ = /*@>5ca82*/rtConstP./*@>62fc5*/RSDecoder_table2/*@>5b39e*/[/*@>5b39a*/temp/*@>5b398*/ - /*@>5b39b*/1]/*@>44bc*/ % /*@>2e956*/7;
+                    /*@>44c0*/if (/*@>2e959*/temp/*@>44bf*/ == /*@>2e95b*/0) {
+                        /*@>2e95c*/temp/*@>44c2*/ = /*@>61c0a*/7;
+                    }
+                    /*@>2e603*/RSDecoder_Errloc/*@>21f02*/[/*@>2e601*/j]/*@>44c6*/ = /*@>5caa4*/rtConstP./*@>62fce*/RSDecoder_table1/*@>5b3e3*/[/*@>5b3df*/temp/*@>5b3dd*/ - /*@>5b3e0*/1];
+                }
+                /* end of gf_mul() */
+                /*  end of gf_div() */
+            }
+            /*  end of gf_roots() */
+            /* Decoding failure if one of the following conditions is met: */
+            /* (1) Psi(Z) has no roots in this field */
+            /* (2) Number of roots not equal to degree of PsiZ */
+            /*@>44da*/if (/*@>2e9d1*/noErrorStatus/*@>44d9*/ != /*@>2e95f*/Temp3) {
+                /*  start of assignOutputs():Populate output vectors with proper data */
+                /* Corrected message.  If there is a decoding failure, return the input message. */
+                /*@>5d030*/rtDW->/*@>631cc*/RSDecoder/*@>29c4b*/[/*@>2eaf6*/bitIdx/*@>2f2f4*/ * /*@>2eaf8*/3]/*@>29c4a*/ = /*@>31917*/(uint32_T)/*@>5d037*/rtDW->/*@>631cf*/BittoIntegerConverter/*@>5b3b3*/[/*@>5b3af*/bitIdx/*@>5b3ad*/ * /*@>5b3b0*/7];
+                /*@>5d049*/rtDW->/*@>631d5*/RSDecoder/*@>29c63*/[/*@>2eb00*/bitIdx/*@>2f2ee*/ * /*@>2eb02*/3/*@>29c65*/ + /*@>2eb08*/1]/*@>29c62*/ = /*@>31919*/(uint32_T)/*@>5d050*/rtDW->/*@>631d8*/BittoIntegerConverter/*@>5b3c5*/[/*@>5b3c0*/bitIdx/*@>5b3be*/ * /*@>5b3c1*/7/*@>5b3bd*/ + /*@>5b3c2*/1];
+                /*@>5d062*/rtDW->/*@>631de*/RSDecoder/*@>29c7b*/[/*@>2eb0c*/bitIdx/*@>2f2e8*/ * /*@>2eb0e*/3/*@>29c7d*/ + /*@>2eb14*/2]/*@>29c7a*/ = /*@>3191b*/(uint32_T)/*@>5d069*/rtDW->/*@>631e1*/BittoIntegerConverter/*@>5b3db*/[/*@>5b3d6*/bitIdx/*@>5b3d4*/ * /*@>5b3d7*/7/*@>5b3d3*/ + /*@>5b3d8*/2];
+                /* Optional output for # of errors corrected */
+                /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
+                /* If there is a decoding failure, return the input parity. */
+                /*  end of assignOutputs()  */
+            } else {
+                /* Test if the error locations are unique
+ */
+                /*@>2e961*/loopflag/*@>453d*/ = /*@>2e963*/true;
+                /*@>2e96e*/RSDecoder_OmegaZActual_idx_0/*@>4547*/ = /*@>61c07*/0;
+                while/*@<4549*/ ((/*@>2e96c*/RSDecoder_OmegaZActual_idx_0/*@>4545*/ < /*@>2e9d3*/noErrorStatus/*@>4543*/ - /*@>2e96b*/1)/*@>4546*/ && /*@>2e969*/loopflag) {
+                    /*@>2e97d*/j/*@>4554*/ = /*@>2e97a*/RSDecoder_OmegaZActual_idx_0/*@>4553*/ + /*@>2e97c*/1;
+                    while/*@<4556*/ ((/*@>2e978*/j/*@>4550*/ < /*@>2e9d9*/noErrorStatus)/*@>4551*/ && /*@>2e976*/loopflag) {
+                        /*@>2e97f*/loopflag/*@>455e*/ = (/*@>5b426*/RSDecoder_Errloc/*@>5b428*/[/*@>5b425*/RSDecoder_OmegaZActual_idx_0]/*@>10131*/ != /*@>5b42c*/RSDecoder_Errloc/*@>5b42e*/[/*@>5b42b*/j]);
+                        /*@>2e974*/j/*@>621d7*/++;
+                    }
+                    /*@>2e967*/RSDecoder_OmegaZActual_idx_0/*@>621d5*/++;
+                }
+                /*@>4561*/if (!/*@>2e981*/loopflag) {
+                    /*  start of assignOutputs():Populate output vectors with proper data */
+                    /* Corrected message.  If there is a decoding failure, return the input message. */
+                    /*@>5d084*/rtDW->/*@>631ea*/RSDecoder/*@>29c9b*/[/*@>2eb18*/bitIdx/*@>2f2e2*/ * /*@>2eb1a*/3]/*@>29c9a*/ = /*@>318f6*/(uint32_T)/*@>5d08b*/rtDW->/*@>631ed*/BittoIntegerConverter/*@>5b422*/[/*@>5b41e*/bitIdx/*@>5b41c*/ * /*@>5b41f*/7];
+                    /*@>5d094*/rtDW->/*@>631f0*/RSDecoder/*@>29cb3*/[/*@>2eb22*/bitIdx/*@>2f2dc*/ * /*@>2eb24*/3/*@>29cb5*/ + /*@>2eb2a*/1]/*@>29cb2*/ = /*@>318f8*/(uint32_T)/*@>5d09b*/rtDW->/*@>631f3*/BittoIntegerConverter/*@>5b438*/[/*@>5b433*/bitIdx/*@>5b431*/ * /*@>5b434*/7/*@>5b430*/ + /*@>5b435*/1];
+                    /*@>5d0a4*/rtDW->/*@>631f6*/RSDecoder/*@>29ccb*/[/*@>2eb2e*/bitIdx/*@>2f2d6*/ * /*@>2eb30*/3/*@>29ccd*/ + /*@>2eb36*/2]/*@>29cca*/ = /*@>318fa*/(uint32_T)/*@>5d0ab*/rtDW->/*@>631f9*/BittoIntegerConverter/*@>5b442*/[/*@>5b43d*/bitIdx/*@>5b43b*/ * /*@>5b43e*/7/*@>5b43a*/ + /*@>5b43f*/2];
+                    /* Optional output for # of errors corrected */
+                    /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
+                    /* If there is a decoding failure, return the input parity. */
+                    /*  end of assignOutputs()  */
+                } else {
+                    /* PART II - FIND ERROR MAGNITUDES AT EACH OF THE ERROR/ERASURE LOCATIONS, */
+                    /* AND CORRECT THEM */
+                    /*  start of correctErrors():Calculate the error magnitude in the current error position,  */
+                    /*                           and correct the errors. */
+/*@>2435a*/                    for (/*@>61f00*/RSDecoder_OmegaZActual_idx_0 = /*@>61eff*/0; /*@>61f0a*/RSDecoder_OmegaZActual_idx_0 < /*@>61f08*/10; /*@>61f06*/RSDecoder_OmegaZActual_idx_0/*@>621d8*/++) {
+                        /*@>2e6cb*/RSDecoder_OmegaZ/*@>45d5*/[/*@>2e983*/RSDecoder_OmegaZActual_idx_0]/*@>45d6*/ = /*@>61c16*/0;
+                    }
+                    /*  start of gf_conv():gf_conv convolves A with B and stores the result in retValue  */
+/*@>24341*/                    for (/*@>61eef*/RSDecoder_OmegaZActual_idx_0 = /*@>61eee*/0; /*@>61ef9*/RSDecoder_OmegaZActual_idx_0 < /*@>61ef7*/8; /*@>61ef5*/RSDecoder_OmegaZActual_idx_0/*@>621d9*/++) {
+                        /*@>2e6c9*/RSDecoder_OmegaZ/*@>45e5*/[/*@>2e986*/RSDecoder_OmegaZActual_idx_0]/*@>45e6*/ = /*@>61c1f*/0;
+                    }
+/*@>242fb*/                    for (/*@>61ede*/RSDecoder_OmegaZActual_idx_0 = /*@>61edd*/0; /*@>61ee8*/RSDecoder_OmegaZActual_idx_0 < /*@>61ee6*/5; /*@>61ee4*/RSDecoder_OmegaZActual_idx_0/*@>621da*/++) {
+                        intVal = /*@>5b48a*/RSDecoder_PsiZ/*@>5b48c*/[/*@>5b489*/RSDecoder_OmegaZActual_idx_0];
+                        /*@>2a635*/if ((intVal/*@>2a637*/ == /*@>2ee74*/0)/*@>2a636*/ || (/*@>5b49f*/RSDecoder_Syndrome/*@>5b4a1*/[/*@>5b49e*/0]/*@>2a63b*/ == /*@>2ee77*/0)) {
+                            /*@>2ee81*/temp/*@>2a654*/ = /*@>61c2b*/0;
+                        } else {
+                            /*@>2ee78*/temp/*@>2a640*/ = (/*@>5cb14*/rtConstP./*@>62ff8*/RSDecoder_table2/*@>5b4b1*/[intVal/*@>5b4ab*/ - /*@>5b4ae*/1]/*@>2a643*/ + /*@>5cb1a*/rtConstP./*@>62ffb*/RSDecoder_table2/*@>5b4c0*/[/*@>5b4bb*/RSDecoder_Syndrome/*@>5b4ba*/[/*@>5b4bc*/0]/*@>5b4b8*/ - /*@>5b4bd*/1])/*@>2a642*/ % /*@>2ee80*/7;
+                            /*@>2a657*/if (/*@>2ee84*/temp/*@>2a658*/ == /*@>2ee86*/0) {
+                                /*@>2ee87*/temp/*@>2a65f*/ = /*@>61c31*/7;
+                            }
+                            /*@>2ee94*/temp/*@>2a677*/ = /*@>5cb2a*/rtConstP./*@>63001*/RSDecoder_table1/*@>5b4e0*/[/*@>5b4dc*/temp/*@>5b4da*/ - /*@>5b4dd*/1];
+                        }
+                        /*@>2ee8a*/RSDecoder_OmegaZ/*@>2a664*/[/*@>2ee8c*/RSDecoder_OmegaZActual_idx_0]/*@>621dc*/ ^= /*@>2ee8e*/temp;
+                        /*@>2a694*/if ((intVal/*@>2a696*/ == /*@>2eea6*/0)/*@>2a695*/ || (/*@>5b4e3*/RSDecoder_Syndrome/*@>5b4e5*/[/*@>5b4e2*/1]/*@>2a69a*/ == /*@>2eea9*/0)) {
+                            /*@>2eeb3*/temp/*@>2a6b3*/ = /*@>61c3a*/0;
+                        } else {
+                            /*@>2eeaa*/temp/*@>2a69f*/ = (/*@>5cb32*/rtConstP./*@>63004*/RSDecoder_table2/*@>5b4f2*/[intVal/*@>5b4ec*/ - /*@>5b4ef*/1]/*@>2a6a2*/ + /*@>5cb38*/rtConstP./*@>63007*/RSDecoder_table2/*@>5b501*/[/*@>5b4fc*/RSDecoder_Syndrome/*@>5b4fb*/[/*@>5b4fd*/1]/*@>5b4f9*/ - /*@>5b4fe*/1])/*@>2a6a1*/ % /*@>2eeb2*/7;
+                            /*@>2a6b6*/if (/*@>2eeb6*/temp/*@>2a6b7*/ == /*@>2eeb8*/0) {
+                                /*@>2eeb9*/temp/*@>2a6be*/ = /*@>61c3d*/7;
+                            }
+                            /*@>2eec6*/temp/*@>2a6d6*/ = /*@>5cb4c*/rtConstP./*@>6300d*/RSDecoder_table1/*@>5b520*/[/*@>5b51c*/temp/*@>5b51a*/ - /*@>5b51d*/1];
+                        }
+                        /*@>2eebc*/RSDecoder_OmegaZ/*@>2a6c3*/[/*@>2eebe*/RSDecoder_OmegaZActual_idx_0/*@>2a6c5*/ + /*@>2eecc*/1]/*@>621de*/ ^= /*@>2eec0*/temp;
+                        /*@>2a6f3*/if ((intVal/*@>2a6f5*/ == /*@>2eeda*/0)/*@>2a6f4*/ || (/*@>5b523*/RSDecoder_Syndrome/*@>5b525*/[/*@>5b522*/2]/*@>2a6f9*/ == /*@>2eedd*/0)) {
+                            /*@>2eee7*/temp/*@>2a712*/ = /*@>61c43*/0;
+                        } else {
+                            /*@>2eede*/temp/*@>2a6fe*/ = (/*@>5cb6a*/rtConstP./*@>63019*/RSDecoder_table2/*@>5b550*/[intVal/*@>5b54a*/ - /*@>5b54d*/1]/*@>2a701*/ + /*@>5cb70*/rtConstP./*@>6301c*/RSDecoder_table2/*@>5b55f*/[/*@>5b55a*/RSDecoder_Syndrome/*@>5b559*/[/*@>5b55b*/2]/*@>5b557*/ - /*@>5b55c*/1])/*@>2a700*/ % /*@>2eee6*/7;
+                            /*@>2a715*/if (/*@>2eeea*/temp/*@>2a716*/ == /*@>2eeec*/0) {
+                                /*@>2eeed*/temp/*@>2a71d*/ = /*@>61c52*/7;
+                            }
+                            /*@>2eefa*/temp/*@>2a735*/ = /*@>5cb7c*/rtConstP./*@>6301f*/RSDecoder_table1/*@>5b56f*/[/*@>5b56b*/temp/*@>5b569*/ - /*@>5b56c*/1];
+                        }
+                        /*@>2eef0*/RSDecoder_OmegaZ/*@>2a722*/[/*@>2eef2*/RSDecoder_OmegaZActual_idx_0/*@>2a724*/ + /*@>2ef00*/2]/*@>621e0*/ ^= /*@>2eef4*/temp;
+                        /*@>2a752*/if ((intVal/*@>2a754*/ == /*@>2ef0e*/0)/*@>2a753*/ || (/*@>5b572*/RSDecoder_Syndrome/*@>5b574*/[/*@>5b571*/3]/*@>2a758*/ == /*@>2ef11*/0)) {
+                            /*@>2ef1b*/temp/*@>2a771*/ = /*@>61c5b*/0;
+                        } else {
+                            /*@>2ef12*/temp/*@>2a75d*/ = (/*@>5cb84*/rtConstP./*@>63022*/RSDecoder_table2/*@>5b57c*/[intVal/*@>5b576*/ - /*@>5b579*/1]/*@>2a760*/ + /*@>5cb8a*/rtConstP./*@>63025*/RSDecoder_table2/*@>5b58b*/[/*@>5b586*/RSDecoder_Syndrome/*@>5b585*/[/*@>5b587*/3]/*@>5b583*/ - /*@>5b588*/1])/*@>2a75f*/ % /*@>2ef1a*/7;
+                            /*@>2a774*/if (/*@>2ef1e*/temp/*@>2a775*/ == /*@>2ef20*/0) {
+                                /*@>2ef21*/temp/*@>2a77c*/ = /*@>61c5e*/7;
+                            }
+                            /*@>2ef2e*/temp/*@>2a794*/ = /*@>5cba2*/rtConstP./*@>6302e*/RSDecoder_table1/*@>5b5c2*/[/*@>5b5be*/temp/*@>5b5bc*/ - /*@>5b5bf*/1];
+                        }
+                        /*@>2ef24*/RSDecoder_OmegaZ/*@>2a781*/[/*@>2ef26*/RSDecoder_OmegaZActual_idx_0/*@>2a783*/ + /*@>2ef34*/3]/*@>621e4*/ ^= /*@>2ef28*/temp;
+                    }
+                    /*  end of gf_conv()  */
+                    /* Disregard terms of x^(2t) and higher in Omega(Z) */
+                    /* because we have no knowledge of such terms in S(Z). */
+                    /* That is, retain terms up to x^(2t-1) */
+                    /*@>2e54d*/RSDecoder_OmegaZActual_idx_0/*@>2a5dc*/ = /*@>5b4cb*/RSDecoder_OmegaZ/*@>5b4cd*/[/*@>5b4ca*/0];
+                    /*@>2e54f*/RSDecoder_OmegaZActual_idx_1/*@>2a5ea*/ = /*@>5b4d6*/RSDecoder_OmegaZ/*@>5b4d8*/[/*@>5b4d5*/1];
+                    /*@>2e551*/RSDecoder_OmegaZActual_idx_2/*@>2a5f8*/ = /*@>5b4e8*/RSDecoder_OmegaZ/*@>5b4ea*/[/*@>5b4e7*/2];
+                    /*@>2e553*/RSDecoder_OmegaZActual_idx_3/*@>2a606*/ = /*@>5b504*/RSDecoder_OmegaZ/*@>5b506*/[/*@>5b503*/3];
+                    /* Compute derivative of PsiZ */
+                    /*@>5d0cf*/rtDW->/*@>63205*/RSDecoder_PsiZDeriv/*@>2a5b5*/[/*@>2ee56*/0]/*@>2a5b4*/ = /*@>5b516*/RSDecoder_PsiZ/*@>5b518*/[/*@>5b515*/1];
+                    /*@>5d0d8*/rtDW->/*@>63208*/RSDecoder_PsiZDeriv/*@>2a5c5*/[/*@>2ee5b*/2]/*@>2a5c4*/ = /*@>5b546*/RSDecoder_PsiZ/*@>5b548*/[/*@>5b545*/3];
+                    /*@>5d0e1*/rtDW->/*@>6320b*/RSDecoder_PsiZDeriv/*@>2a597*/[/*@>2f127*/1]/*@>2a596*/ = /*@>61c4c*/0;
+                    /*@>5d0ea*/rtDW->/*@>6320e*/RSDecoder_PsiZDeriv/*@>2a5a2*/[/*@>2f128*/3]/*@>2a5a1*/ = /*@>61c4f*/0;
+                    /* Find error magnitude at each error location.  Use the expression found on pg. 222 of Wicker. */
+/*@>61ec7*/                    for (/*@>61ec3*/j/*@>61ec2*/ = /*@>61ec4*/0; /*@>61eb9*/j/*@>61eb7*/ < /*@>61ebb*/noErrorStatus; /*@>61ebd*/j/*@>621e3*/++) {
+                        /* Dot product for numerator term */
+                        /*@>2e993*/Temp3/*@>465d*/ = /*@>61c64*/0;
+                        /* Dot product for denominator */
+                        /*@>2e996*/Temp4/*@>46ec*/ = /*@>61c6a*/0;
+                        /*  start of gf_pow():gf_pow raises x^yd  */
+                        /*@>3ce31*/if (/*@>5b5d8*/RSDecoder_Errloc/*@>5b5da*/[/*@>5b5d7*/j]/*@>29d61*/ == /*@>2eb42*/0) {
+                            /*@>3ce35*/intVal/*@>3ce34*/ = /*@>61c70*/1;
+                        } else {
+                            /*@>2eb45*/intVal/*@>29d7d*/ = /*@>5cbbc*/rtConstP./*@>63034*/RSDecoder_table1/*@>5b5ea*/[/*@>5b5e7*/6];
+                        }
+                        /*  end of gf_pow()  */
+                        /*@>29db5*/if (/*@>342a8*/RSDecoder_OmegaZActual_idx_0/*@>29db6*/ > /*@>2eb54*/0) {
+                            /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                            /*@>29dd7*/if (/*@>2eb58*/intVal/*@>29ddd*/ == /*@>2eb5a*/0) {
+                                /*@>3d246*/Temp3/*@>29e02*/ = /*@>61c79*/0;
+                            } else {
+                                /*@>2eb5b*/temp/*@>29dee*/ = (/*@>5cbda*/rtConstP./*@>63040*/RSDecoder_table2/*@>5b616*/[/*@>5b612*/RSDecoder_OmegaZActual_idx_0/*@>5b610*/ - /*@>5b613*/1]/*@>29df1*/ + /*@>5cbe0*/rtConstP./*@>63043*/RSDecoder_table2/*@>5b61e*/[/*@>5b61a*/intVal/*@>5b618*/ - /*@>5b61b*/1])/*@>29df0*/ % /*@>2eb63*/7;
+                                /*@>29e13*/if (/*@>2eb6d*/temp/*@>29e14*/ == /*@>2eb6f*/0) {
+                                    /*@>2eb70*/temp/*@>29e2c*/ = /*@>61c7f*/7;
+                                }
+                                /*@>3d247*/Temp3/*@>29e38*/ = /*@>5cbfe*/rtConstP./*@>6304f*/RSDecoder_table1/*@>5b63b*/[/*@>5b637*/temp/*@>5b635*/ - /*@>5b638*/1];
+                            }
+                            /* end of gf_mul() */
+                        }
+                        /*  start of gf_pow():gf_pow raises x^yd  */
+                        /*@>3ce36*/if (/*@>5b60c*/RSDecoder_Errloc/*@>5b60e*/[/*@>5b60b*/j]/*@>29e4a*/ == /*@>2eb7e*/0) {
+                            /*@>3ce3a*/intVal/*@>3ce39*/ = /*@>61c7c*/1;
+                        } else {
+                            /*@>2eb81*/intVal/*@>29e66*/ = /*@>5cbe8*/rtConstP./*@>63046*/RSDecoder_table1/*@>5b623*/[/*@>5b620*/6];
+                        }
+                        /*  end of gf_pow()  */
+                        /*@>29e9e*/if (/*@>5d145*/rtDW->/*@>6322f*/RSDecoder_PsiZDeriv/*@>5b640*/[/*@>5b63d*/0]/*@>29e9f*/ > /*@>2eb90*/0) {
+                            /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                            /*@>29ec2*/if ((/*@>5d14e*/rtDW->/*@>63232*/RSDecoder_PsiZDeriv/*@>5b655*/[/*@>5b652*/0]/*@>29ec4*/ == /*@>2eb93*/0)/*@>29ec3*/ || (/*@>2eb94*/intVal/*@>29ecb*/ == /*@>2eb96*/0)) {
+                                /*@>3d248*/Temp4/*@>29eed*/ = /*@>61c88*/0;
+                            } else {
+                                /*@>2eb97*/temp/*@>29ed6*/ = (/*@>5cc12*/rtConstP./*@>63055*/RSDecoder_table2/*@>5b664*/[/*@>5d157*/rtDW->/*@>63235*/RSDecoder_PsiZDeriv/*@>5b65e*/[/*@>5b660*/0]/*@>5b65c*/ - /*@>5b661*/1]/*@>29ed9*/ + /*@>5cc18*/rtConstP./*@>63058*/RSDecoder_table2/*@>5b66c*/[/*@>5b668*/intVal/*@>5b666*/ - /*@>5b669*/1])/*@>29ed8*/ % /*@>2eb9f*/7;
+                                /*@>29ef6*/if (/*@>2eba3*/temp/*@>29ef7*/ == /*@>2eba5*/0) {
+                                    /*@>2eba6*/temp/*@>29f09*/ = /*@>61c8e*/7;
+                                }
+                                /*@>3d249*/Temp4/*@>29f13*/ = /*@>5cc2e*/rtConstP./*@>63061*/RSDecoder_table1/*@>5b69b*/[/*@>5b697*/temp/*@>5b695*/ - /*@>5b698*/1];
+                            }
+                            /* end of gf_mul() */
+                        }
+                        /*  start of gf_pow():gf_pow raises x^yd  */
+                        /*  start of gf_div():gf_div divides the scalars x/b */
+                        /*@>29f53*/if (/*@>5b670*/RSDecoder_Errloc/*@>5b672*/[/*@>5b66f*/j]/*@>29f54*/ == /*@>2ebbe*/0) {
+                            /*@>2ebcf*/temp/*@>29f85*/ = /*@>61c8b*/1;
+                        } else {
+                            /*@>2ebc7*/temp/*@>29f73*/ = /*@>5cc20*/rtConstP./*@>6305b*/RSDecoder_table1/*@>5b693*/[/*@>5b686*/6/*@>5b685*/ - /*@>5cc26*/rtConstP./*@>6305e*/RSDecoder_table2/*@>5b688*/[/*@>5b68d*/RSDecoder_Errloc/*@>5b68c*/[/*@>5b68f*/j]/*@>5b68a*/ - /*@>5b690*/1]];
+                        }
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>29fa8*/if (/*@>2ebdf*/temp/*@>29fa9*/ == /*@>2ebe1*/0) {
+                            /*@>2ebe8*/intVal/*@>29fc1*/ = /*@>61c91*/0;
+                        } else {
+                            /*@>2ebe2*/temp/*@>29fb0*/ = /*@>5cc36*/rtConstP./*@>63064*/RSDecoder_table2/*@>5b6a3*/[/*@>5b69f*/temp/*@>5b69d*/ - /*@>5b6a0*/1]/*@>29fb2*/ % /*@>2ebe7*/7;
+                            /*@>29fcf*/if (/*@>2ebf1*/temp/*@>29fd0*/ == /*@>2ebf3*/0) {
+                                /*@>2ec00*/temp/*@>29ff5*/ = /*@>61c94*/7;
+                            }
+                            /*@>2ec06*/intVal/*@>2a008*/ = /*@>5cc3e*/rtConstP./*@>63067*/RSDecoder_table1/*@>5b6ab*/[/*@>5b6a7*/temp/*@>5b6a5*/ - /*@>5b6a8*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*  end of gf_div() */
+                        /*@>29f4e*/if (/*@>2ebb7*/intVal/*@>4b565*/ != /*@>2ebb9*/0) {
+                            /*@>2ebbf*/temp/*@>29f5c*/ = /*@>5cc46*/rtConstP./*@>6306a*/RSDecoder_table2/*@>5b6b3*/[/*@>5b6af*/intVal/*@>5b6ad*/ - /*@>5b6b0*/1]/*@>29f5e*/ % /*@>2ebc4*/7;
+                            /*@>29f8b*/if (/*@>2ebd1*/temp/*@>29f8c*/ == /*@>2ebd3*/0) {
+                                /*@>2ebd4*/temp/*@>29f94*/ = /*@>61c97*/7;
+                            }
+                            /*@>2ebd7*/intVal/*@>29f9a*/ = /*@>5cc4e*/rtConstP./*@>6306d*/RSDecoder_table1/*@>5b6bb*/[/*@>5b6b7*/temp/*@>5b6b5*/ - /*@>5b6b8*/1];
+                        }
+                        /*  end of gf_pow()  */
+                        /*@>29fa3*/if (/*@>342ac*/RSDecoder_OmegaZActual_idx_1/*@>29fa4*/ > /*@>2ebde*/0) {
+                            /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                            /*@>29fc5*/if (/*@>2ebee*/intVal/*@>29fcb*/ == /*@>2ebf0*/0) {
+                                /*@>2ebfd*/intVal/*@>29ff0*/ = /*@>61c9a*/0;
+                            } else {
+                                /*@>2ebf4*/temp/*@>29fdc*/ = (/*@>5cc56*/rtConstP./*@>63070*/RSDecoder_table2/*@>5b6c3*/[/*@>5b6bf*/RSDecoder_OmegaZActual_idx_1/*@>5b6bd*/ - /*@>5b6c0*/1]/*@>29fdf*/ + /*@>5cc5c*/rtConstP./*@>63073*/RSDecoder_table2/*@>5b6cb*/[/*@>5b6c7*/intVal/*@>5b6c5*/ - /*@>5b6c8*/1])/*@>29fde*/ % /*@>2ebfc*/7;
+                                /*@>2a001*/if (/*@>2ec03*/temp/*@>2a002*/ == /*@>2ec05*/0) {
+                                    /*@>2ec0b*/temp/*@>2a01a*/ = /*@>61ca0*/7;
+                                }
+                                /*@>2ec0e*/intVal/*@>2a026*/ = /*@>5cc72*/rtConstP./*@>6307c*/RSDecoder_table1/*@>5b6fa*/[/*@>5b6f6*/temp/*@>5b6f4*/ - /*@>5b6f7*/1];
+                            }
+                            /* end of gf_mul() */
+                            /*@>2ec13*/Temp3/*@>621e9*/ ^= /*@>2ec17*/intVal;
+                        }
+                        /*  start of gf_pow():gf_pow raises x^yd  */
+                        /*  start of gf_div():gf_div divides the scalars x/b */
+                        /*@>2a03c*/if (/*@>5b6cf*/RSDecoder_Errloc/*@>5b6d1*/[/*@>5b6ce*/j]/*@>2a03d*/ == /*@>2ec20*/0) {
+                            /*@>2ec31*/temp/*@>2a06e*/ = /*@>61c9d*/1;
+                        } else {
+                            /*@>2ec29*/temp/*@>2a05c*/ = /*@>5cc64*/rtConstP./*@>63076*/RSDecoder_table1/*@>5b6f2*/[/*@>5b6e5*/6/*@>5b6e4*/ - /*@>5cc6a*/rtConstP./*@>63079*/RSDecoder_table2/*@>5b6e7*/[/*@>5b6ec*/RSDecoder_Errloc/*@>5b6eb*/[/*@>5b6ee*/j]/*@>5b6e9*/ - /*@>5b6ef*/1]];
+                        }
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>2a094*/if (/*@>2ec41*/temp/*@>2a095*/ == /*@>2ec43*/0) {
+                            /*@>2ec4a*/intVal/*@>2a0ad*/ = /*@>61ca3*/0;
+                        } else {
+                            /*@>2ec44*/temp/*@>2a09c*/ = /*@>5cc7a*/rtConstP./*@>6307f*/RSDecoder_table2/*@>5b702*/[/*@>5b6fe*/temp/*@>5b6fc*/ - /*@>5b6ff*/1]/*@>2a09e*/ % /*@>2ec49*/7;
+                            /*@>2a0bd*/if (/*@>2ec53*/temp/*@>2a0be*/ == /*@>2ec55*/0) {
+                                /*@>2ec62*/temp/*@>2a0e0*/ = /*@>61ca6*/7;
+                            }
+                            /*@>2ec68*/intVal/*@>2a0eb*/ = /*@>5cc82*/rtConstP./*@>63082*/RSDecoder_table1/*@>5b70a*/[/*@>5b706*/temp/*@>5b704*/ - /*@>5b707*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*  end of gf_div() */
+                        /*@>2a037*/if (/*@>2ec19*/intVal/*@>4b564*/ != /*@>2ec1b*/0) {
+                            /*@>2ec21*/temp/*@>2a045*/ = /*@>5cc8a*/rtConstP./*@>63085*/RSDecoder_table2/*@>5b712*/[/*@>5b70e*/intVal/*@>5b70c*/ - /*@>5b70f*/1]/*@>2a047*/ % /*@>2ec26*/7;
+                            /*@>2a074*/if (/*@>2ec33*/temp/*@>2a075*/ == /*@>2ec35*/0) {
+                                /*@>2ec36*/temp/*@>2a07d*/ = /*@>61ca9*/7;
+                            }
+                            /*@>2ec39*/intVal/*@>2a083*/ = /*@>5cc94*/rtConstP./*@>63088*/RSDecoder_table1/*@>5b71f*/[/*@>5b71b*/temp/*@>5b719*/ - /*@>5b71c*/1];
+                        }
+                        /*  end of gf_pow()  */
+                        /*@>2a08c*/if (/*@>5d160*/rtDW->/*@>63238*/RSDecoder_PsiZDeriv/*@>5b717*/[/*@>5b714*/1]/*@>2a08d*/ > /*@>2ec40*/0) {
+                            /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                            /*@>2a0b0*/if ((/*@>5d169*/rtDW->/*@>6323b*/RSDecoder_PsiZDeriv/*@>5b724*/[/*@>5b721*/1]/*@>2a0b2*/ == /*@>2ec4f*/0)/*@>2a0b1*/ || (/*@>2ec50*/intVal/*@>2a0b9*/ == /*@>2ec52*/0)) {
+                                /*@>2ec5f*/intVal/*@>2a0db*/ = /*@>61cac*/0;
+                            } else {
+                                /*@>2ec56*/temp/*@>2a0c4*/ = (/*@>5cc9e*/rtConstP./*@>6308b*/RSDecoder_table2/*@>5b733*/[/*@>5d172*/rtDW->/*@>6323e*/RSDecoder_PsiZDeriv/*@>5b72d*/[/*@>5b72f*/1]/*@>5b72b*/ - /*@>5b730*/1]/*@>2a0c7*/ + /*@>5cca4*/rtConstP./*@>6308e*/RSDecoder_table2/*@>5b73b*/[/*@>5b737*/intVal/*@>5b735*/ - /*@>5b738*/1])/*@>2a0c6*/ % /*@>2ec5e*/7;
+                                /*@>2a0e4*/if (/*@>2ec65*/temp/*@>2a0e5*/ == /*@>2ec67*/0) {
+                                    /*@>2ec6d*/temp/*@>2a0f7*/ = /*@>61cb2*/7;
+                                }
+                                /*@>2ec70*/intVal/*@>2a101*/ = /*@>5ccba*/rtConstP./*@>63097*/RSDecoder_table1/*@>5b76a*/[/*@>5b766*/temp/*@>5b764*/ - /*@>5b767*/1];
+                            }
+                            /* end of gf_mul() */
+                            /*@>2ec75*/Temp4/*@>621ea*/ ^= /*@>2ec79*/intVal;
+                        }
+                        /*  start of gf_pow():gf_pow raises x^yd  */
+                        /*  start of gf_div():gf_div divides the scalars x/b */
+                        /*@>2a141*/if (/*@>5b73f*/RSDecoder_Errloc/*@>5b741*/[/*@>5b73e*/j]/*@>2a142*/ == /*@>2ec87*/0) {
+                            /*@>2ec98*/temp/*@>2a173*/ = /*@>61caf*/1;
+                        } else {
+                            /*@>2ec90*/temp/*@>2a161*/ = /*@>5ccac*/rtConstP./*@>63091*/RSDecoder_table1/*@>5b762*/[/*@>5b755*/6/*@>5b754*/ - /*@>5ccb2*/rtConstP./*@>63094*/RSDecoder_table2/*@>5b757*/[/*@>5b75c*/RSDecoder_Errloc/*@>5b75b*/[/*@>5b75e*/j]/*@>5b759*/ - /*@>5b75f*/1]];
+                        }
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>2a196*/if (/*@>2eca8*/temp/*@>2a197*/ == /*@>2ecaa*/0) {
+                            /*@>2ecb1*/intVal/*@>2a1af*/ = /*@>61cb5*/0;
+                        } else {
+                            /*@>2ecab*/temp/*@>2a19e*/ = /*@>5ccc2*/rtConstP./*@>6309a*/RSDecoder_table2/*@>5b772*/[/*@>5b76e*/temp/*@>5b76c*/ - /*@>5b76f*/1]/*@>2a1a0*/ % /*@>2ecb0*/7;
+                            /*@>2a1bd*/if (/*@>2ecba*/temp/*@>2a1be*/ == /*@>2ecbc*/0) {
+                                /*@>2ecc9*/temp/*@>2a1e3*/ = /*@>61cb8*/7;
+                            }
+                            /*@>2eccf*/intVal/*@>2a1f6*/ = /*@>5ccca*/rtConstP./*@>6309d*/RSDecoder_table1/*@>5b77a*/[/*@>5b776*/temp/*@>5b774*/ - /*@>5b777*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*  end of gf_div() */
+                        /*@>2a13c*/if (/*@>2ec80*/intVal/*@>4b563*/ != /*@>2ec82*/0) {
+                            /*@>2ec88*/temp/*@>2a14a*/ = (/*@>5ccd2*/rtConstP./*@>630a0*/RSDecoder_table2/*@>5b782*/[/*@>5b77e*/intVal/*@>5b77c*/ - /*@>5b77f*/1]/*@>2f2d3*/ << /*@>333d8*/1)/*@>2a14c*/ % /*@>2ec8d*/7;
+                            /*@>2a179*/if (/*@>2ec9a*/temp/*@>2a17a*/ == /*@>2ec9c*/0) {
+                                /*@>2ec9d*/temp/*@>2a182*/ = /*@>61cbb*/7;
+                            }
+                            /*@>2eca0*/intVal/*@>2a188*/ = /*@>5ccda*/rtConstP./*@>630a3*/RSDecoder_table1/*@>5b78a*/[/*@>5b786*/temp/*@>5b784*/ - /*@>5b787*/1];
+                        }
+                        /*  end of gf_pow()  */
+                        /*@>2a191*/if (/*@>342b0*/RSDecoder_OmegaZActual_idx_2/*@>2a192*/ > /*@>2eca7*/0) {
+                            /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                            /*@>2a1b3*/if (/*@>2ecb7*/intVal/*@>2a1b9*/ == /*@>2ecb9*/0) {
+                                /*@>2ecc6*/intVal/*@>2a1de*/ = /*@>61cbe*/0;
+                            } else {
+                                /*@>2ecbd*/temp/*@>2a1ca*/ = (/*@>5cce2*/rtConstP./*@>630a6*/RSDecoder_table2/*@>5b792*/[/*@>5b78e*/RSDecoder_OmegaZActual_idx_2/*@>5b78c*/ - /*@>5b78f*/1]/*@>2a1cd*/ + /*@>5cce8*/rtConstP./*@>630a9*/RSDecoder_table2/*@>5b79a*/[/*@>5b796*/intVal/*@>5b794*/ - /*@>5b797*/1])/*@>2a1cc*/ % /*@>2ecc5*/7;
+                                /*@>2a1ef*/if (/*@>2eccc*/temp/*@>2a1f0*/ == /*@>2ecce*/0) {
+                                    /*@>2ecd4*/temp/*@>2a208*/ = /*@>61cc4*/7;
+                                }
+                                /*@>2ecd7*/intVal/*@>2a214*/ = /*@>5ccfe*/rtConstP./*@>630b2*/RSDecoder_table1/*@>5b7c9*/[/*@>5b7c5*/temp/*@>5b7c3*/ - /*@>5b7c6*/1];
+                            }
+                            /* end of gf_mul() */
+                            /*@>2ecdc*/Temp3/*@>621eb*/ ^= /*@>2ece0*/intVal;
+                        }
+                        /*  start of gf_pow():gf_pow raises x^yd  */
+                        /*  start of gf_div():gf_div divides the scalars x/b */
+                        /*@>2a22a*/if (/*@>5b79e*/RSDecoder_Errloc/*@>5b7a0*/[/*@>5b79d*/j]/*@>2a22b*/ == /*@>2ece9*/0) {
+                            /*@>2ecfa*/temp/*@>2a25c*/ = /*@>61cc1*/1;
+                        } else {
+                            /*@>2ecf2*/temp/*@>2a24a*/ = /*@>5ccf0*/rtConstP./*@>630ac*/RSDecoder_table1/*@>5b7c1*/[/*@>5b7b4*/6/*@>5b7b3*/ - /*@>5ccf6*/rtConstP./*@>630af*/RSDecoder_table2/*@>5b7b6*/[/*@>5b7bb*/RSDecoder_Errloc/*@>5b7ba*/[/*@>5b7bd*/j]/*@>5b7b8*/ - /*@>5b7be*/1]];
+                        }
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>2a282*/if (/*@>2ed0a*/temp/*@>2a283*/ == /*@>2ed0c*/0) {
+                            /*@>2ed13*/intVal/*@>2a29b*/ = /*@>61cc7*/0;
+                        } else {
+                            /*@>2ed0d*/temp/*@>2a28a*/ = /*@>5cd06*/rtConstP./*@>630b5*/RSDecoder_table2/*@>5b7d1*/[/*@>5b7cd*/temp/*@>5b7cb*/ - /*@>5b7ce*/1]/*@>2a28c*/ % /*@>2ed12*/7;
+                            /*@>2a2ab*/if (/*@>2ed1c*/temp/*@>2a2ac*/ == /*@>2ed1e*/0) {
+                                /*@>2ed2b*/temp/*@>2a2ce*/ = /*@>61cca*/7;
+                            }
+                            /*@>2ed31*/intVal/*@>2a2d9*/ = /*@>5cd0e*/rtConstP./*@>630b8*/RSDecoder_table1/*@>5b7d9*/[/*@>5b7d5*/temp/*@>5b7d3*/ - /*@>5b7d6*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*  end of gf_div() */
+                        /*@>2a225*/if (/*@>2ece2*/intVal/*@>4b562*/ != /*@>2ece4*/0) {
+                            /*@>2ecea*/temp/*@>2a233*/ = (/*@>5cd16*/rtConstP./*@>630bb*/RSDecoder_table2/*@>5b7e1*/[/*@>5b7dd*/intVal/*@>5b7db*/ - /*@>5b7de*/1]/*@>2f2ca*/ << /*@>333da*/1)/*@>2a235*/ % /*@>2ecef*/7;
+                            /*@>2a262*/if (/*@>2ecfc*/temp/*@>2a263*/ == /*@>2ecfe*/0) {
+                                /*@>2ecff*/temp/*@>2a26b*/ = /*@>61ccd*/7;
+                            }
+                            /*@>2ed02*/intVal/*@>2a271*/ = /*@>5cd20*/rtConstP./*@>630be*/RSDecoder_table1/*@>5b7ee*/[/*@>5b7ea*/temp/*@>5b7e8*/ - /*@>5b7eb*/1];
+                        }
+                        /*  end of gf_pow()  */
+                        /*@>2a27a*/if (/*@>5d17b*/rtDW->/*@>63241*/RSDecoder_PsiZDeriv/*@>5b7e6*/[/*@>5b7e3*/2]/*@>2a27b*/ > /*@>2ed09*/0) {
+                            /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                            /*@>2a29e*/if ((/*@>5d184*/rtDW->/*@>63244*/RSDecoder_PsiZDeriv/*@>5b7f3*/[/*@>5b7f0*/2]/*@>2a2a0*/ == /*@>2ed18*/0)/*@>2a29f*/ || (/*@>2ed19*/intVal/*@>2a2a7*/ == /*@>2ed1b*/0)) {
+                                /*@>2ed28*/intVal/*@>2a2c9*/ = /*@>61cd0*/0;
+                            } else {
+                                /*@>2ed1f*/temp/*@>2a2b2*/ = (/*@>5cd2a*/rtConstP./*@>630c1*/RSDecoder_table2/*@>5b802*/[/*@>5d18d*/rtDW->/*@>63247*/RSDecoder_PsiZDeriv/*@>5b7fc*/[/*@>5b7fe*/2]/*@>5b7fa*/ - /*@>5b7ff*/1]/*@>2a2b5*/ + /*@>5cd30*/rtConstP./*@>630c4*/RSDecoder_table2/*@>5b80a*/[/*@>5b806*/intVal/*@>5b804*/ - /*@>5b807*/1])/*@>2a2b4*/ % /*@>2ed27*/7;
+                                /*@>2a2d2*/if (/*@>2ed2e*/temp/*@>2a2d3*/ == /*@>2ed30*/0) {
+                                    /*@>2ed36*/temp/*@>2a2e5*/ = /*@>61cd6*/7;
+                                }
+                                /*@>2ed39*/intVal/*@>2a2ef*/ = /*@>5cd46*/rtConstP./*@>630cd*/RSDecoder_table1/*@>5b839*/[/*@>5b835*/temp/*@>5b833*/ - /*@>5b836*/1];
+                            }
+                            /* end of gf_mul() */
+                            /*@>2ed3e*/Temp4/*@>621ec*/ ^= /*@>2ed42*/intVal;
+                        }
+                        /*  start of gf_pow():gf_pow raises x^yd  */
+                        /*  start of gf_div():gf_div divides the scalars x/b */
+                        /*@>2a32f*/if (/*@>5b80e*/RSDecoder_Errloc/*@>5b810*/[/*@>5b80d*/j]/*@>2a330*/ == /*@>2ed50*/0) {
+                            /*@>2ed61*/temp/*@>2a361*/ = /*@>61cd3*/1;
+                        } else {
+                            /*@>2ed59*/temp/*@>2a34f*/ = /*@>5cd38*/rtConstP./*@>630c7*/RSDecoder_table1/*@>5b831*/[/*@>5b824*/6/*@>5b823*/ - /*@>5cd3e*/rtConstP./*@>630ca*/RSDecoder_table2/*@>5b826*/[/*@>5b82b*/RSDecoder_Errloc/*@>5b82a*/[/*@>5b82d*/j]/*@>5b828*/ - /*@>5b82e*/1]];
+                        }
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>2a384*/if (/*@>2ed71*/temp/*@>2a385*/ == /*@>2ed73*/0) {
+                            /*@>2ed7a*/intVal/*@>2a39d*/ = /*@>61cd9*/0;
+                        } else {
+                            /*@>2ed74*/temp/*@>2a38c*/ = /*@>5cd4e*/rtConstP./*@>630d0*/RSDecoder_table2/*@>5b841*/[/*@>5b83d*/temp/*@>5b83b*/ - /*@>5b83e*/1]/*@>2a38e*/ % /*@>2ed79*/7;
+                            /*@>2a3ab*/if (/*@>2ed83*/temp/*@>2a3ac*/ == /*@>2ed85*/0) {
+                                /*@>2ed92*/temp/*@>2a3d1*/ = /*@>61cdc*/7;
+                            }
+                            /*@>2ed98*/intVal/*@>2a3e4*/ = /*@>5cd56*/rtConstP./*@>630d3*/RSDecoder_table1/*@>5b849*/[/*@>5b845*/temp/*@>5b843*/ - /*@>5b846*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*  end of gf_div() */
+                        /*@>2a32a*/if (/*@>2ed49*/intVal/*@>4b561*/ != /*@>2ed4b*/0) {
+                            /*@>2ed51*/temp/*@>2a338*/ = /*@>5cd5e*/rtConstP./*@>630d6*/RSDecoder_table2/*@>5b851*/[/*@>5b84d*/intVal/*@>5b84b*/ - /*@>5b84e*/1]/*@>2f2bf*/ * /*@>2e558*/3/*@>2a33a*/ % /*@>2ed56*/7;
+                            /*@>2a367*/if (/*@>2ed63*/temp/*@>2a368*/ == /*@>2ed65*/0) {
+                                /*@>2ed66*/temp/*@>2a370*/ = /*@>61cdf*/7;
+                            }
+                            /*@>2ed69*/intVal/*@>2a376*/ = /*@>5cd66*/rtConstP./*@>630d9*/RSDecoder_table1/*@>5b859*/[/*@>5b855*/temp/*@>5b853*/ - /*@>5b856*/1];
+                        }
+                        /*  end of gf_pow()  */
+                        /*@>2a37f*/if (/*@>342b4*/RSDecoder_OmegaZActual_idx_3/*@>2a380*/ > /*@>2ed70*/0) {
+                            /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                            /*@>2a3a1*/if (/*@>2ed80*/intVal/*@>2a3a7*/ == /*@>2ed82*/0) {
+                                /*@>2ed8f*/intVal/*@>2a3cc*/ = /*@>61ce2*/0;
+                            } else {
+                                /*@>2ed86*/temp/*@>2a3b8*/ = (/*@>5cd6e*/rtConstP./*@>630dc*/RSDecoder_table2/*@>5b861*/[/*@>5b85d*/RSDecoder_OmegaZActual_idx_3/*@>5b85b*/ - /*@>5b85e*/1]/*@>2a3bb*/ + /*@>5cd74*/rtConstP./*@>630df*/RSDecoder_table2/*@>5b869*/[/*@>5b865*/intVal/*@>5b863*/ - /*@>5b866*/1])/*@>2a3ba*/ % /*@>2ed8e*/7;
+                                /*@>2a3dd*/if (/*@>2ed95*/temp/*@>2a3de*/ == /*@>2ed97*/0) {
+                                    /*@>2ed9d*/temp/*@>2a3f6*/ = /*@>61ce8*/7;
+                                }
+                                /*@>2eda0*/intVal/*@>2a402*/ = /*@>5cd8a*/rtConstP./*@>630e8*/RSDecoder_table1/*@>5b898*/[/*@>5b894*/temp/*@>5b892*/ - /*@>5b895*/1];
+                            }
+                            /* end of gf_mul() */
+                            /*@>2eda5*/Temp3/*@>621ed*/ ^= /*@>2eda9*/intVal;
+                        }
+                        /*  start of gf_pow():gf_pow raises x^yd  */
+                        /*  start of gf_div():gf_div divides the scalars x/b */
+                        /*@>2a418*/if (/*@>5b86d*/RSDecoder_Errloc/*@>5b86f*/[/*@>5b86c*/j]/*@>2a419*/ == /*@>2edb2*/0) {
+                            /*@>2edc3*/temp/*@>2a44a*/ = /*@>61ce5*/1;
+                        } else {
+                            /*@>2edbb*/temp/*@>2a438*/ = /*@>5cd7c*/rtConstP./*@>630e2*/RSDecoder_table1/*@>5b890*/[/*@>5b883*/6/*@>5b882*/ - /*@>5cd82*/rtConstP./*@>630e5*/RSDecoder_table2/*@>5b885*/[/*@>5b88a*/RSDecoder_Errloc/*@>5b889*/[/*@>5b88c*/j]/*@>5b887*/ - /*@>5b88d*/1]];
+                        }
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>2a470*/if (/*@>2edd3*/temp/*@>2a471*/ == /*@>2edd5*/0) {
+                            /*@>2eddc*/intVal/*@>2a489*/ = /*@>61ceb*/0;
+                        } else {
+                            /*@>2edd6*/temp/*@>2a478*/ = /*@>5cd92*/rtConstP./*@>630eb*/RSDecoder_table2/*@>5b8a0*/[/*@>5b89c*/temp/*@>5b89a*/ - /*@>5b89d*/1]/*@>2a47a*/ % /*@>2eddb*/7;
+                            /*@>2a499*/if (/*@>2ede5*/temp/*@>2a49a*/ == /*@>2ede7*/0) {
+                                /*@>2edf4*/temp/*@>2a4bc*/ = /*@>61cee*/7;
+                            }
+                            /*@>2edfa*/intVal/*@>2a4c7*/ = /*@>5cd9a*/rtConstP./*@>630ee*/RSDecoder_table1/*@>5b8a8*/[/*@>5b8a4*/temp/*@>5b8a2*/ - /*@>5b8a5*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*  end of gf_div() */
+                        /*@>2a413*/if (/*@>2edab*/intVal/*@>4b560*/ != /*@>2edad*/0) {
+                            /*@>2edb3*/temp/*@>2a421*/ = /*@>5cda2*/rtConstP./*@>630f1*/RSDecoder_table2/*@>5b8b0*/[/*@>5b8ac*/intVal/*@>5b8aa*/ - /*@>5b8ad*/1]/*@>2f2bb*/ * /*@>2e556*/3/*@>2a423*/ % /*@>2edb8*/7;
+                            /*@>2a450*/if (/*@>2edc5*/temp/*@>2a451*/ == /*@>2edc7*/0) {
+                                /*@>2edc8*/temp/*@>2a459*/ = /*@>61cf1*/7;
+                            }
+                            /*@>2edcb*/intVal/*@>2a45f*/ = /*@>5cdac*/rtConstP./*@>630f4*/RSDecoder_table1/*@>5b8bd*/[/*@>5b8b9*/temp/*@>5b8b7*/ - /*@>5b8ba*/1];
+                        }
+                        /*  end of gf_pow()  */
+                        /*@>2a468*/if (/*@>5d196*/rtDW->/*@>6324a*/RSDecoder_PsiZDeriv/*@>5b8b5*/[/*@>5b8b2*/3]/*@>2a469*/ > /*@>2edd2*/0) {
+                            /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                            /*@>2a48c*/if ((/*@>5d19f*/rtDW->/*@>6324d*/RSDecoder_PsiZDeriv/*@>5b8c2*/[/*@>5b8bf*/3]/*@>2a48e*/ == /*@>2ede1*/0)/*@>2a48d*/ || (/*@>2ede2*/intVal/*@>2a495*/ == /*@>2ede4*/0)) {
+                                /*@>2edf1*/intVal/*@>2a4b7*/ = /*@>61cf4*/0;
+                            } else {
+                                /*@>2ede8*/temp/*@>2a4a0*/ = (/*@>5cdb6*/rtConstP./*@>630f7*/RSDecoder_table2/*@>5b8d1*/[/*@>5d1a8*/rtDW->/*@>63250*/RSDecoder_PsiZDeriv/*@>5b8cb*/[/*@>5b8cd*/3]/*@>5b8c9*/ - /*@>5b8ce*/1]/*@>2a4a3*/ + /*@>5cdbc*/rtConstP./*@>630fa*/RSDecoder_table2/*@>5b8d9*/[/*@>5b8d5*/intVal/*@>5b8d3*/ - /*@>5b8d6*/1])/*@>2a4a2*/ % /*@>2edf0*/7;
+                                /*@>2a4c0*/if (/*@>2edf7*/temp/*@>2a4c1*/ == /*@>2edf9*/0) {
+                                    /*@>2edff*/temp/*@>2a4d3*/ = /*@>61cfa*/7;
+                                }
+                                /*@>2ee02*/intVal/*@>2a4dd*/ = /*@>5cdd2*/rtConstP./*@>63103*/RSDecoder_table1/*@>5b8f6*/[/*@>5b8f2*/temp/*@>5b8f0*/ - /*@>5b8f3*/1];
+                            }
+                            /* end of gf_mul() */
+                            /*@>2ee07*/Temp4/*@>621ee*/ ^= /*@>2ee0b*/intVal;
+                        }
+                        /* Re-use space in Temp1 */
+                        /*  start of gf_div():gf_div divides the scalars x/b */
+                        /*@>477f*/if (/*@>2e999*/Temp4/*@>477e*/ == /*@>2e99d*/0) {
+                            /*@>2e99e*/temp/*@>4782*/ = /*@>61cf7*/1;
+                        } else {
+                            /*@>2e9a0*/temp/*@>4789*/ = /*@>5cdc4*/rtConstP./*@>630fd*/RSDecoder_table1/*@>5b8ee*/[/*@>5b8e4*/6/*@>5b8e3*/ - /*@>5cdca*/rtConstP./*@>63100*/RSDecoder_table2/*@>5b8e6*/[/*@>5b8ea*/Temp4/*@>5b8e8*/ - /*@>5b8eb*/1]];
+                        }
+                        /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
+                        /*@>478f*/if ((/*@>2e9a2*/temp/*@>478d*/ == /*@>2e9a5*/0)/*@>478e*/ || (/*@>2e99b*/Temp3/*@>478c*/ == /*@>2e9a4*/0)) {
+                            /*@>2e9a6*/intVal/*@>4791*/ = /*@>61cfd*/0;
+                        } else {
+                            /*@>2e9aa*/temp/*@>479a*/ = (/*@>5cdda*/rtConstP./*@>63106*/RSDecoder_table2/*@>5b8fe*/[/*@>5b8fa*/temp/*@>5b8f8*/ - /*@>5b8fb*/1]/*@>4798*/ + /*@>5cde0*/rtConstP./*@>63109*/RSDecoder_table2/*@>5b906*/[/*@>5b902*/Temp3/*@>5b900*/ - /*@>5b903*/1])/*@>4799*/ % /*@>2e9a9*/7;
+                            /*@>479d*/if (/*@>2e9ac*/temp/*@>479c*/ == /*@>2e9ae*/0) {
+                                /*@>2e9af*/temp/*@>479f*/ = /*@>61d00*/7;
+                            }
+                            /*@>2e9b2*/intVal/*@>47a3*/ = /*@>5cde8*/rtConstP./*@>6310c*/RSDecoder_table1/*@>5b90e*/[/*@>5b90a*/temp/*@>5b908*/ - /*@>5b90b*/1];
+                        }
+                        /* end of gf_mul() */
+                        /*  end of gf_div() */
+                        /* Find exponent representations of Errloc ==> get actual error locations */
+                        /* Correct the current error */
+                        /*@>439b1*/temp/*@>439b3*/ = /*@>2e56f*/6/*@>22d69*/ - /*@>5cdf0*/rtConstP./*@>6310f*/RSDecoder_table2/*@>5b91f*/[/*@>5b919*/RSDecoder_Errloc/*@>5b918*/[/*@>5b91b*/j]/*@>5b916*/ - /*@>5b91c*/1];
+                        /*@>5d1b1*/rtDW->/*@>63253*/RSDecoder_CCode/*@>22dc3*/[temp]/*@>621ef*/ ^= /*@>2e9d7*/intVal;
+                    }
+                    /*  end of correctErrors()  */
+                    /* Assign outputs.  Reduce cnumerr by the number of punctures and erasures. */
+                    /*  start of assignOutputs():Populate output vectors with proper data */
+                    /* Corrected message.  If there is a decoding failure, return the input message. */
+                    /*@>5d0fc*/rtDW->/*@>63214*/RSDecoder/*@>2a503*/[/*@>2ee12*/bitIdx/*@>2f2b2*/ * /*@>2ee14*/3]/*@>2a502*/ = /*@>2a50c*/(uint32_T)/*@>5d103*/rtDW->/*@>63217*/RSDecoder_CCode/*@>5b5cf*/[/*@>5b5cc*/0];
+                    /*@>5d10c*/rtDW->/*@>6321a*/RSDecoder/*@>2a517*/[/*@>2ee1a*/bitIdx/*@>2f2af*/ * /*@>2ee1c*/3/*@>2a519*/ + /*@>2ee1f*/1]/*@>2a516*/ = /*@>2a520*/(uint32_T)/*@>5d113*/rtDW->/*@>6321d*/RSDecoder_CCode/*@>5b5d4*/[/*@>5b5d1*/1];
+                    /*@>5d135*/rtDW->/*@>63229*/RSDecoder/*@>2a52b*/[/*@>2ee23*/bitIdx/*@>2f2ac*/ * /*@>2ee25*/3/*@>2a52d*/ + /*@>2ee28*/2]/*@>2a52a*/ = /*@>2a534*/(uint32_T)/*@>5d13c*/rtDW->/*@>6322c*/RSDecoder_CCode/*@>5b5e5*/[/*@>5b5e2*/2];
+                    /* Optional output for # of errors corrected */
+                    /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
+                    /* If there is a decoding failure, return the input parity. */
+                    /*  end of assignOutputs()  */
+                }
+            }
+        }
+    }
+}
+/* {E!d76}End of S-Function (scomberlekamp): '<S5>/RS Decoder' */
+
+/* {S!d78}S-Function (scominttobit): '<S5>/Integer to Bit Converter' incorporates:
+ *  S-Function (scomberlekamp): '<S5>/RS Decoder'
+ */
+/*  end of COMM_DoBerlekamp()  */
+/* Integer to Bit Conversion */
+/*@>23ab9*/for (/*@>61d4e*/RSDecoder_OmegaZActual_idx_0 = /*@>61d4d*/0; /*@>61d58*/RSDecoder_OmegaZActual_idx_0 < /*@>61d56*/2400; /*@>61d54*/RSDecoder_OmegaZActual_idx_0/*@>621bb*/++) {
+    uint32_T u;
+    /*@>2e9b9*/bitIdx/*@>526c*/ = (/*@>2e9b5*/RSDecoder_OmegaZActual_idx_0/*@>5269*/ + /*@>2e9b7*/1)/*@>2f342*/ * /*@>2e9b8*/3;
+    /*@>2e9bb*/u/*@>5270*/ = /*@>5ce75*/rtDW->/*@>6312d*/RSDecoder/*@>5b1a1*/[/*@>5b19e*/RSDecoder_OmegaZActual_idx_0];
+    /*@>5ce8e*/rtDW->/*@>63136*/IntegertoBitConverter/*@>29b5b*/[/*@>2ea8e*/bitIdx/*@>29b5d*/ - /*@>2ea90*/1]/*@>29b5a*/ = /*@>31117*/(int8_T)(/*@>2ea91*/u/*@>2f341*/ & /*@>2ea93*/1U);
+    /*@>2ea94*/u/*@>621bd*/ >>= /*@>2ea98*/1U;
+    /*@>5ceb0*/rtDW->/*@>63142*/IntegertoBitConverter/*@>29b77*/[/*@>3460d*/bitIdx/*@>4332c*/ - /*@>2eaa2*/2]/*@>29b76*/ = /*@>3112e*/(int8_T)(/*@>2eaa3*/u/*@>2f340*/ & /*@>2eaa5*/1U);
+    /*@>5ceb9*/rtDW->/*@>63145*/IntegertoBitConverter/*@>29b93*/[/*@>3532e*/bitIdx/*@>43330*/ - /*@>2eab4*/3]/*@>29b92*/ = /*@>3114e*/(int8_T)(/*@>3461d*/u/*@>3461b*/ >> /*@>3461e*/1U/*@>2f33f*/ & /*@>2eab7*/1U);
+}
+/* {E!d78}End of S-Function (scominttobit): '<S5>/Integer to Bit Converter' */
+
+/* {S!d80}DataTypeConversion: '<S6>/Conversion' incorporates:
+ *  S-Function (scominttobit): '<S5>/Integer to Bit Converter'
+ */
+/*@>1ef57*/for (/*@>61d3d*/RSDecoder_OmegaZActual_idx_0 = /*@>61d3c*/0; /*@>61d47*/RSDecoder_OmegaZActual_idx_0 < /*@>61d45*/7200; /*@>61d43*/RSDecoder_OmegaZActual_idx_0/*@>621bc*/++) {
+    /*@>2e6bb*/rtY_descr_in/*@>2120b*/[/*@>2e6b9*/RSDecoder_OmegaZActual_idx_0]/*@>1ef48*/ = (/*@>319b2*/(uint8_T)/*@>5cea7*/rtDW->/*@>6313f*/IntegertoBitConverter/*@>5b1b7*/[/*@>5b1b4*/RSDecoder_OmegaZActual_idx_0]/*@>2f348*/ != /*@>2f346*/0);
+}
+/* {S!d82}S-Function (scomscram2): '<S3>/Descrambler' incorporates:
+ *  DataTypeConversion: '<S6>/Conversion'
+ */
+/*@>54f94*/memset(&/*@>50769*/shiftReg/*@>5076a*/[/*@>50766*/0], /*@>61b95*/0, /*@>5076f*/sizeof(int32_T)/*@>617c9*/ << /*@>617c8*/4U);
+/*@>23a3d*/for (/*@>61d0c*/j = /*@>61d0b*/0; /*@>61d16*/j < /*@>61d14*/7200; /*@>61d12*/j/*@>621be*/++) {
+    /*@>43959*/inv/*@>4395b*/ = /*@>5b1c3*/rtY_descr_in/*@>5b1c5*/[/*@>5b1c2*/j];
+    /*@>2e9bf*/bitIdx/*@>52f5*/ = /*@>4395d*/inv;
+/*@>23a71*/    for (/*@>61d2c*/RSDecoder_OmegaZActual_idx_0 = /*@>61d2b*/0; /*@>61d36*/RSDecoder_OmegaZActual_idx_0 < /*@>61d34*/16; /*@>61d32*/RSDecoder_OmegaZActual_idx_0/*@>621bf*/++) {
+        /*@>2e9c3*/bitIdx/*@>621c0*/ -= /*@>2f35c*/(uint8_T)(/*@>5c9b6*/rtConstP./*@>62f83*/Descrambler_Polynomial/*@>5b1e5*/[/*@>5b1e1*/RSDecoder_OmegaZActual_idx_0/*@>5b1df*/ + /*@>5b1e2*/1]/*@>2f358*/ * /*@>5b1e9*/shiftReg/*@>5b1eb*/[/*@>5b1e8*/RSDecoder_OmegaZActual_idx_0]);
+    }
+    while/*@<530a*/ (/*@>2e9c5*/bitIdx/*@>5308*/ < /*@>2e9c7*/0) {
+        /*@>2e9cb*/bitIdx/*@>621c1*/ += /*@>2e9ca*/2;
+    }
+    /*@>2e6e7*/rtY_data_frame/*@>5312*/[/*@>2e9cd*/j]/*@>5315*/ = (/*@>2e9fd*/bitIdx/*@>cee4*/ % /*@>2e9ff*/2/*@>2f34c*/ != /*@>2f34a*/0);
+/*@>23a56*/    for (/*@>61d1d*/RSDecoder_OmegaZActual_idx_0 = /*@>61d1c*/14; /*@>61d27*/RSDecoder_OmegaZActual_idx_0 >= /*@>61d25*/0; /*@>61d23*/RSDecoder_OmegaZActual_idx_0/*@>621c2*/--) {
+        /*@>2e699*/shiftReg/*@>21392*/[/*@>2e697*/RSDecoder_OmegaZActual_idx_0/*@>26476*/ + /*@>2ea6c*/1]/*@>5323*/ = /*@>5b1ef*/shiftReg/*@>5b1f1*/[/*@>5b1ee*/RSDecoder_OmegaZActual_idx_0];
+    }
+    /*@>2e6a0*/shiftReg/*@>2135d*/[/*@>2e69f*/0U]/*@>5328*/ = inv;
+}
+/* {E!d82}End of S-Function (scomscram2): '<S3>/Descrambler' */
+
+/* {S!d84}Outport: '<Root>/dec_in' incorporates:
+ *  Inport: '<Root>/rx_frame'
+ */
+/*@>54fa1*/memcpy(&/*@>4f644*/rtY_dec_in/*@>4f645*/[/*@>4f634*/0], &/*@>4f64e*/rtU_v2x_rx_demod_out/*@>4f64f*/[/*@>4f641*/128], /*@>4f643*/16800U/*@>4f652*/ * /*@>4f651*/sizeof(boolean_T));
+%<SLibInsertSolverResetCode()>\
+%closefile cfgTxt
+%<cfgTxt>
+%<LibSetSystemField(system, "CachedOutputLocalVars", localVarDecl)>
+%endfunction
+%function OutputsFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Outputs(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 0, fcnProtoType)>
+%endfunction

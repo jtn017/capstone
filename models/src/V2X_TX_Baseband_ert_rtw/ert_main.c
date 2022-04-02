@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.138
+ * Model version                  : 1.150
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar 27 16:30:25 2022
+ * C/C++ source code generated on : Sat Apr  2 13:40:46 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -31,22 +31,13 @@ static DW rtDW;                        /* Observable states */
 static boolean_T rtU_v2x_tx_bb_in[7200];
 
 /* '<Root>/tx_frame' */
-static creal_T rtY_tx_frame[8464];
+static boolean_T rtY_tx_frame[16928];
 
-/* '<Root>/tx_in' */
-static boolean_T rtY_tx_in[7200];
+/* '<Root>/scramb_out' */
+static boolean_T rtY_scramb_out[7200];
 
-/* '<Root>/scrambler_out' */
-static boolean_T rtY_scrambler_out[7200];
-
-/* '<Root>/encoder_out' */
-static boolean_T rtY_encoder_out[16800];
-
-/* '<Root>/mapper_out' */
-static creal_T rtY_mapper_out[8400];
-
-/* '<Root>/preamble_out' */
-static creal_T rtY_preamble_out[8464];
+/* '<Root>/enc_out' */
+static boolean_T rtY_enc_out[16800];
 
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -78,9 +69,8 @@ void rt_OneStep(RT_MODEL *const rtM)
   /* Set model inputs here */
 
   /* Step the model */
-  V2X_TX_Baseband_step(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_tx_in,
-                       rtY_scrambler_out, rtY_encoder_out, rtY_mapper_out,
-                       rtY_preamble_out);
+  V2X_TX_Baseband_step(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_scramb_out,
+                       rtY_enc_out);
 
   /* Get model outputs here */
 
@@ -110,8 +100,8 @@ int_T main(int_T argc, const char *argv[])
   rtM->dwork = &rtDW;
 
   /* Initialize model */
-  V2X_TX_Baseband_initialize(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_tx_in,
-    rtY_scrambler_out, rtY_encoder_out, rtY_mapper_out, rtY_preamble_out);
+  V2X_TX_Baseband_initialize(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_scramb_out,
+    rtY_enc_out);
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.01 seconds (the model's base sample time) here.  The

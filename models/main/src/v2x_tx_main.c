@@ -21,7 +21,7 @@
 #include "v2x_tx_mod_wrapper.h"
 
 // ---------------------- Global variables ----------------------
-creal_T g_tx_bb_out_frame[TX_BB_OUT_LEN];
+boolean_T g_tx_bb_out_frame[TX_BB_OUT_LEN];
 cint16_T g_tx_mod_out_frame[TX_MOD_OUT_LEN];
 unsigned int g_num_tx_frames;
 
@@ -29,12 +29,12 @@ unsigned int g_num_tx_frames;
 double fixed_to_double_txmod(int16_T x);
 int16_T double_to_fixed_txmod(double x);
 #if DEBUG_BUILD
-static creal_T test_tx_bb_out[TX_BB_OUT_LEN];
+static boolean_T test_tx_bb_out[TX_BB_OUT_LEN];
 static creal_T test_tx_mod_out[TX_MOD_OUT_LEN];
 
 const char* getfield(char* line, int num);
 void load_csv(int frame_num);
-int compare_actual_vs_exp(creal_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame);
+int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame);
 #endif
 
 // ---------------------- Debug functions ----------------------
@@ -59,24 +59,16 @@ void load_csv(int frame_num)
     char line_imag[1024];
 
     // TX Baseband expected output
-    FILE* tx_bb_out_real = fopen("data/v2x_tx_bb_out_real.csv", "r");
-    FILE* tx_bb_out_imag = fopen("data/v2x_tx_bb_out_imag.csv", "r");
+    FILE* tx_bb_out = fopen("data/v2x_tx_bb_out.csv", "r");
     for (int n = 0; n < TX_BB_OUT_LEN; n++)
     {
         // Real
-        fgets(line_real, sizeof(line_real), tx_bb_out_real);
+        fgets(line_real, sizeof(line_real), tx_bb_out);
         char* tmp_real = strdup(line_real);
-        test_tx_bb_out[n].re = (real_T) strtof(getfield(tmp_real, frame_num), NULL);
+        test_tx_bb_out[n] = (real_T) strtof(getfield(tmp_real, frame_num), NULL);
         free(tmp_real);
-
-        // Imag
-        fgets(line_imag, sizeof(line_imag), tx_bb_out_imag);
-        char* tmp_imag = strdup(line_imag);
-        test_tx_bb_out[n].im = (real_T) strtof(getfield(tmp_imag, frame_num), NULL);
-        free(tmp_imag);
     }
-    fclose(tx_bb_out_real);
-    fclose(tx_bb_out_imag);
+    fclose(tx_bb_out);
 
     // TX Modulator expected output
     FILE* tx_mod_out_real = fopen("data/v2x_tx_mod_out_real.csv", "r");
@@ -102,7 +94,7 @@ void load_csv(int frame_num)
     return;
 }
 
-int compare_actual_vs_exp(creal_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame)
+int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame)
 {
     // Error flag
     int ret_val = 0;
@@ -110,23 +102,11 @@ int compare_actual_vs_exp(creal_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame)
     // TX Baseband real
     for (int n = 0; n < TX_BB_OUT_LEN; n++)
     {
-        if (abs(tx_bb_out_frame[n].re - test_tx_bb_out[n].re) > ERROR_TOL)
+        if (tx_bb_out_frame[n] != test_tx_bb_out[n])
         {
-            printf("TX BB ERROR: actual[%d].re: %f, expected[%d].re: %f\n",
-                  n, tx_bb_out_frame[n].re, n, test_tx_bb_out[n].re);
+            printf("TX BB ERROR: actual[%d]: %d, expected[%d]: %d\n",
+                  n, tx_bb_out_frame[n], n, test_tx_bb_out[n]);
             ret_val = -1;
-            break;
-        }
-    }
-
-    // TX Baseband imag
-    for (int n = 0; n < TX_BB_OUT_LEN; n++)
-    {
-        if (abs(tx_bb_out_frame[n].im - test_tx_bb_out[n].im) > ERROR_TOL)
-        {
-            printf("TX BB ERROR: actual[%d].re: %f, expected[%d].re: %f\n",
-                  n, tx_bb_out_frame[n].im, n, test_tx_bb_out[n].im);
-            ret_val = -2;
             break;
         }
     }

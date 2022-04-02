@@ -21,13 +21,10 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 // ---------------------- V2X_TX_Baseband IO ----------------------
-static boolean_T rtU_data_frame[7200]; /* '<Root>/data_frame' */
-static creal_T rtY_tx_frame[8464]; /* '<Root>/tx_frame' */
-static boolean_T rtY_tx_in[7200]; /* '<Root>/tx_in' */
-static boolean_T rtY_scrambler_out[7200]; /* '<Root>/scrambler_out' */
-static boolean_T rtY_encoder_out[16800]; /* '<Root>/encoder_out' */
-static creal_T rtY_mapper_out[8400]; /* '<Root>/mapper_out' */
-static creal_T rtY_preamble_out[8464]; /* '<Root>/preamble_out' */
+static boolean_T rtU_v2x_tx_bb_in[TX_BB_IN_LEN];
+static boolean_T rtY_tx_frame[TX_BB_OUT_LEN];
+static boolean_T rtY_scramb_out[TX_BB_IN_LEN];
+static boolean_T rtY_enc_out[TX_BB_ENC_LEN];
 
 // ---------------------- Function prototype ----------------------
 void v2x_tx_bb_one_step(RT_MODEL *const rtM);
@@ -77,14 +74,14 @@ int get_tx_input_frame(int frame_num)
     {
         fgets(line, sizeof(line), instream);
         char* tmp = strdup(line);
-        rtU_data_frame[n] = (boolean_T) atoi(getfield_wrap(tmp, frame_num));
+        rtU_v2x_tx_bb_in[n] = (boolean_T) atoi(getfield_wrap(tmp, frame_num));
         free(tmp);
     }
     fclose(instream);
 
     // for (int n = 0; n < 150; n++)
     // {
-    //     printf("rtU_data_frame[%d]: %d\n", n, rtU_data_frame[n]);
+    //     printf("rtU_v2x_tx_bb_in[%d]: %d\n", n, rtU_v2x_tx_bb_in[n]);
     // }
 #else
     // Variable declarations
@@ -96,8 +93,8 @@ int get_tx_input_frame(int frame_num)
     get_audio_packet(audio_packet);
 
     // Set data
-    memcpy(rtU_data_frame, info_packet, INFO_PKT_LEN*sizeof(rtU_data_frame[0]));
-    memcpy(rtU_data_frame, audio_packet, AUDIO_PKT_LEN*sizeof(rtU_data_frame[0]));
+    memcpy(rtU_v2x_tx_bb_in, info_packet, INFO_PKT_LEN*sizeof(rtU_v2x_tx_bb_in[0]));
+    memcpy(rtU_v2x_tx_bb_in, audio_packet, AUDIO_PKT_LEN*sizeof(rtU_v2x_tx_bb_in[0]));
 #endif
 
     // No errors
@@ -122,9 +119,7 @@ void v2x_tx_bb_one_step(RT_MODEL *const rtM)
     /* Set model inputs here */
 
     /* Step the model */
-    V2X_TX_Baseband_step(rtM, rtU_data_frame, rtY_tx_frame, rtY_tx_in,
-                        rtY_scrambler_out, rtY_encoder_out, rtY_mapper_out,
-                        rtY_preamble_out);
+    V2X_TX_Baseband_step(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_scramb_out, rtY_enc_out);
 
     /* Get model outputs here */
 
@@ -137,15 +132,15 @@ void v2x_tx_bb_one_step(RT_MODEL *const rtM)
 }
 
 // ---------------------- External functions ----------------------
-int get_tx_bb_out_frame(creal_T* output_frame, int frame_num)
+int get_tx_bb_out_frame(boolean_T* output_frame, int frame_num)
 {
     // Pack model data into RTM
     RT_MODEL *const rtM = rtMPtr;
     rtM->dwork = &rtDW;
 
     // Initialize and run model
-    V2X_TX_Baseband_initialize(rtM, rtU_data_frame, rtY_tx_frame, rtY_tx_in,
-    rtY_scrambler_out, rtY_encoder_out, rtY_mapper_out, rtY_preamble_out);
+    V2X_TX_Baseband_initialize(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_scramb_out, rtY_enc_out);
+
     get_tx_input_frame(frame_num);
     v2x_tx_bb_one_step(rtM);
 

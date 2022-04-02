@@ -1,0 +1,124 @@
+%implements s0_b0_dyuze_Outputs "C"
+
+%function Outputs(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+real_T accumulator_im;
+real_T accumulator_re;
+int32_T i;
+int32_T inIdx;
+int32_T inIdx_0;
+int32_T outIdx;
+int32_T symbolIndex;
+%closefile localVarDecl
+%<SLibCG_TrackDW(0)>\
+%<SLibCG_TrackEO(2)>\
+%<SLibCG_TrackEO(1)>\
+%<SLibCG_TrackEO(0)>\
+%<SLibCG_TrackEI(0)>\
+/* {S!d64}S-Function (scomapskmod4): '<S2>/QPSK Modulator Baseband' incorporates:
+ *  Inport: '<Root>/ tx_frame'
+ */
+/*@>5c0c*/inIdx/*@>c9b*/ = /*@>a8fb*/0;
+/*@>5c09*/outIdx/*@>c9c*/ = /*@>a8fe*/0;
+/*@>4a1b*/for (/*@>a9d2*/i = /*@>a9d1*/0; /*@>a9dc*/i < /*@>a9da*/8464; /*@>a9d8*/i/*@>a9e0*/++) {
+    /*@>5c6b*/inIdx_0/*@>54c6*/ = /*@>5c6d*/inIdx/*@>54c8*/ + /*@>5c6f*/1;
+    /*@>5c70*/symbolIndex/*@>54cd*/ = /*@>9bc9*/rtU_v2x_tx_bb_out/*@>9bcb*/[/*@>9bc8*/inIdx];
+    /*@>5c7a*/inIdx/*@>a9e2*/ += /*@>5c7e*/2;
+    /*@>5c7f*/symbolIndex/*@>54e8*/ = (/*@>5c81*/symbolIndex/*@>5db5*/ << /*@>5c83*/1)/*@>54ea*/ + /*@>9bcf*/rtU_v2x_tx_bb_out/*@>9bd1*/[/*@>9bce*/inIdx_0];
+    /*@>7bfc*/inIdx_0/*@>7bfe*/ = (/*@>8002*/symbolIndex/*@>8000*/ >> /*@>8003*/1/*@>7fff*/ ^ /*@>8005*/symbolIndex)/*@>5db4*/ << /*@>5db3*/1;
+    /*@>5c86*/rtY_map_out/*@>5544*/[/*@>5c88*/outIdx]./*@>abd2*/re/*@>5543*/ = /*@>9fb1*/rtConstP./*@>abf6*/QPSKModulatorBaseband_modmap/*@>9bd7*/[/*@>9bd4*/inIdx_0];
+    /*@>5c23*/rtY_map_out/*@>465c*/[/*@>5c25*/outIdx]./*@>abd5*/im/*@>cd9*/ = /*@>9fb9*/rtConstP./*@>abf9*/QPSKModulatorBaseband_modmap/*@>9bdf*/[inIdx_0/*@>9bd9*/ + /*@>9bdc*/1];
+    /*@>5bf3*/outIdx/*@>a9e5*/++;
+}
+/* {S!d66}S-Function (sdspupfir2): '<S4>/FIR Interpolation' incorporates:
+ *  DataTypeConversion: '<S1>/convert'
+ *  S-Function (scomapskmod4): '<S2>/QPSK Modulator Baseband'
+ */
+/* Loop over each input channel */
+/*@>4956*/for (/*@>a930*/inIdx = /*@>a92f*/0; /*@>a93a*/inIdx < /*@>a938*/8; /*@>a936*/inIdx/*@>a9e1*/++) {
+    /*@>5bef*/outIdx/*@>d7a*/ = /*@>5bf1*/inIdx;
+    /*@>5bea*/inIdx_0/*@>d7d*/ = /*@>5bed*/inIdx/*@>5db7*/ * /*@>5bec*/11;
+    /* Consume delay line and beginning of input samples */
+/*@>49d4*/    for (/*@>a963*/i = /*@>a962*/0; /*@>a96d*/i < /*@>a96b*/10; /*@>a969*/i/*@>a9e4*/++) {
+        real_T accumulator_re_tmp_0;
+        /*@>5cd1*/accumulator_re/*@>555e*/ = /*@>5c8d*/0.0;
+        /*@>5cd3*/accumulator_im/*@>d89*/ = /*@>5c8e*/0.0;
+/*@>a9b9*/        for (/*@>a9b5*/symbolIndex/*@>a9b4*/ = /*@>a9b6*/0; /*@>a9a9*/symbolIndex/*@>a9a7*/ < /*@>a9ac*/i/*@>a9aa*/ + /*@>a9ad*/1; /*@>a9af*/symbolIndex/*@>a9e8*/++) {
+            int32_T accumulator_re_tmp;
+            /*@>7c0c*/accumulator_re_tmp/*@>7c0e*/ = /*@>5c91*/i/*@>5573*/ - /*@>5c93*/symbolIndex;
+            /*@>7c2c*/accumulator_re_tmp_0/*@>7c2e*/ = /*@>9fc3*/rtConstP./*@>abfc*/FIRInterpolation_FILTER_COEFF/*@>9bfc*/[/*@>9bf7*/inIdx_0/*@>9bf5*/ + /*@>9bf9*/symbolIndex];
+            /*@>5cd5*/accumulator_re/*@>a9eb*/ += /*@>9c14*/rtY_map_out/*@>9c16*/[/*@>9c13*/accumulator_re_tmp].re/*@>5dcc*/ * /*@>7c30*/accumulator_re_tmp_0;
+            /*@>5cd9*/accumulator_im/*@>a9ee*/ += /*@>9c3c*/rtY_map_out/*@>9c3e*/[accumulator_re_tmp].im/*@>5dc1*/ * accumulator_re_tmp_0;
+        }
+/*@>a989*/        for (/*@>a985*/symbolIndex/*@>a984*/ = /*@>a986*/0; /*@>a979*/symbolIndex/*@>a977*/ < /*@>a97b*/10/*@>a97a*/ - /*@>a97d*/i; /*@>a97f*/symbolIndex/*@>a9e9*/++) {
+            /*@>7c4c*/accumulator_re_tmp_0/*@>7c4e*/ = /*@>9fdb*/rtConstP./*@>ac05*/FIRInterpolation_FILTER_COEFF/*@>9c38*/[((/*@>9c30*/inIdx_0/*@>9c2e*/ + /*@>9c32*/i)/*@>9c2d*/ + /*@>9c34*/symbolIndex)/*@>9c2c*/ + /*@>9c35*/1];
+            /*@>5cdd*/accumulator_re/*@>a9ed*/ += /*@>7c50*/accumulator_re_tmp_0/*@>5ddd*/ * /*@>a004*/rtDW->/*@>ac0b*/FIRInterpolation_TapDelayBuff/*@>9c44*/[/*@>9c41*/symbolIndex].re;
+            /*@>5ce1*/accumulator_im/*@>a9f1*/ += accumulator_re_tmp_0/*@>5dd0*/ * /*@>a00d*/rtDW->/*@>ac0e*/FIRInterpolation_TapDelayBuff/*@>9c4a*/[/*@>9c47*/symbolIndex].im;
+        }
+        /*@>5ca4*/rtY_ps_out/*@>55ac*/[/*@>5ca6*/outIdx]./*@>abd8*/re/*@>55ab*/ = /*@>5ce5*/accumulator_re;
+        /*@>5c13*/rtY_ps_out/*@>dc9*/[/*@>5bcf*/outIdx]./*@>abdb*/im/*@>dcb*/ = /*@>5ce7*/accumulator_im;
+        /*@>5bca*/outIdx/*@>a9f0*/ += /*@>5bcc*/8;
+    }
+    /* Consume remaining input samples */
+/*@>4982*/    for (/*@>a941*/i = /*@>a940*/0; /*@>a94b*/i < /*@>a949*/8454; /*@>a947*/i/*@>a9e7*/++) {
+        /*@>5ce9*/accumulator_re/*@>55b8*/ = /*@>5ca8*/0.0;
+        /*@>5ceb*/accumulator_im/*@>de2*/ = /*@>5ca9*/0.0;
+/*@>499b*/        for (/*@>a952*/symbolIndex = /*@>a951*/0; /*@>a95c*/symbolIndex < /*@>a95a*/11; /*@>a958*/symbolIndex/*@>a9ea*/++) {
+            /*@>5ced*/accumulator_re/*@>a9ec*/ += /*@>9c05*/rtY_map_out/*@>9c07*/[(/*@>9c01*/i/*@>9bff*/ - /*@>9c03*/symbolIndex)/*@>9bfe*/ + /*@>9c04*/10].re/*@>5de5*/ * /*@>9fcb*/rtConstP./*@>abff*/FIRInterpolation_FILTER_COEFF/*@>9c10*/[/*@>9c0b*/inIdx_0/*@>9c09*/ + /*@>9c0d*/symbolIndex];
+            /*@>5cf1*/accumulator_im/*@>a9ef*/ += /*@>9c1f*/rtY_map_out/*@>9c21*/[(/*@>9c1b*/i/*@>9c19*/ - /*@>9c1d*/symbolIndex)/*@>9c18*/ + /*@>9c1e*/10].im/*@>5de1*/ * /*@>9fd3*/rtConstP./*@>ac02*/FIRInterpolation_FILTER_COEFF/*@>9c2a*/[/*@>9c25*/inIdx_0/*@>9c23*/ + /*@>9c27*/symbolIndex];
+        }
+        /*@>5cb5*/rtY_ps_out/*@>55e5*/[/*@>5cb7*/outIdx]./*@>abde*/re/*@>55e4*/ = /*@>5cf5*/accumulator_re;
+        /*@>5c15*/rtY_ps_out/*@>e01*/[/*@>5bc8*/outIdx]./*@>abe1*/im/*@>e03*/ = /*@>5cf7*/accumulator_im;
+        /*@>5bc3*/outIdx/*@>a9f2*/ += /*@>5bc5*/8;
+    }
+}
+/* Update delay line for next frame */
+/*@>48eb*/for (/*@>a91f*/i = /*@>a91e*/0; /*@>a929*/i < /*@>a927*/10; /*@>a925*/i/*@>a9e3*/++) {
+    /*@>9ffb*/rtDW->/*@>ac08*/FIRInterpolation_TapDelayBuff/*@>5725*/[/*@>5d0a*/9/*@>57f8*/ - /*@>5d08*/i]/*@>572d*/ = /*@>9be5*/rtY_map_out/*@>9be7*/[/*@>9be3*/i/*@>9be1*/ + /*@>9be4*/8454];
+}
+/* {E!d66}End of S-Function (sdspupfir2): '<S4>/FIR Interpolation' */
+
+/* {S!d70}Outport: '<Root>/mod_frame' */
+/*@>4131*/for (/*@>a90e*/i = /*@>a90d*/0; /*@>a918*/i < /*@>a916*/67712; /*@>a914*/i/*@>a9e6*/++) {
+    /* {S!d68}DataTypeConversion: '<S1>/convert' incorporates:
+ *  S-Function (sdspupfir2): '<S4>/FIR Interpolation'
+ */
+    /*@>5e3c*/accumulator_re/*@>5e3e*/ = /*@>9453*/floor(/*@>9beb*/rtY_ps_out/*@>9bed*/[/*@>9bea*/i].re/*@>5e37*/ * /*@>5e36*/16384.0);
+    /*@>5e03*/accumulator_im/*@>5e05*/ = /*@>9455*/floor(/*@>9bf1*/rtY_ps_out/*@>9bf3*/[/*@>9bf0*/i].im/*@>5df4*/ * /*@>5df3*/16384.0);
+    /*@>6d51*/if (/*@>6877*/accumulator_re/*@>6875*/ < /*@>6878*/32768.0) {
+        /*@>6d65*/if (/*@>687c*/accumulator_re/*@>687a*/ >= /*@>687d*/-32768.0) {
+            /*@>6d6b*/rtY_mod_frame/*@>6d6a*/[/*@>6d6d*/i]./*@>abf0*/re/*@>6d68*/ = /*@>687e*/(int16_T)/*@>6880*/accumulator_re;
+        } else {
+            /*@>6d57*/rtY_mod_frame/*@>6d56*/[/*@>6d59*/i]./*@>abea*/re/*@>6d54*/ = /*@>6881*/MIN_int16_T;
+        }
+    } else {
+        /*@>5cb9*/rtY_mod_frame/*@>5609*/[/*@>5cbb*/i]./*@>abe4*/re/*@>5608*/ = /*@>6882*/MAX_int16_T;
+    }
+    /*@>6d5b*/if (/*@>6887*/accumulator_im/*@>6885*/ < /*@>6888*/32768.0) {
+        /*@>6d6f*/if (/*@>688c*/accumulator_im/*@>688a*/ >= /*@>688d*/-32768.0) {
+            /*@>6d75*/rtY_mod_frame/*@>6d74*/[/*@>6d77*/i]./*@>abf3*/im/*@>6d72*/ = /*@>688e*/(int16_T)/*@>6890*/accumulator_im;
+        } else {
+            /*@>6d61*/rtY_mod_frame/*@>6d60*/[/*@>6d63*/i]./*@>abed*/im/*@>6d5e*/ = /*@>6891*/MIN_int16_T;
+        }
+    } else {
+        /*@>5c1b*/rtY_mod_frame/*@>4601*/[/*@>5c1d*/i]./*@>abe7*/im/*@>4120*/ = /*@>6892*/MAX_int16_T;
+    }
+}
+/* {E!d70}End of Outport: '<Root>/mod_frame' */
+%<SLibInsertSolverResetCode()>\
+%closefile cfgTxt
+%<cfgTxt>
+%<LibSetSystemField(system, "CachedOutputLocalVars", localVarDecl)>
+%endfunction
+%function OutputsFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Outputs(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 0, fcnProtoType)>
+%endfunction

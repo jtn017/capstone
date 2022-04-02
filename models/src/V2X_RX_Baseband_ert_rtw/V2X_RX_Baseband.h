@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.138
+ * Model version                  : 1.150
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar 27 16:30:43 2022
+ * C/C++ source code generated on : Sat Apr  2 13:40:57 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -36,37 +36,36 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  int32_T RSDecoder_GammaZ[5];         /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_GammaZTemp[2];     /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_Dz[6];             /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_CCode[7];          /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_PsiZDeriv[4];      /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_d[5];              /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_tmpQuotient[5];    /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_input[5600];       /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_outMsg[2400];      /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_outCNumErr[800];   /* '<S6>/RS Decoder' */
-  uint32_T BittoIntegerConverter[5600];/* '<S6>/Bit to Integer Converter' */
-  uint32_T RSDecoder[2400];            /* '<S6>/RS Decoder' */
-  int8_T IntegertoBitConverter[7200];  /* '<S6>/Integer to Bit Converter' */
-  boolean_T RSDecoder_erasures[5600];  /* '<S6>/RS Decoder' */
-  boolean_T DataTypeConversion[7200];  /* '<S4>/Data Type Conversion' */
+  int32_T RSDecoder_GammaZ[5];         /* '<S5>/RS Decoder' */
+  int32_T RSDecoder_GammaZTemp[2];     /* '<S5>/RS Decoder' */
+  int32_T RSDecoder_Dz[6];             /* '<S5>/RS Decoder' */
+  int32_T RSDecoder_CCode[7];          /* '<S5>/RS Decoder' */
+  int32_T RSDecoder_PsiZDeriv[4];      /* '<S5>/RS Decoder' */
+  int32_T RSDecoder_d[5];              /* '<S5>/RS Decoder' */
+  int32_T RSDecoder_tmpQuotient[5];    /* '<S5>/RS Decoder' */
+  int32_T RSDecoder_input[5600];       /* '<S5>/RS Decoder' */
+  int32_T RSDecoder_outMsg[2400];      /* '<S5>/RS Decoder' */
+  int32_T RSDecoder_outCNumErr[800];   /* '<S5>/RS Decoder' */
+  uint32_T RSDecoder[2400];            /* '<S5>/RS Decoder' */
+  int8_T BittoIntegerConverter[5600];  /* '<S5>/Bit to Integer Converter' */
+  int8_T IntegertoBitConverter[7200];  /* '<S5>/Integer to Bit Converter' */
+  boolean_T RSDecoder_erasures[5600];  /* '<S5>/RS Decoder' */
 } DW;
 
 /* Constant parameters (default storage) */
 typedef struct {
   /* Computed Parameter: RSDecoder_table1
-   * Referenced by: '<S6>/RS Decoder'
+   * Referenced by: '<S5>/RS Decoder'
    */
   int32_T RSDecoder_table1[7];
 
   /* Computed Parameter: RSDecoder_table2
-   * Referenced by: '<S6>/RS Decoder'
+   * Referenced by: '<S5>/RS Decoder'
    */
   int32_T RSDecoder_table2[7];
 
   /* Computed Parameter: Descrambler_Polynomial
-   * Referenced by: '<S4>/Descrambler'
+   * Referenced by: '<S3>/Descrambler'
    */
   uint8_T Descrambler_Polynomial[17];
 } ConstP;
@@ -80,19 +79,18 @@ struct tag_RTM {
 extern const ConstP rtConstP;
 
 /* Model entry point functions */
-extern void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, creal_T
-  rtU_rx_frame[8464], boolean_T rtY_data_frame[7200], creal_T rtY_rx_in[8464],
-  creal_T rtY_demapper_in[8400], real_T rtY_decoder_in[16800], real_T
-  rtY_descrambler_in[7200], boolean_T rtY_rx_out[7200]);
-extern void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
-  boolean_T rtY_data_frame[7200], creal_T rtY_rx_in[8464], creal_T
-  rtY_demapper_in[8400], real_T rtY_decoder_in[16800], real_T
-  rtY_descrambler_in[7200], boolean_T rtY_rx_out[7200]);
+extern void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, boolean_T
+  rtU_v2x_rx_demod_out[16928], boolean_T rtY_data_frame[7200], boolean_T
+  rtY_dec_in[16800], boolean_T rtY_descr_in[7200]);
+extern void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T
+  rtU_v2x_rx_demod_out[16928], boolean_T rtY_data_frame[7200], boolean_T
+  rtY_dec_in[16800], boolean_T rtY_descr_in[7200]);
 
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S7>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S6>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S3>/Data Type Conversion' : Eliminate redundant data type conversion
  */
 
 /*-
@@ -115,11 +113,10 @@ extern void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464]
  * '<Root>' : 'v2x_modem_tb'
  * '<S1>'   : 'v2x_modem_tb/V2X_RX_Baseband'
  * '<S2>'   : 'v2x_modem_tb/V2X_RX_Baseband/Decoder'
- * '<S3>'   : 'v2x_modem_tb/V2X_RX_Baseband/Demapper'
- * '<S4>'   : 'v2x_modem_tb/V2X_RX_Baseband/Descrambler'
- * '<S5>'   : 'v2x_modem_tb/V2X_RX_Baseband/Preamble Extractor'
- * '<S6>'   : 'v2x_modem_tb/V2X_RX_Baseband/Decoder/Binary-Output RS Decoder'
- * '<S7>'   : 'v2x_modem_tb/V2X_RX_Baseband/Decoder/Binary-Output RS Decoder/Data Type Conversion Inherited'
+ * '<S3>'   : 'v2x_modem_tb/V2X_RX_Baseband/Descrambler'
+ * '<S4>'   : 'v2x_modem_tb/V2X_RX_Baseband/Preamble Extractor'
+ * '<S5>'   : 'v2x_modem_tb/V2X_RX_Baseband/Decoder/Binary-Output RS Decoder'
+ * '<S6>'   : 'v2x_modem_tb/V2X_RX_Baseband/Decoder/Binary-Output RS Decoder/Data Type Conversion Inherited'
  */
 
 /*-

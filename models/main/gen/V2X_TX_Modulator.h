@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Modulator'.
  *
- * Model version                  : 1.138
+ * Model version                  : 1.150
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar 27 16:30:36 2022
+ * C/C++ source code generated on : Sat Apr  2 13:40:51 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -37,13 +37,18 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  creal_T FIRInterpolation_TapDelayBuff[10];/* '<S3>/FIR Interpolation' */
+  creal_T FIRInterpolation_TapDelayBuff[10];/* '<S4>/FIR Interpolation' */
 } DW;
 
 /* Constant parameters (default storage) */
 typedef struct {
+  /* Computed Parameter: QPSKModulatorBaseband_modmap
+   * Referenced by: '<S2>/QPSK Modulator Baseband'
+   */
+  real_T QPSKModulatorBaseband_modmap[8];
+
   /* Expression: a.h
-   * Referenced by: '<S3>/FIR Interpolation'
+   * Referenced by: '<S4>/FIR Interpolation'
    */
   real_T FIRInterpolation_FILTER_COEFF[88];
 } ConstP;
@@ -57,19 +62,19 @@ struct tag_RTM {
 extern const ConstP rtConstP_tx_mod;
 
 /* Model entry point functions */
-extern void V2X_TX_Modulator_initialize(RT_MODEL *const rtM, creal_T
-  rtU_v2x_tx_bb_out[8464], cint16_T rtY_mod_frame[67712], creal_T rtY_ps_out
-  [67712]);
-extern void V2X_TX_Modulator_step(RT_MODEL *const rtM, creal_T
-  rtU_v2x_tx_bb_out[8464], cint16_T rtY_mod_frame[67712], creal_T rtY_ps_out
-  [67712]);
+extern void V2X_TX_Modulator_initialize(RT_MODEL *const rtM, boolean_T
+  rtU_v2x_tx_bb_out[16928], cint16_T rtY_mod_frame[67712], creal_T rtY_map_out
+  [8464], creal_T rtY_ps_out[67712]);
+extern void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T
+  rtU_v2x_tx_bb_out[16928], cint16_T rtY_mod_frame[67712], creal_T rtY_map_out
+  [8464], creal_T rtY_ps_out[67712]);
 
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S2>/Complex to Real-Imag' : Unused code path elimination
- * Block '<S2>/Complex to Real-Imag1' : Unused code path elimination
- * Block '<S2>/Scope' : Unused code path elimination
+ * Block '<S3>/Complex to Real-Imag' : Unused code path elimination
+ * Block '<S3>/Complex to Real-Imag1' : Unused code path elimination
+ * Block '<S3>/Scope' : Unused code path elimination
  */
 
 /*-
@@ -91,8 +96,9 @@ extern void V2X_TX_Modulator_step(RT_MODEL *const rtM, creal_T
  *
  * '<Root>' : 'v2x_modem_tb'
  * '<S1>'   : 'v2x_modem_tb/V2X_TX_Modulator'
- * '<S2>'   : 'v2x_modem_tb/V2X_TX_Modulator/Pulse Shaping'
- * '<S3>'   : 'v2x_modem_tb/V2X_TX_Modulator/Pulse Shaping/Raised Cosine Transmit Filter'
+ * '<S2>'   : 'v2x_modem_tb/V2X_TX_Modulator/Mapper'
+ * '<S3>'   : 'v2x_modem_tb/V2X_TX_Modulator/Pulse Shaping'
+ * '<S4>'   : 'v2x_modem_tb/V2X_TX_Modulator/Pulse Shaping/Raised Cosine Transmit Filter'
  */
 
 /*-

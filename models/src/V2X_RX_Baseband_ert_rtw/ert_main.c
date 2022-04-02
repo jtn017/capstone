@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.138
+ * Model version                  : 1.150
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar 27 16:30:43 2022
+ * C/C++ source code generated on : Sat Apr  2 13:40:57 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -28,25 +28,16 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 /* '<Root>/rx_frame' */
-static creal_T rtU_rx_frame[8464];
+static boolean_T rtU_v2x_rx_demod_out[16928];
 
 /* '<Root>/data_frame' */
 static boolean_T rtY_data_frame[7200];
 
-/* '<Root>/rx_in' */
-static creal_T rtY_rx_in[8464];
+/* '<Root>/dec_in' */
+static boolean_T rtY_dec_in[16800];
 
-/* '<Root>/demapper_in' */
-static creal_T rtY_demapper_in[8400];
-
-/* '<Root>/decoder_in' */
-static real_T rtY_decoder_in[16800];
-
-/* '<Root>/descrambler_in' */
-static real_T rtY_descrambler_in[7200];
-
-/* '<Root>/rx_out' */
-static boolean_T rtY_rx_out[7200];
+/* '<Root>/descr_in' */
+static boolean_T rtY_descr_in[7200];
 
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -78,9 +69,8 @@ void rt_OneStep(RT_MODEL *const rtM)
   /* Set model inputs here */
 
   /* Step the model */
-  V2X_RX_Baseband_step(rtM, rtU_rx_frame, rtY_data_frame, rtY_rx_in,
-                       rtY_demapper_in, rtY_decoder_in, rtY_descrambler_in,
-                       rtY_rx_out);
+  V2X_RX_Baseband_step(rtM, rtU_v2x_rx_demod_out, rtY_data_frame, rtY_dec_in,
+                       rtY_descr_in);
 
   /* Get model outputs here */
 
@@ -110,8 +100,8 @@ int_T main(int_T argc, const char *argv[])
   rtM->dwork = &rtDW;
 
   /* Initialize model */
-  V2X_RX_Baseband_initialize(rtM, rtU_rx_frame, rtY_data_frame, rtY_rx_in,
-    rtY_demapper_in, rtY_decoder_in, rtY_descrambler_in, rtY_rx_out);
+  V2X_RX_Baseband_initialize(rtM, rtU_v2x_rx_demod_out, rtY_data_frame,
+    rtY_dec_in, rtY_descr_in);
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.01 seconds (the model's base sample time) here.  The

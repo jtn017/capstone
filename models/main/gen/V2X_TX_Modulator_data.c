@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Modulator'.
  *
- * Model version                  : 1.138
+ * Model version                  : 1.150
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar 27 16:30:36 2022
+ * C/C++ source code generated on : Sat Apr  2 13:40:51 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -23,8 +23,15 @@
 
 /* Constant parameters (default storage) */
 const ConstP rtConstP_tx_mod = {
+  /* Computed Parameter: QPSKModulatorBaseband_modmap
+   * Referenced by: '<S2>/QPSK Modulator Baseband'
+   */
+  { 0.70710678118654757, 0.70710678118654757, -0.70710678118654746,
+    0.70710678118654757, -0.70710678118654768, -0.70710678118654746,
+    0.70710678118654735, -0.70710678118654768 },
+
   /* Expression: a.h
-   * Referenced by: '<S3>/FIR Interpolation'
+   * Referenced by: '<S4>/FIR Interpolation'
    */
   { -0.0002273607827300392, -0.0035728123000435697, 0.0010718436900130674,
     0.015005811660182994, -0.037514529150457464, 0.40187022867568095,

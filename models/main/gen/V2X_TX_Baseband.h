@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.134
+ * Model version                  : 1.150
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar  6 18:32:02 2022
+ * C/C++ source code generated on : Sat Apr  2 13:40:46 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -36,34 +36,29 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  uint32_T RSEncoder[5600];            /* '<S6>/RS Encoder' */
-  int8_T IntegertoBitConverter[16800]; /* '<S6>/Integer to Bit Converter' */
+  uint32_T RSEncoder[5600];            /* '<S5>/RS Encoder' */
+  int8_T IntegertoBitConverter[16800]; /* '<S5>/Integer to Bit Converter' */
 } DW;
 
 /* Constant parameters (default storage) */
 typedef struct {
-  /* Expression: ini.preamble_params.seq
-   * Referenced by: '<S4>/preamble'
-   */
-  real_T preamble_Value[64];
-
-  /* Computed Parameter: QPSKModulatorBaseband_modmap
-   * Referenced by: '<S3>/QPSK Modulator Baseband'
-   */
-  real_T QPSKModulatorBaseband_modmap[8];
-
   /* Computed Parameter: RSEncoder_table1
-   * Referenced by: '<S6>/RS Encoder'
+   * Referenced by: '<S5>/RS Encoder'
    */
   int32_T RSEncoder_table1[7];
 
   /* Computed Parameter: RSEncoder_table2
-   * Referenced by: '<S6>/RS Encoder'
+   * Referenced by: '<S5>/RS Encoder'
    */
   int32_T RSEncoder_table2[7];
 
+  /* Computed Parameter: preamble_Value
+   * Referenced by: '<S3>/preamble'
+   */
+  boolean_T preamble_Value[128];
+
   /* Computed Parameter: Scrambler_Polynomial
-   * Referenced by: '<S5>/Scrambler'
+   * Referenced by: '<S4>/Scrambler'
    */
   uint8_T Scrambler_Polynomial[17];
 } ConstP;
@@ -74,22 +69,20 @@ struct tag_RTM {
 };
 
 /* Constant parameters (default storage) */
-extern const ConstP rtConstP;
+extern const ConstP rtConstP_tx_bb;
 
 /* Model entry point functions */
 extern void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, boolean_T
-  rtU_data_frame[7200], creal_T rtY_tx_frame[8464], boolean_T rtY_tx_in[7200],
-  boolean_T rtY_scrambler_out[7200], boolean_T rtY_encoder_out[16800], creal_T
-  rtY_mapper_out[8400], creal_T rtY_preamble_out[8464]);
-extern void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_data_frame
-  [7200], creal_T rtY_tx_frame[8464], boolean_T rtY_tx_in[7200], boolean_T
-  rtY_scrambler_out[7200], boolean_T rtY_encoder_out[16800], creal_T
-  rtY_mapper_out[8400], creal_T rtY_preamble_out[8464]);
+  rtU_v2x_tx_bb_in[7200], boolean_T rtY_tx_frame[16928], boolean_T
+  rtY_scramb_out[7200], boolean_T rtY_enc_out[16800]);
+extern void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T
+  rtU_v2x_tx_bb_in[7200], boolean_T rtY_tx_frame[16928], boolean_T
+  rtY_scramb_out[7200], boolean_T rtY_enc_out[16800]);
 
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S7>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S6>/Data Type Duplicate' : Unused code path elimination
  */
 
 /*-
@@ -112,11 +105,10 @@ extern void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_data_frame
  * '<Root>' : 'v2x_modem_tb'
  * '<S1>'   : 'v2x_modem_tb/V2X_TX_Baseband'
  * '<S2>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder'
- * '<S3>'   : 'v2x_modem_tb/V2X_TX_Baseband/Mapper'
- * '<S4>'   : 'v2x_modem_tb/V2X_TX_Baseband/Preamble Prepender'
- * '<S5>'   : 'v2x_modem_tb/V2X_TX_Baseband/Scrambler'
- * '<S6>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder/Binary-Input RS Encoder'
- * '<S7>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder/Binary-Input RS Encoder/Data Type Conversion Inherited'
+ * '<S3>'   : 'v2x_modem_tb/V2X_TX_Baseband/Preamble Prepender'
+ * '<S4>'   : 'v2x_modem_tb/V2X_TX_Baseband/Scrambler'
+ * '<S5>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder/Binary-Input RS Encoder'
+ * '<S6>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder/Binary-Input RS Encoder/Data Type Conversion Inherited'
  */
 
 /*-

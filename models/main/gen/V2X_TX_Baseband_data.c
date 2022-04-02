@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.134
+ * Model version                  : 1.150
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar  6 18:32:02 2022
+ * C/C++ source code generated on : Sat Apr  2 13:40:46 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -22,35 +22,34 @@
 #include "V2X_TX_Baseband.h"
 
 /* Constant parameters (default storage) */
-const ConstP rtConstP = {
-  /* Expression: ini.preamble_params.seq
-   * Referenced by: '<S4>/preamble'
-   */
-  { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0,
-    1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-    0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
-    1.0, 0.0, 0.0, 0.0 },
-
-  /* Computed Parameter: QPSKModulatorBaseband_modmap
-   * Referenced by: '<S3>/QPSK Modulator Baseband'
-   */
-  { 0.70710678118654757, 0.70710678118654757, -0.70710678118654746,
-    0.70710678118654757, -0.70710678118654768, -0.70710678118654746,
-    0.70710678118654735, -0.70710678118654768 },
-
+const ConstP rtConstP_tx_bb = {
   /* Computed Parameter: RSEncoder_table1
-   * Referenced by: '<S6>/RS Encoder'
+   * Referenced by: '<S5>/RS Encoder'
    */
   { 2, 4, 3, 6, 7, 5, 1 },
 
   /* Computed Parameter: RSEncoder_table2
-   * Referenced by: '<S6>/RS Encoder'
+   * Referenced by: '<S5>/RS Encoder'
    */
   { 0, 1, 3, 2, 6, 4, 5 },
 
+  /* Computed Parameter: preamble_Value
+   * Referenced by: '<S3>/preamble'
+   */
+  { true, true, true, true, true, true, true, true, true, true, true, true,
+    false, false, true, true, false, false, true, true, false, false, true, true,
+    true, true, false, false, false, false, true, true, true, true, false, false,
+    true, true, true, true, true, true, false, false, true, true, true, true,
+    false, false, true, true, false, false, false, false, true, true, false,
+    false, false, false, false, false, true, true, true, true, true, true, true,
+    true, true, true, true, true, false, false, true, true, false, false, true,
+    true, false, false, true, true, true, true, false, false, false, false, true,
+    true, true, true, false, false, true, true, true, true, true, true, false,
+    false, true, true, true, true, false, false, true, true, false, false, false,
+    false, true, true, false, false, false, false, false, false },
+
   /* Computed Parameter: Scrambler_Polynomial
-   * Referenced by: '<S5>/Scrambler'
+   * Referenced by: '<S4>/Scrambler'
    */
   { 1U, 0U, 0U, 0U, 1U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U, 0U, 1U, 1U }
 };

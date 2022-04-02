@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.138
+ * Model version                  : 1.150
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar 27 16:30:43 2022
+ * C/C++ source code generated on : Sat Apr  2 13:40:57 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -22,10 +22,9 @@
 #include "V2X_RX_Baseband.h"
 
 /* Model step function */
-void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
-  boolean_T rtY_data_frame[7200], creal_T rtY_rx_in[8464], creal_T
-  rtY_demapper_in[8400], real_T rtY_decoder_in[16800], real_T
-  rtY_descrambler_in[7200], boolean_T rtY_rx_out[7200])
+void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_demod_out
+  [16928], boolean_T rtY_data_frame[7200], boolean_T rtY_dec_in[16800],
+  boolean_T rtY_descr_in[7200])
 {
   DW *rtDW = rtM->dwork;
   int32_T shiftReg[16];
@@ -37,57 +36,30 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
   int32_T RSDecoder_Syndrome[4];
   int32_T RSDecoder_OmegaZActual_idx_0;
   int32_T Temp4;
-  int32_T decoder_in_tmp;
-  int32_T iIdx;
+  int32_T bitIdx;
+  int32_T intVal;
   int32_T inv;
   int32_T j;
 
-  /* S-Function (scompskdemod): '<S3>/QPSK Demodulator Baseband' incorporates:
+  /* S-Function (scominttobit): '<S5>/Bit to Integer Converter' incorporates:
    *  Inport: '<Root>/rx_frame'
    */
-  for (iIdx = 0; iIdx < 8400; iIdx++) {
-    if (rtU_rx_frame[iIdx + 64].re > 0.0) {
-      if (rtU_rx_frame[iIdx + 64].im >= 0.0) {
-        RSDecoder_OmegaZActual_idx_0 = 0;
-      } else {
-        RSDecoder_OmegaZActual_idx_0 = 3;
-      }
-    } else if (rtU_rx_frame[iIdx + 64].re < 0.0) {
-      if (rtU_rx_frame[iIdx + 64].im <= 0.0) {
-        RSDecoder_OmegaZActual_idx_0 = 2;
-      } else {
-        RSDecoder_OmegaZActual_idx_0 = 1;
-      }
-    } else if (rtU_rx_frame[iIdx + 64].im < 0.0) {
-      RSDecoder_OmegaZActual_idx_0 = 3;
-    } else {
-      RSDecoder_OmegaZActual_idx_0 = (rtU_rx_frame[iIdx + 64].im > 0.0);
-    }
-
-    RSDecoder_OmegaZActual_idx_0 ^= RSDecoder_OmegaZActual_idx_0 >> 1;
-    decoder_in_tmp = iIdx << 1;
-    rtY_decoder_in[decoder_in_tmp + 1] = RSDecoder_OmegaZActual_idx_0 % 2;
-    rtY_decoder_in[decoder_in_tmp] = (RSDecoder_OmegaZActual_idx_0 >> 1) % 2;
-  }
-
-  /* S-Function (scominttobit): '<S6>/Bit to Integer Converter' incorporates:
-   *  S-Function (scompskdemod): '<S3>/QPSK Demodulator Baseband'
-   */
   /* Bit to Integer Conversion */
-  iIdx = 0;
+  bitIdx = 128;
   for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 5600;
        RSDecoder_OmegaZActual_idx_0++) {
     /* Input bit order is MSB first */
-    rtDW->BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0] = ((uint32_T)
-      rtY_decoder_in[iIdx] << 1U | (uint32_T)rtY_decoder_in[iIdx + 1]) << 1U |
-      (uint32_T)rtY_decoder_in[iIdx + 2];
-    iIdx += 3;
+    intVal = (int32_T)(((uint32_T)rtU_v2x_rx_demod_out[bitIdx] << 1U |
+                        rtU_v2x_rx_demod_out[bitIdx + 1]) << 1U |
+                       rtU_v2x_rx_demod_out[bitIdx + 2]);
+    bitIdx += 3;
+    rtDW->BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0] = (int8_T)intVal;
   }
 
-  /* End of S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
+  /* End of S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
 
-  /* S-Function (scomberlekamp): '<S6>/RS Decoder' incorporates:
-   *  S-Function (scominttobit): '<S6>/Bit to Integer Converter'
+  /* S-Function (scomberlekamp): '<S5>/RS Decoder' incorporates:
+   *  S-Function (scominttobit): '<S5>/Bit to Integer Converter'
    */
   /* start of COMM_DoBerlekamp()  */
   /* The function uses the algorithm  described */
@@ -100,7 +72,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
   rtDW->RSDecoder_GammaZ[3] = 0;
   rtDW->RSDecoder_GammaZ[4] = 0;
   rtDW->RSDecoder_GammaZTemp[0U] = 1;
-  for (iIdx = 0; iIdx < 800; iIdx++) {
+  for (bitIdx = 0; bitIdx < 800; bitIdx++) {
     int32_T Temp3;
     int32_T noErrorStatus;
     int32_T temp;
@@ -109,25 +81,25 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
     /*  start of assignInputs(): Populate the codeword and erasure vectors with the proper data  */
     /* Assign message symbols. */
     /* If there are erasures, insert zeros in the erased positions. */
-    RSDecoder_OmegaZActual_idx_0 = iIdx * 7;
-    rtDW->RSDecoder_CCode[0] = (int32_T)rtDW->
+    RSDecoder_OmegaZActual_idx_0 = bitIdx * 7;
+    rtDW->RSDecoder_CCode[0] = rtDW->
       BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0];
-    rtDW->RSDecoder_CCode[1] = (int32_T)rtDW->
+    rtDW->RSDecoder_CCode[1] = rtDW->
       BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 1];
-    rtDW->RSDecoder_CCode[2] = (int32_T)rtDW->
+    rtDW->RSDecoder_CCode[2] = rtDW->
       BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 2];
 
     /* Assign parity symbols, again accounting for erasures */
     /* no puncturing */
     /*  end of assignInputs()  */
     /* Initialize Gamma(Z) = 1 : ASCENDING ORDER.  length = 2t+1 */
-    rtDW->RSDecoder_CCode[3] = (int32_T)rtDW->
+    rtDW->RSDecoder_CCode[3] = rtDW->
       BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 3];
-    rtDW->RSDecoder_CCode[4] = (int32_T)rtDW->
+    rtDW->RSDecoder_CCode[4] = rtDW->
       BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 4];
-    rtDW->RSDecoder_CCode[5] = (int32_T)rtDW->
+    rtDW->RSDecoder_CCode[5] = rtDW->
       BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 5];
-    rtDW->RSDecoder_CCode[6] = (int32_T)rtDW->
+    rtDW->RSDecoder_CCode[6] = rtDW->
       BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 6];
 
     /* Calculate the erasure polynomial GammaZ.GammaZ is the set of coefficients */
@@ -148,27 +120,27 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
           temp = 7;
         }
 
-        decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+        intVal = rtConstP.RSDecoder_table1[temp - 1];
 
         /*  end of gf_pow()  */
         /* CCode[nfull-1-j] is the current input code symbol. */
         /* Multiply it by alpha, then get the sum so far. */
         /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
         temp = rtDW->RSDecoder_CCode[6 - j];
-        if ((temp == 0) || (decoder_in_tmp == 0)) {
-          decoder_in_tmp = 0;
+        if ((temp == 0) || (intVal == 0)) {
+          intVal = 0;
         } else {
           temp = (rtConstP.RSDecoder_table2[temp - 1] +
-                  rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) % 7;
+                  rtConstP.RSDecoder_table2[intVal - 1]) % 7;
           if (temp == 0) {
             temp = 7;
           }
 
-          decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+          intVal = rtConstP.RSDecoder_table1[temp - 1];
         }
 
         /* end of gf_mul() */
-        Temp3 ^= decoder_in_tmp;
+        Temp3 ^= intVal;
       }
 
       if ((noErrorStatus != 0) && (Temp3 != 0)) {
@@ -182,9 +154,9 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
     if (noErrorStatus == 1) {
       /*  start of assignOutputs():Populate output vectors with proper data */
       /* Corrected message.  If there is a decoding failure, return the input message. */
-      rtDW->RSDecoder[iIdx * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
-      rtDW->RSDecoder[iIdx * 3 + 1] = (uint32_T)rtDW->RSDecoder_CCode[1];
-      rtDW->RSDecoder[iIdx * 3 + 2] = (uint32_T)rtDW->RSDecoder_CCode[2];
+      rtDW->RSDecoder[bitIdx * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
+      rtDW->RSDecoder[bitIdx * 3 + 1] = (uint32_T)rtDW->RSDecoder_CCode[1];
+      rtDW->RSDecoder[bitIdx * 3 + 2] = (uint32_T)rtDW->RSDecoder_CCode[2];
 
       /* Optional output for # of errors corrected */
       /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -245,7 +217,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
             temp = RSDecoder_Syndrome[temp];
             if ((RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0] == 0) || (temp ==
                  0)) {
-              decoder_in_tmp = 0;
+              intVal = 0;
             } else {
               temp = (rtConstP.RSDecoder_table2[temp - 1] +
                       rtConstP.RSDecoder_table2[RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0]
@@ -254,11 +226,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
                 temp = 7;
               }
 
-              decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+              intVal = rtConstP.RSDecoder_table1[temp - 1];
             }
 
             /* end of gf_mul() */
-            Temp3 ^= decoder_in_tmp;
+            Temp3 ^= intVal;
           }
         }
 
@@ -273,7 +245,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
           /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
           if ((RSDecoder_TempVec2t1[0] == 0) || (rtDW->RSDecoder_Dz[0] == 0)) {
-            decoder_in_tmp = 0;
+            intVal = 0;
           } else {
             temp = (rtConstP.RSDecoder_table2[RSDecoder_TempVec2t1[0] - 1] +
                     rtConstP.RSDecoder_table2[rtDW->RSDecoder_Dz[0] - 1]) % 7;
@@ -281,15 +253,15 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               temp = 7;
             }
 
-            decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+            intVal = rtConstP.RSDecoder_table1[temp - 1];
           }
 
           /* end of gf_mul() */
-          RSDecoder_PsiZStar[0] = RSDecoder_PsiZ[0] ^ decoder_in_tmp;
+          RSDecoder_PsiZStar[0] = RSDecoder_PsiZ[0] ^ intVal;
 
           /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
           if ((RSDecoder_TempVec2t1[1] == 0) || (rtDW->RSDecoder_Dz[1] == 0)) {
-            decoder_in_tmp = 0;
+            intVal = 0;
           } else {
             temp = (rtConstP.RSDecoder_table2[RSDecoder_TempVec2t1[1] - 1] +
                     rtConstP.RSDecoder_table2[rtDW->RSDecoder_Dz[1] - 1]) % 7;
@@ -297,15 +269,15 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               temp = 7;
             }
 
-            decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+            intVal = rtConstP.RSDecoder_table1[temp - 1];
           }
 
           /* end of gf_mul() */
-          RSDecoder_PsiZStar[1] = RSDecoder_PsiZ[1] ^ decoder_in_tmp;
+          RSDecoder_PsiZStar[1] = RSDecoder_PsiZ[1] ^ intVal;
 
           /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
           if ((RSDecoder_TempVec2t1[2] == 0) || (rtDW->RSDecoder_Dz[2] == 0)) {
-            decoder_in_tmp = 0;
+            intVal = 0;
           } else {
             temp = (rtConstP.RSDecoder_table2[RSDecoder_TempVec2t1[2] - 1] +
                     rtConstP.RSDecoder_table2[rtDW->RSDecoder_Dz[2] - 1]) % 7;
@@ -313,15 +285,15 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               temp = 7;
             }
 
-            decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+            intVal = rtConstP.RSDecoder_table1[temp - 1];
           }
 
           /* end of gf_mul() */
-          RSDecoder_PsiZStar[2] = RSDecoder_PsiZ[2] ^ decoder_in_tmp;
+          RSDecoder_PsiZStar[2] = RSDecoder_PsiZ[2] ^ intVal;
 
           /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
           if ((RSDecoder_TempVec2t1[3] == 0) || (rtDW->RSDecoder_Dz[3] == 0)) {
-            decoder_in_tmp = 0;
+            intVal = 0;
           } else {
             temp = (rtConstP.RSDecoder_table2[RSDecoder_TempVec2t1[3] - 1] +
                     rtConstP.RSDecoder_table2[rtDW->RSDecoder_Dz[3] - 1]) % 7;
@@ -329,11 +301,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               temp = 7;
             }
 
-            decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+            intVal = rtConstP.RSDecoder_table1[temp - 1];
           }
 
           /* end of gf_mul() */
-          RSDecoder_PsiZStar[3] = RSDecoder_PsiZ[3] ^ decoder_in_tmp;
+          RSDecoder_PsiZStar[3] = RSDecoder_PsiZ[3] ^ intVal;
 
           /* Diamond 2  */
           Temp3 = j - noErrorStatus;
@@ -343,7 +315,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
             noErrorStatus = j - RSDecoder_OmegaZActual_idx_1;
             for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 <
                  5; RSDecoder_OmegaZActual_idx_0++) {
-              decoder_in_tmp = RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0];
+              intVal = RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0];
               temp = RSDecoder_TempVec2t1[RSDecoder_OmegaZActual_idx_0];
 
               /*  start of gf_div():gf_div divides the scalars x/b */
@@ -355,11 +327,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               }
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-              if ((temp == 0) || (decoder_in_tmp == 0)) {
+              if ((temp == 0) || (intVal == 0)) {
                 rtDW->RSDecoder_Dz[RSDecoder_OmegaZActual_idx_0] = 0;
               } else {
                 temp = (rtConstP.RSDecoder_table2[temp - 1] +
-                        rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) % 7;
+                        rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
@@ -411,9 +383,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
       if ((Temp3 != RSDecoder_OmegaZActual_idx_1) || (Temp3 < 1)) {
         /*  start of assignOutputs():Populate output vectors with proper data */
         /* Corrected message.  If there is a decoding failure, return the input message. */
-        rtDW->RSDecoder[iIdx * 3] = rtDW->BittoIntegerConverter[iIdx * 7];
-        rtDW->RSDecoder[iIdx * 3 + 1] = rtDW->BittoIntegerConverter[iIdx * 7 + 1];
-        rtDW->RSDecoder[iIdx * 3 + 2] = rtDW->BittoIntegerConverter[iIdx * 7 + 2];
+        rtDW->RSDecoder[bitIdx * 3] = (uint32_T)rtDW->
+          BittoIntegerConverter[bitIdx * 7];
+        rtDW->RSDecoder[bitIdx * 3 + 1] = (uint32_T)rtDW->
+          BittoIntegerConverter[bitIdx * 7 + 1];
+        rtDW->RSDecoder[bitIdx * 3 + 2] = (uint32_T)rtDW->
+          BittoIntegerConverter[bitIdx * 7 + 2];
 
         /* Optional output for # of errors corrected */
         /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -449,11 +424,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
           for (j = 0; j < RSDecoder_OmegaZActual_idx_1; j++) {
             /*  start of gf_pow():gf_pow raises x^yd  */
-            decoder_in_tmp = rtDW->RSDecoder_d[j];
-            if (decoder_in_tmp == 0) {
+            intVal = rtDW->RSDecoder_d[j];
+            if (intVal == 0) {
               rtDW->RSDecoder_d[j] = (j == 0);
             } else {
-              temp = rtConstP.RSDecoder_table2[decoder_in_tmp - 1] * j % 7;
+              temp = rtConstP.RSDecoder_table2[intVal - 1] * j % 7;
               if (temp == 0) {
                 temp = 7;
               }
@@ -467,7 +442,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
           for (j = 0; j < RSDecoder_OmegaZActual_idx_1; j++) {
             /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
             if ((rtDW->RSDecoder_d[j] == 0) || (RSDecoder_PsiZStar[j] == 0)) {
-              decoder_in_tmp = 0;
+              intVal = 0;
             } else {
               temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_d[j] - 1] +
                       rtConstP.RSDecoder_table2[RSDecoder_PsiZStar[j] - 1]) % 7;
@@ -475,11 +450,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
                 temp = 7;
               }
 
-              decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+              intVal = rtConstP.RSDecoder_table1[temp - 1];
             }
 
             /* end of gf_mul() */
-            RSDecoder_OmegaZActual_idx_2 ^= decoder_in_tmp;
+            RSDecoder_OmegaZActual_idx_2 ^= intVal;
           }
 
           if (RSDecoder_OmegaZActual_idx_2 == 0) {
@@ -488,7 +463,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
             /*  start of gf_div():gf_div divides the scalars x/b */
             /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-            decoder_in_tmp = rtConstP.RSDecoder_table1[6];
+            intVal = rtConstP.RSDecoder_table1[6];
 
             /* end of gf_mul() */
             /*  end of gf_div() */
@@ -558,11 +533,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               rtDW->RSDecoder_tmpQuotient[RSDecoder_OmegaZActual_idx_1 - 1] = z;
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-              if ((z == 0) || (decoder_in_tmp == 0)) {
+              if ((z == 0) || (intVal == 0)) {
                 temp = 0;
               } else {
                 temp = (rtConstP.RSDecoder_table2[z - 1] +
-                        rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) % 7;
+                        rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
@@ -636,11 +611,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
         if (noErrorStatus != Temp3) {
           /*  start of assignOutputs():Populate output vectors with proper data */
           /* Corrected message.  If there is a decoding failure, return the input message. */
-          rtDW->RSDecoder[iIdx * 3] = rtDW->BittoIntegerConverter[iIdx * 7];
-          rtDW->RSDecoder[iIdx * 3 + 1] = rtDW->BittoIntegerConverter[iIdx * 7 +
-            1];
-          rtDW->RSDecoder[iIdx * 3 + 2] = rtDW->BittoIntegerConverter[iIdx * 7 +
-            2];
+          rtDW->RSDecoder[bitIdx * 3] = (uint32_T)rtDW->
+            BittoIntegerConverter[bitIdx * 7];
+          rtDW->RSDecoder[bitIdx * 3 + 1] = (uint32_T)
+            rtDW->BittoIntegerConverter[bitIdx * 7 + 1];
+          rtDW->RSDecoder[bitIdx * 3 + 2] = (uint32_T)
+            rtDW->BittoIntegerConverter[bitIdx * 7 + 2];
 
           /* Optional output for # of errors corrected */
           /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -666,11 +642,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
           if (!loopflag) {
             /*  start of assignOutputs():Populate output vectors with proper data */
             /* Corrected message.  If there is a decoding failure, return the input message. */
-            rtDW->RSDecoder[iIdx * 3] = rtDW->BittoIntegerConverter[iIdx * 7];
-            rtDW->RSDecoder[iIdx * 3 + 1] = rtDW->BittoIntegerConverter[iIdx * 7
-              + 1];
-            rtDW->RSDecoder[iIdx * 3 + 2] = rtDW->BittoIntegerConverter[iIdx * 7
-              + 2];
+            rtDW->RSDecoder[bitIdx * 3] = (uint32_T)rtDW->
+              BittoIntegerConverter[bitIdx * 7];
+            rtDW->RSDecoder[bitIdx * 3 + 1] = (uint32_T)
+              rtDW->BittoIntegerConverter[bitIdx * 7 + 1];
+            rtDW->RSDecoder[bitIdx * 3 + 2] = (uint32_T)
+              rtDW->BittoIntegerConverter[bitIdx * 7 + 2];
 
             /* Optional output for # of errors corrected */
             /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -694,11 +671,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
             for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 <
                  5; RSDecoder_OmegaZActual_idx_0++) {
-              decoder_in_tmp = RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0];
-              if ((decoder_in_tmp == 0) || (RSDecoder_Syndrome[0] == 0)) {
+              intVal = RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0];
+              if ((intVal == 0) || (RSDecoder_Syndrome[0] == 0)) {
                 temp = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[decoder_in_tmp - 1] +
+                temp = (rtConstP.RSDecoder_table2[intVal - 1] +
                         rtConstP.RSDecoder_table2[RSDecoder_Syndrome[0] - 1]) %
                   7;
                 if (temp == 0) {
@@ -709,10 +686,10 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               }
 
               RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0] ^= temp;
-              if ((decoder_in_tmp == 0) || (RSDecoder_Syndrome[1] == 0)) {
+              if ((intVal == 0) || (RSDecoder_Syndrome[1] == 0)) {
                 temp = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[decoder_in_tmp - 1] +
+                temp = (rtConstP.RSDecoder_table2[intVal - 1] +
                         rtConstP.RSDecoder_table2[RSDecoder_Syndrome[1] - 1]) %
                   7;
                 if (temp == 0) {
@@ -723,10 +700,10 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               }
 
               RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0 + 1] ^= temp;
-              if ((decoder_in_tmp == 0) || (RSDecoder_Syndrome[2] == 0)) {
+              if ((intVal == 0) || (RSDecoder_Syndrome[2] == 0)) {
                 temp = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[decoder_in_tmp - 1] +
+                temp = (rtConstP.RSDecoder_table2[intVal - 1] +
                         rtConstP.RSDecoder_table2[RSDecoder_Syndrome[2] - 1]) %
                   7;
                 if (temp == 0) {
@@ -737,10 +714,10 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               }
 
               RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0 + 2] ^= temp;
-              if ((decoder_in_tmp == 0) || (RSDecoder_Syndrome[3] == 0)) {
+              if ((intVal == 0) || (RSDecoder_Syndrome[3] == 0)) {
                 temp = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[decoder_in_tmp - 1] +
+                temp = (rtConstP.RSDecoder_table2[intVal - 1] +
                         rtConstP.RSDecoder_table2[RSDecoder_Syndrome[3] - 1]) %
                   7;
                 if (temp == 0) {
@@ -778,20 +755,19 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
               /*  start of gf_pow():gf_pow raises x^yd  */
               if (RSDecoder_Errloc[j] == 0) {
-                decoder_in_tmp = 1;
+                intVal = 1;
               } else {
-                decoder_in_tmp = rtConstP.RSDecoder_table1[6];
+                intVal = rtConstP.RSDecoder_table1[6];
               }
 
               /*  end of gf_pow()  */
               if (RSDecoder_OmegaZActual_idx_0 > 0) {
                 /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-                if (decoder_in_tmp == 0) {
+                if (intVal == 0) {
                   Temp3 = 0;
                 } else {
                   temp = (rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_0
-                          - 1] + rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) %
-                    7;
+                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
@@ -804,21 +780,19 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
               /*  start of gf_pow():gf_pow raises x^yd  */
               if (RSDecoder_Errloc[j] == 0) {
-                decoder_in_tmp = 1;
+                intVal = 1;
               } else {
-                decoder_in_tmp = rtConstP.RSDecoder_table1[6];
+                intVal = rtConstP.RSDecoder_table1[6];
               }
 
               /*  end of gf_pow()  */
               if (rtDW->RSDecoder_PsiZDeriv[0] > 0) {
                 /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-                if ((rtDW->RSDecoder_PsiZDeriv[0] == 0) || (decoder_in_tmp == 0))
-                {
+                if ((rtDW->RSDecoder_PsiZDeriv[0] == 0) || (intVal == 0)) {
                   Temp4 = 0;
                 } else {
                   temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[0]
-                          - 1] + rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) %
-                    7;
+                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
@@ -840,45 +814,44 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
-                decoder_in_tmp = 0;
+                intVal = 0;
               } else {
                 temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
-              if (decoder_in_tmp != 0) {
-                temp = rtConstP.RSDecoder_table2[decoder_in_tmp - 1] % 7;
+              if (intVal != 0) {
+                temp = rtConstP.RSDecoder_table2[intVal - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
               if (RSDecoder_OmegaZActual_idx_1 > 0) {
                 /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-                if (decoder_in_tmp == 0) {
-                  decoder_in_tmp = 0;
+                if (intVal == 0) {
+                  intVal = 0;
                 } else {
                   temp = (rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_1
-                          - 1] + rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) %
-                    7;
+                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
-                Temp3 ^= decoder_in_tmp;
+                Temp3 ^= intVal;
               }
 
               /*  start of gf_pow():gf_pow raises x^yd  */
@@ -892,46 +865,44 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
-                decoder_in_tmp = 0;
+                intVal = 0;
               } else {
                 temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
-              if (decoder_in_tmp != 0) {
-                temp = rtConstP.RSDecoder_table2[decoder_in_tmp - 1] % 7;
+              if (intVal != 0) {
+                temp = rtConstP.RSDecoder_table2[intVal - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
               if (rtDW->RSDecoder_PsiZDeriv[1] > 0) {
                 /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-                if ((rtDW->RSDecoder_PsiZDeriv[1] == 0) || (decoder_in_tmp == 0))
-                {
-                  decoder_in_tmp = 0;
+                if ((rtDW->RSDecoder_PsiZDeriv[1] == 0) || (intVal == 0)) {
+                  intVal = 0;
                 } else {
                   temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[1]
-                          - 1] + rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) %
-                    7;
+                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
-                Temp4 ^= decoder_in_tmp;
+                Temp4 ^= intVal;
               }
 
               /*  start of gf_pow():gf_pow raises x^yd  */
@@ -945,45 +916,44 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
-                decoder_in_tmp = 0;
+                intVal = 0;
               } else {
                 temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
-              if (decoder_in_tmp != 0) {
-                temp = (rtConstP.RSDecoder_table2[decoder_in_tmp - 1] << 1) % 7;
+              if (intVal != 0) {
+                temp = (rtConstP.RSDecoder_table2[intVal - 1] << 1) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
               if (RSDecoder_OmegaZActual_idx_2 > 0) {
                 /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-                if (decoder_in_tmp == 0) {
-                  decoder_in_tmp = 0;
+                if (intVal == 0) {
+                  intVal = 0;
                 } else {
                   temp = (rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_2
-                          - 1] + rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) %
-                    7;
+                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
-                Temp3 ^= decoder_in_tmp;
+                Temp3 ^= intVal;
               }
 
               /*  start of gf_pow():gf_pow raises x^yd  */
@@ -997,46 +967,44 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
-                decoder_in_tmp = 0;
+                intVal = 0;
               } else {
                 temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
-              if (decoder_in_tmp != 0) {
-                temp = (rtConstP.RSDecoder_table2[decoder_in_tmp - 1] << 1) % 7;
+              if (intVal != 0) {
+                temp = (rtConstP.RSDecoder_table2[intVal - 1] << 1) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
               if (rtDW->RSDecoder_PsiZDeriv[2] > 0) {
                 /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-                if ((rtDW->RSDecoder_PsiZDeriv[2] == 0) || (decoder_in_tmp == 0))
-                {
-                  decoder_in_tmp = 0;
+                if ((rtDW->RSDecoder_PsiZDeriv[2] == 0) || (intVal == 0)) {
+                  intVal = 0;
                 } else {
                   temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[2]
-                          - 1] + rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) %
-                    7;
+                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
-                Temp4 ^= decoder_in_tmp;
+                Temp4 ^= intVal;
               }
 
               /*  start of gf_pow():gf_pow raises x^yd  */
@@ -1050,45 +1018,44 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
-                decoder_in_tmp = 0;
+                intVal = 0;
               } else {
                 temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
-              if (decoder_in_tmp != 0) {
-                temp = rtConstP.RSDecoder_table2[decoder_in_tmp - 1] * 3 % 7;
+              if (intVal != 0) {
+                temp = rtConstP.RSDecoder_table2[intVal - 1] * 3 % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
               if (RSDecoder_OmegaZActual_idx_3 > 0) {
                 /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-                if (decoder_in_tmp == 0) {
-                  decoder_in_tmp = 0;
+                if (intVal == 0) {
+                  intVal = 0;
                 } else {
                   temp = (rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_3
-                          - 1] + rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) %
-                    7;
+                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
-                Temp3 ^= decoder_in_tmp;
+                Temp3 ^= intVal;
               }
 
               /*  start of gf_pow():gf_pow raises x^yd  */
@@ -1102,46 +1069,44 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
-                decoder_in_tmp = 0;
+                intVal = 0;
               } else {
                 temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
-              if (decoder_in_tmp != 0) {
-                temp = rtConstP.RSDecoder_table2[decoder_in_tmp - 1] * 3 % 7;
+              if (intVal != 0) {
+                temp = rtConstP.RSDecoder_table2[intVal - 1] * 3 % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
               if (rtDW->RSDecoder_PsiZDeriv[3] > 0) {
                 /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-                if ((rtDW->RSDecoder_PsiZDeriv[3] == 0) || (decoder_in_tmp == 0))
-                {
-                  decoder_in_tmp = 0;
+                if ((rtDW->RSDecoder_PsiZDeriv[3] == 0) || (intVal == 0)) {
+                  intVal = 0;
                 } else {
                   temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[3]
-                          - 1] + rtConstP.RSDecoder_table2[decoder_in_tmp - 1]) %
-                    7;
+                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
-                Temp4 ^= decoder_in_tmp;
+                Temp4 ^= intVal;
               }
 
               /* Re-use space in Temp1 */
@@ -1155,7 +1120,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if ((temp == 0) || (Temp3 == 0)) {
-                decoder_in_tmp = 0;
+                intVal = 0;
               } else {
                 temp = (rtConstP.RSDecoder_table2[temp - 1] +
                         rtConstP.RSDecoder_table2[Temp3 - 1]) % 7;
@@ -1163,7 +1128,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
                   temp = 7;
                 }
 
-                decoder_in_tmp = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
@@ -1171,16 +1136,16 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
               /* Find exponent representations of Errloc ==> get actual error locations */
               /* Correct the current error */
               temp = 6 - rtConstP.RSDecoder_table2[RSDecoder_Errloc[j] - 1];
-              rtDW->RSDecoder_CCode[temp] ^= decoder_in_tmp;
+              rtDW->RSDecoder_CCode[temp] ^= intVal;
             }
 
             /*  end of correctErrors()  */
             /* Assign outputs.  Reduce cnumerr by the number of punctures and erasures. */
             /*  start of assignOutputs():Populate output vectors with proper data */
             /* Corrected message.  If there is a decoding failure, return the input message. */
-            rtDW->RSDecoder[iIdx * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
-            rtDW->RSDecoder[iIdx * 3 + 1] = (uint32_T)rtDW->RSDecoder_CCode[1];
-            rtDW->RSDecoder[iIdx * 3 + 2] = (uint32_T)rtDW->RSDecoder_CCode[2];
+            rtDW->RSDecoder[bitIdx * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
+            rtDW->RSDecoder[bitIdx * 3 + 1] = (uint32_T)rtDW->RSDecoder_CCode[1];
+            rtDW->RSDecoder[bitIdx * 3 + 2] = (uint32_T)rtDW->RSDecoder_CCode[2];
 
             /* Optional output for # of errors corrected */
             /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -1192,59 +1157,54 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
     }
   }
 
-  /* End of S-Function (scomberlekamp): '<S6>/RS Decoder' */
+  /* End of S-Function (scomberlekamp): '<S5>/RS Decoder' */
 
-  /* S-Function (scominttobit): '<S6>/Integer to Bit Converter' incorporates:
-   *  S-Function (scomberlekamp): '<S6>/RS Decoder'
+  /* S-Function (scominttobit): '<S5>/Integer to Bit Converter' incorporates:
+   *  S-Function (scomberlekamp): '<S5>/RS Decoder'
    */
   /*  end of COMM_DoBerlekamp()  */
   /* Integer to Bit Conversion */
   for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 2400;
        RSDecoder_OmegaZActual_idx_0++) {
     uint32_T u;
-    iIdx = (RSDecoder_OmegaZActual_idx_0 + 1) * 3;
+    bitIdx = (RSDecoder_OmegaZActual_idx_0 + 1) * 3;
     u = rtDW->RSDecoder[RSDecoder_OmegaZActual_idx_0];
-    rtDW->IntegertoBitConverter[iIdx - 1] = (int8_T)(u & 1U);
+    rtDW->IntegertoBitConverter[bitIdx - 1] = (int8_T)(u & 1U);
     u >>= 1U;
-    rtDW->IntegertoBitConverter[iIdx - 2] = (int8_T)(u & 1U);
-    rtDW->IntegertoBitConverter[iIdx - 3] = (int8_T)(u >> 1U & 1U);
+    rtDW->IntegertoBitConverter[bitIdx - 2] = (int8_T)(u & 1U);
+    rtDW->IntegertoBitConverter[bitIdx - 3] = (int8_T)(u >> 1U & 1U);
   }
 
-  /* End of S-Function (scominttobit): '<S6>/Integer to Bit Converter' */
+  /* End of S-Function (scominttobit): '<S5>/Integer to Bit Converter' */
+
+  /* DataTypeConversion: '<S6>/Conversion' incorporates:
+   *  S-Function (scominttobit): '<S5>/Integer to Bit Converter'
+   */
   for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 7200;
        RSDecoder_OmegaZActual_idx_0++) {
-    /* DataTypeConversion: '<S7>/Conversion' incorporates:
-     *  S-Function (scominttobit): '<S6>/Integer to Bit Converter'
-     */
-    rtY_descrambler_in[RSDecoder_OmegaZActual_idx_0] = (uint8_T)
-      rtDW->IntegertoBitConverter[RSDecoder_OmegaZActual_idx_0];
-
-    /* DataTypeConversion: '<S4>/Data Type Conversion' incorporates:
-     *  DataTypeConversion: '<S7>/Conversion'
-     */
-    rtDW->DataTypeConversion[RSDecoder_OmegaZActual_idx_0] =
-      (rtY_descrambler_in[RSDecoder_OmegaZActual_idx_0] != 0.0);
+    rtY_descr_in[RSDecoder_OmegaZActual_idx_0] = ((uint8_T)
+      rtDW->IntegertoBitConverter[RSDecoder_OmegaZActual_idx_0] != 0);
   }
 
-  /* S-Function (scomscram2): '<S4>/Descrambler' incorporates:
-   *  DataTypeConversion: '<S4>/Data Type Conversion'
+  /* S-Function (scomscram2): '<S3>/Descrambler' incorporates:
+   *  DataTypeConversion: '<S6>/Conversion'
    */
   memset(&shiftReg[0], 0, sizeof(int32_T) << 4U);
   for (j = 0; j < 7200; j++) {
-    inv = rtDW->DataTypeConversion[j];
-    iIdx = inv;
+    inv = rtY_descr_in[j];
+    bitIdx = inv;
     for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 16;
          RSDecoder_OmegaZActual_idx_0++) {
-      iIdx -= (uint8_T)
+      bitIdx -= (uint8_T)
         (rtConstP.Descrambler_Polynomial[RSDecoder_OmegaZActual_idx_0 + 1] *
          shiftReg[RSDecoder_OmegaZActual_idx_0]);
     }
 
-    while (iIdx < 0) {
-      iIdx += 2;
+    while (bitIdx < 0) {
+      bitIdx += 2;
     }
 
-    rtY_data_frame[j] = (iIdx % 2 != 0);
+    rtY_data_frame[j] = (bitIdx % 2 != 0);
     for (RSDecoder_OmegaZActual_idx_0 = 14; RSDecoder_OmegaZActual_idx_0 >= 0;
          RSDecoder_OmegaZActual_idx_0--) {
       shiftReg[RSDecoder_OmegaZActual_idx_0 + 1] =
@@ -1252,32 +1212,20 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
     }
 
     shiftReg[0U] = inv;
-
-    /* Outport: '<Root>/rx_out' incorporates:
-     *  DataTypeConversion: '<S4>/Data Type Conversion'
-     *  S-Function (scomscram2): '<S4>/Descrambler'
-     */
-    rtY_rx_out[j] = rtY_data_frame[j];
   }
 
-  /* End of S-Function (scomscram2): '<S4>/Descrambler' */
+  /* End of S-Function (scomscram2): '<S3>/Descrambler' */
 
-  /* Outport: '<Root>/rx_in' incorporates:
+  /* Outport: '<Root>/dec_in' incorporates:
    *  Inport: '<Root>/rx_frame'
    */
-  memcpy(&rtY_rx_in[0], &rtU_rx_frame[0], 8464U * sizeof(creal_T));
-
-  /* Outport: '<Root>/demapper_in' incorporates:
-   *  Inport: '<Root>/rx_frame'
-   */
-  memcpy(&rtY_demapper_in[0], &rtU_rx_frame[64], 8400U * sizeof(creal_T));
+  memcpy(&rtY_dec_in[0], &rtU_v2x_rx_demod_out[128], 16800U * sizeof(boolean_T));
 }
 
 /* Model initialize function */
-void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
-  boolean_T rtY_data_frame[7200], creal_T rtY_rx_in[8464], creal_T
-  rtY_demapper_in[8400], real_T rtY_decoder_in[16800], real_T
-  rtY_descrambler_in[7200], boolean_T rtY_rx_out[7200])
+void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, boolean_T
+  rtU_v2x_rx_demod_out[16928], boolean_T rtY_data_frame[7200], boolean_T
+  rtY_dec_in[16800], boolean_T rtY_descr_in[7200])
 {
   DW *rtDW = rtM->dwork;
 
@@ -1288,15 +1236,12 @@ void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, creal_T rtU_rx_frame[8464],
                 sizeof(DW));
 
   /* external inputs */
-  (void)memset(&rtU_rx_frame[0], 0, 8464U * sizeof(creal_T));
+  (void)memset(&rtU_v2x_rx_demod_out[0], 0, 16928U * sizeof(boolean_T));
 
   /* external outputs */
   (void)memset(&rtY_data_frame[0], 0, 7200U * sizeof(boolean_T));
-  (void)memset(&rtY_decoder_in[0], 0, 16800U * sizeof(real_T));
-  (void)memset(&rtY_descrambler_in[0], 0, 7200U * sizeof(real_T));
-  (void)memset(&rtY_rx_out[0], 0, 7200U * sizeof(boolean_T));
-  (void)memset(&rtY_rx_in[0], 0, 8464U * sizeof(creal_T));
-  (void)memset(&rtY_demapper_in[0], 0, 8400U * sizeof(creal_T));
+  (void)memset(&rtY_dec_in[0], 0, 16800U * sizeof(boolean_T));
+  (void)memset(&rtY_descr_in[0], 0, 7200U * sizeof(boolean_T));
 }
 
 /*

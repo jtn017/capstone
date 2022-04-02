@@ -1,0 +1,174 @@
+%implements s0_b0_8xuze_Outputs "C"
+
+%function Outputs(block, system) Output
+%assign cfgTxt = ""
+%openfile cfgTxt
+%assign localVarDecl = ""
+%openfile localVarDecl
+
+int32_T shiftReg[16];
+int32_T B_n_idx_0;
+int32_T colIdx;
+int32_T i;
+int32_T tmp;
+int8_T rtb_BittoIntegerConverter[2400];
+int8_T MessagePAD[3];
+%closefile localVarDecl
+%<SLibCG_TrackDW(0)>\
+%<SLibCG_TrackEO(2)>\
+%<SLibCG_TrackEO(1)>\
+%<SLibCG_TrackEO(0)>\
+%<SLibCG_TrackEI(0)>\
+/* {S!d44}S-Function (scomscram2): '<S4>/Scrambler' incorporates:
+ *  Inport: '<Root>/data_frame'
+ */
+/*@>c10f*/memset(&/*@>bcbc*/shiftReg/*@>bcbd*/[/*@>bcb9*/0], /*@>d7ba*/0, /*@>bcc2*/sizeof(int32_T)/*@>d700*/ << /*@>d6ff*/4U);
+/*@>632a*/for (/*@>d83c*/B_n_idx_0 = /*@>d83b*/0; /*@>d846*/B_n_idx_0 < /*@>d844*/7200; /*@>d842*/B_n_idx_0/*@>d86a*/++) {
+    /*@>7e26*/tmp/*@>ec1*/ = /*@>c7ef*/rtU_v2x_tx_bb_in/*@>c7f1*/[/*@>c7ee*/B_n_idx_0];
+/*@>635c*/    for (/*@>d85c*/i = /*@>d85b*/0; /*@>d866*/i < /*@>d864*/16; /*@>d862*/i/*@>d86b*/++) {
+        /*@>7e22*/tmp/*@>d86e*/ += /*@>807b*/(uint8_T)(/*@>cc56*/rtConstP./*@>dacd*/Scrambler_Polynomial/*@>c7f9*/[/*@>c7f5*/i/*@>c7f3*/ + /*@>c7f6*/1]/*@>8077*/ * /*@>c7fd*/shiftReg/*@>c7ff*/[/*@>c7fc*/i]);
+    }
+    /*@>7e1d*/tmp/*@>d86d*/ %= /*@>7e1f*/2;
+    /*@>7df8*/rtY_scramb_out/*@>ed7*/[/*@>7e1b*/B_n_idx_0]/*@>eda*/ = (/*@>7e19*/tmp/*@>806b*/ != /*@>8069*/0);
+/*@>6343*/    for (/*@>d84d*/i = /*@>d84c*/14; /*@>d857*/i >= /*@>d855*/0; /*@>d853*/i/*@>d86f*/--) {
+        /*@>7de4*/shiftReg/*@>5bb1*/[/*@>7de2*/i/*@>6a98*/ + /*@>7e53*/1]/*@>ee8*/ = /*@>c803*/shiftReg/*@>c805*/[/*@>c802*/i];
+    }
+    /*@>7df4*/shiftReg/*@>ee9*/[/*@>7e18*/0U]/*@>eeb*/ = /*@>7e16*/tmp;
+}
+/* {S!d46}S-Function (scominttobit): '<S5>/Bit to Integer Converter' incorporates:
+ *  S-Function (scomscram2): '<S4>/Scrambler'
+ */
+/* Bit to Integer Conversion */
+/*@>7e14*/tmp/*@>f65*/ = /*@>d7bd*/0;
+/*@>62d1*/for (/*@>d82b*/i = /*@>d82a*/0; /*@>d835*/i < /*@>d833*/2400; /*@>d831*/i/*@>d86c*/++) {
+    /* Input bit order is MSB first */
+    /*@>7f8b*/B_n_idx_0/*@>75f3*/ = /*@>8331*/(int32_T)((/*@>8a9c*/(uint32_T)/*@>c811*/rtY_scramb_out/*@>c813*/[/*@>c810*/tmp]/*@>8a9b*/ << /*@>8a9f*/1U/*@>8a9a*/ | /*@>c819*/rtY_scramb_out/*@>c81b*/[/*@>c817*/tmp/*@>c815*/ + /*@>c818*/1])/*@>807d*/ << /*@>7f8f*/1U/*@>807c*/ | /*@>c821*/rtY_scramb_out/*@>c823*/[/*@>c81f*/tmp/*@>c81d*/ + /*@>c820*/2]);
+    /*@>7f94*/tmp/*@>d870*/ += /*@>7f98*/3;
+    /*@>7df6*/rtb_BittoIntegerConverter/*@>f8c*/[/*@>7e11*/i]/*@>f8e*/ = /*@>8348*/(int8_T)/*@>7e0f*/B_n_idx_0;
+}
+/* {E!d46}End of S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
+
+/* {S!d54}S-Function (scombchrsencoder): '<S5>/RS Encoder' incorporates:
+ *  S-Function (scominttobit): '<S5>/Bit to Integer Converter'
+ */
+/*@>6155*/for (/*@>d809*/i = /*@>d808*/0; /*@>d813*/i < /*@>d811*/800; /*@>d80f*/i/*@>d871*/++) {
+    int32_T B_n_idx_1;
+    int32_T B_n_idx_2;
+    int32_T B_n_idx_3;
+    int8_T MessagePAD_tmp;
+    int8_T MessagePAD_tmp_0;
+    int8_T MessagePAD_tmp_1;
+    /* {S!d48}S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
+    /*@>a3b0*/MessagePAD_tmp/*@>a3b2*/ = /*@>c80b*/rtb_BittoIntegerConverter/*@>c80d*/[/*@>c809*/i/*@>c807*/ * /*@>c80a*/3];
+    /*@>7f58*/MessagePAD/*@>757f*/[/*@>7f5f*/0]/*@>757e*/ = /*@>a3b4*/MessagePAD_tmp;
+    /* {S!d50}S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
+    /*@>a3d0*/MessagePAD_tmp_0/*@>a3d2*/ = /*@>c82b*/rtb_BittoIntegerConverter/*@>c82d*/[/*@>c828*/i/*@>c826*/ * /*@>c829*/3/*@>c825*/ + /*@>c82a*/1];
+    /*@>7f60*/MessagePAD/*@>7593*/[/*@>7f67*/1]/*@>7592*/ = /*@>a3d4*/MessagePAD_tmp_0;
+    /* {S!d52}S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
+    /*@>a3f0*/MessagePAD_tmp_1/*@>a3f2*/ = /*@>c835*/rtb_BittoIntegerConverter/*@>c837*/[/*@>c832*/i/*@>c830*/ * /*@>c833*/3/*@>c82f*/ + /*@>c834*/2];
+    /*@>7f69*/MessagePAD/*@>75a7*/[/*@>7f70*/2]/*@>75a6*/ = /*@>a3f4*/MessagePAD_tmp_1;
+    /*@>7fe5*/B_n_idx_0/*@>7552*/ = /*@>d7c0*/0;
+    /*@>7fe7*/B_n_idx_1/*@>755b*/ = /*@>d7c3*/0;
+    /*@>7fe9*/B_n_idx_2/*@>7564*/ = /*@>d7c6*/0;
+    /*@>7feb*/B_n_idx_3/*@>756d*/ = /*@>d7c9*/0;
+/*@>61eb*/    for (/*@>d81a*/colIdx = /*@>d819*/0; /*@>d824*/colIdx < /*@>d822*/3; /*@>d820*/colIdx/*@>d875*/++) {
+        int32_T firstParity_idx_1;
+        int8_T MessagePAD_p;
+        MessagePAD_p = /*@>c84d*/MessagePAD/*@>c84f*/[/*@>c84c*/colIdx];
+        /*@>7fd5*/firstParity_idx_1/*@>750d*/ = /*@>7fd7*/B_n_idx_0;
+        /*@>7ebc*/tmp/*@>7309*/ = MessagePAD_p/*@>80ad*/ ^ /*@>8eef*/B_n_idx_0;
+        /*@>7316*/if (/*@>7ebe*/tmp/*@>7318*/ == /*@>7ec0*/0) {
+            /*@>7ec7*/tmp/*@>733b*/ = /*@>d7cc*/0;
+        } else {
+            /*@>7ec1*/tmp/*@>7324*/ = (/*@>cc86*/rtConstP./*@>dad3*/RSEncoder_table2/*@>c857*/[/*@>c853*/tmp/*@>c851*/ - /*@>c854*/1]/*@>7327*/ + 3)/*@>7326*/ % /*@>7ec6*/7;
+            /*@>733e*/if (/*@>7eca*/tmp/*@>733f*/ == /*@>7ecc*/0) {
+                /*@>7ecd*/tmp/*@>7346*/ = /*@>d7cf*/7;
+            }
+            /*@>7ed6*/tmp/*@>7352*/ = /*@>cc92*/rtConstP./*@>dad6*/RSEncoder_table1/*@>c85f*/[/*@>c85b*/tmp/*@>c859*/ - /*@>c85c*/1];
+        }
+        /*@>7fa9*/B_n_idx_0 = /*@>8dbe*/B_n_idx_1/*@>8ac0*/ ^ /*@>8ac4*/tmp;
+        /*@>7edf*/tmp/*@>7373*/ = MessagePAD_p/*@>80ab*/ ^ /*@>7faf*/firstParity_idx_1;
+        /*@>7380*/if (/*@>7ee1*/tmp/*@>7382*/ == /*@>7ee3*/0) {
+            /*@>7eea*/tmp/*@>73a5*/ = /*@>d7d2*/0;
+        } else {
+            /*@>7ee4*/tmp/*@>738e*/ = /*@>cc9a*/rtConstP./*@>dad9*/RSEncoder_table2/*@>c867*/[/*@>c863*/tmp/*@>c861*/ - /*@>c864*/1]/*@>7390*/ % /*@>7ee9*/7;
+            /*@>73a8*/if (/*@>7eed*/tmp/*@>73a9*/ == /*@>7eef*/0) {
+                /*@>7ef0*/tmp/*@>73b0*/ = /*@>d7d5*/7;
+            }
+            /*@>7ef9*/tmp/*@>73bc*/ = /*@>cca2*/rtConstP./*@>dadc*/RSEncoder_table1/*@>c86f*/[/*@>c86b*/tmp/*@>c869*/ - /*@>c86c*/1];
+        }
+        /*@>7fb1*/B_n_idx_1 = /*@>8c05*/B_n_idx_2/*@>8ad3*/ ^ /*@>8ad7*/tmp;
+        /*@>7f02*/tmp/*@>73dd*/ = MessagePAD_p/*@>80a9*/ ^ /*@>7fb7*/firstParity_idx_1;
+        /*@>73ea*/if (/*@>7f04*/tmp/*@>73ec*/ == /*@>7f06*/0) {
+            /*@>7f0d*/tmp/*@>740f*/ = /*@>d7d8*/0;
+        } else {
+            /*@>7f07*/tmp/*@>73f8*/ = (/*@>ccaa*/rtConstP./*@>dadf*/RSEncoder_table2/*@>c877*/[/*@>c873*/tmp/*@>c871*/ - /*@>c874*/1]/*@>73fb*/ + 1)/*@>73fa*/ % /*@>7f0c*/7;
+            /*@>7412*/if (/*@>7f10*/tmp/*@>7413*/ == /*@>7f12*/0) {
+                /*@>7f13*/tmp/*@>741a*/ = /*@>d7db*/7;
+            }
+            /*@>7f1c*/tmp/*@>7426*/ = /*@>ccb2*/rtConstP./*@>dae2*/RSEncoder_table1/*@>c87f*/[/*@>c87b*/tmp/*@>c879*/ - /*@>c87c*/1];
+        }
+        /*@>7fb9*/B_n_idx_2 = /*@>8ae8*/B_n_idx_3/*@>8ae6*/ ^ /*@>8aea*/tmp;
+        /*@>7f25*/tmp/*@>7447*/ = MessagePAD_p/*@>80a7*/ ^ /*@>7fbd*/firstParity_idx_1;
+        /*@>7454*/if (/*@>7f27*/tmp/*@>7456*/ == /*@>7f29*/0) {
+            /*@>93ca*/B_n_idx_3/*@>7479*/ = /*@>d7de*/0;
+        } else {
+            /*@>7f2a*/tmp/*@>7462*/ = (/*@>ccba*/rtConstP./*@>dae5*/RSEncoder_table2/*@>c887*/[/*@>c883*/tmp/*@>c881*/ - /*@>c884*/1]/*@>7465*/ + 3)/*@>7464*/ % /*@>7f2f*/7;
+            /*@>747c*/if (/*@>7f33*/tmp/*@>747d*/ == /*@>7f35*/0) {
+                /*@>7f36*/tmp/*@>7484*/ = /*@>d7e1*/7;
+            }
+            /*@>93cb*/B_n_idx_3/*@>7490*/ = /*@>ccc2*/rtConstP./*@>dae8*/RSEncoder_table1/*@>c88f*/[/*@>c88b*/tmp/*@>c889*/ - /*@>c88c*/1];
+        }
+    }
+    /*@>cd18*/rtDW->/*@>dafa*/RSEncoder/*@>72a7*/[/*@>7e9a*/i/*@>8098*/ * /*@>7e9c*/7]/*@>72a6*/ = /*@>841c*/(uint32_T)MessagePAD_tmp;
+    /*@>cd21*/rtDW->/*@>dafd*/RSEncoder/*@>72bf*/[/*@>7ea4*/i/*@>8092*/ * /*@>7ea6*/7/*@>72c1*/ + /*@>7eac*/1]/*@>72be*/ = /*@>841e*/(uint32_T)MessagePAD_tmp_0;
+    /*@>cd2a*/rtDW->/*@>db00*/RSEncoder/*@>72d7*/[/*@>7eb0*/i/*@>808c*/ * /*@>7eb2*/7/*@>72d9*/ + /*@>7eb8*/2]/*@>72d6*/ = /*@>8420*/(uint32_T)MessagePAD_tmp_1;
+    /*@>cd33*/rtDW->/*@>db03*/RSEncoder/*@>7247*/[/*@>7e82*/i/*@>8089*/ * /*@>7e84*/7/*@>7249*/ + /*@>7e85*/3]/*@>7246*/ = /*@>7252*/(uint32_T)/*@>7f9b*/B_n_idx_0;
+    /*@>cd3c*/rtDW->/*@>db06*/RSEncoder/*@>725d*/[/*@>7e88*/i/*@>8086*/ * /*@>7e8a*/7/*@>7838*/ + /*@>7e8b*/4]/*@>725c*/ = /*@>7268*/(uint32_T)/*@>7f9d*/B_n_idx_1;
+    /*@>cd45*/rtDW->/*@>db09*/RSEncoder/*@>7273*/[/*@>7e8e*/i/*@>8083*/ * /*@>7e90*/7/*@>783a*/ + /*@>7e91*/5]/*@>7272*/ = /*@>727e*/(uint32_T)/*@>7f9f*/B_n_idx_2;
+    /*@>cd4e*/rtDW->/*@>db0c*/RSEncoder/*@>7289*/[/*@>7e94*/i/*@>8080*/ * /*@>7e96*/7/*@>783c*/ + /*@>7e97*/6]/*@>7288*/ = /*@>7294*/(uint32_T)/*@>7fa1*/B_n_idx_3;
+}
+/* {E!d54}End of S-Function (scombchrsencoder): '<S5>/RS Encoder' */
+
+/* {S!d56}S-Function (scominttobit): '<S5>/Integer to Bit Converter' incorporates:
+ *  S-Function (scombchrsencoder): '<S5>/RS Encoder'
+ */
+/* Integer to Bit Conversion */
+/*@>6094*/for (/*@>d7f8*/i = /*@>d7f7*/0; /*@>d802*/i < /*@>d800*/5600; /*@>d7fe*/i/*@>d872*/++) {
+    uint32_T u;
+    /*@>7e08*/tmp/*@>11f2*/ = (/*@>7e0c*/i/*@>11ef*/ + /*@>7e0b*/1)/*@>80b1*/ * /*@>7e0a*/3;
+    /*@>7e06*/u/*@>11f6*/ = /*@>cceb*/rtDW->/*@>daeb*/RSEncoder/*@>c83d*/[/*@>c83a*/i];
+    /*@>ccf4*/rtDW->/*@>daee*/IntegertoBitConverter/*@>71eb*/[/*@>7e56*/tmp/*@>71ed*/ - /*@>7e58*/1]/*@>71ea*/ = /*@>8327*/(int8_T)(/*@>7e59*/u/*@>80b0*/ & /*@>7e5b*/1U);
+    /*@>7e5c*/u/*@>d874*/ >>= /*@>7e60*/1U;
+    /*@>cd06*/rtDW->/*@>daf4*/IntegertoBitConverter/*@>7207*/[/*@>8b04*/tmp/*@>a28e*/ - /*@>7e6a*/2]/*@>7206*/ = /*@>834d*/(int8_T)(/*@>7e6b*/u/*@>80af*/ & /*@>7e6d*/1U);
+    /*@>cd0f*/rtDW->/*@>daf7*/IntegertoBitConverter/*@>7223*/[/*@>8c1f*/tmp/*@>a292*/ - /*@>7e7c*/3]/*@>7222*/ = /*@>8369*/(int8_T)(/*@>8b14*/u/*@>8b12*/ >> /*@>8b15*/1U/*@>80ae*/ & /*@>7e7f*/1U);
+}
+/* {E!d56}End of S-Function (scominttobit): '<S5>/Integer to Bit Converter' */
+/*@>5416*/for (/*@>d7e7*/i = /*@>d7e6*/0; /*@>d7f1*/i < /*@>d7ef*/16800; /*@>d7ed*/i/*@>d873*/++) {
+    /* {S!d58}DataTypeConversion: '<S6>/Conversion' incorporates:
+ *  S-Function (scominttobit): '<S5>/Integer to Bit Converter'
+ */
+    /*@>7dd8*/rtY_enc_out/*@>5c6e*/[/*@>7dd6*/i]/*@>5407*/ = (/*@>8422*/(uint8_T)/*@>ccfd*/rtDW->/*@>daf1*/IntegertoBitConverter/*@>c843*/[/*@>c840*/i]/*@>80b7*/ != /*@>80b5*/0);
+    /* {S!d60}SignalConversion generated from: '<S3>/Matrix Concatenate' incorporates:
+ *  DataTypeConversion: '<S6>/Conversion'
+ *  Outport: '<Root>/tx_frame'
+ */
+    /*@>7dd0*/rtY_tx_frame/*@>5ca9*/[/*@>7dce*/i/*@>5cae*/ + /*@>7dcd*/128]/*@>5424*/ = /*@>c847*/rtY_enc_out/*@>c849*/[/*@>c846*/i];
+}
+/* {S!d62}Constant: '<S3>/preamble' incorporates:
+ *  Outport: '<Root>/tx_frame'
+ */
+/*@>c11c*/memcpy(&/*@>ba7b*/rtY_tx_frame/*@>ba7c*/[/*@>ba6a*/0], &/*@>cc6e*/rtConstP./*@>dad0*/preamble_Value/*@>ba84*/[/*@>ba77*/0], /*@>ba86*/sizeof(boolean_T)/*@>d703*/ << /*@>d702*/7U);
+%<SLibInsertSolverResetCode()>\
+%closefile cfgTxt
+%<cfgTxt>
+%<LibSetSystemField(system, "CachedOutputLocalVars", localVarDecl)>
+%endfunction
+%function OutputsFcnProtoType(block, system) Output
+%assign fcnProtoType = ""
+%openfile fcnProtoType
+static void Outputs(\
+%assign comma = ""
+%closefile fcnProtoType
+%<SLibCG_SetFcnProtoType(0, 0, fcnProtoType)>
+%endfunction

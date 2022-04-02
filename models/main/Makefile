@@ -20,9 +20,9 @@ GEN_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(GEN_SRC)))
 MAIN_SRC = $(wildcard $(MAIN_SDIR)/*.c)
 MAIN_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(MAIN_SRC)))
 
-# Test files
-TEST_SRC = $(wildcard $(TEST_SDIR)/*.c)
-TEST_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(TEST_SRC)))
+# # Test files
+# TEST_SRC = $(wildcard $(TEST_SDIR)/*.c)
+# TEST_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(TEST_SRC)))
 
 # Other commands
 MKDIR = $(mkdir -p)
@@ -30,11 +30,19 @@ MKDIR = $(mkdir -p)
 # Make targets
 all: main
 
-test: $(GEN_OBJ) $(TEST_OBJ)
-	$(CC) $(CFLAGS) $(GEN_OBJ) $(TEST_OBJ) -lm -levent -o v2x_tx_bb_test
+# test: $(GEN_OBJ) $(TEST_OBJ)
+# 	$(CC) $(CFLAGS) $(GEN_OBJ) $(TEST_OBJ) -lm -levent -o v2x_tx_bb_test
 
 main: $(GEN_OBJ) $(MAIN_OBJ) 
 	$(CC) $(CFLAGS) $(GEN_OBJ) $(MAIN_OBJ) -lm -levent -o v2x_tx_main
+
+mv_gen_code:
+	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband.c gen/.
+	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband.h gen/.
+	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband_data.c gen/.
+	cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator.c gen/.
+	cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator.h gen/.
+	cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator_data.c gen/.
 
 # Object targets
 $(ODIR)/%.o: $(GEN_SDIR)/%.c

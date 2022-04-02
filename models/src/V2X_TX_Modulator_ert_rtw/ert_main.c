@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Modulator'.
  *
- * Model version                  : 1.138
+ * Model version                  : 1.150
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Mar 27 16:30:36 2022
+ * C/C++ source code generated on : Sat Apr  2 13:40:51 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -28,10 +28,13 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 /* '<Root>/ tx_frame' */
-static creal_T rtU_v2x_tx_bb_out[8464];
+static boolean_T rtU_v2x_tx_bb_out[16928];
 
 /* '<Root>/mod_frame' */
 static cint16_T rtY_mod_frame[67712];
+
+/* '<Root>/map_out' */
+static creal_T rtY_map_out[8464];
 
 /* '<Root>/ps_out' */
 static creal_T rtY_ps_out[67712];
@@ -66,7 +69,8 @@ void rt_OneStep(RT_MODEL *const rtM)
   /* Set model inputs here */
 
   /* Step the model */
-  V2X_TX_Modulator_step(rtM, rtU_v2x_tx_bb_out, rtY_mod_frame, rtY_ps_out);
+  V2X_TX_Modulator_step(rtM, rtU_v2x_tx_bb_out, rtY_mod_frame, rtY_map_out,
+                        rtY_ps_out);
 
   /* Get model outputs here */
 
@@ -96,7 +100,8 @@ int_T main(int_T argc, const char *argv[])
   rtM->dwork = &rtDW;
 
   /* Initialize model */
-  V2X_TX_Modulator_initialize(rtM, rtU_v2x_tx_bb_out, rtY_mod_frame, rtY_ps_out);
+  V2X_TX_Modulator_initialize(rtM, rtU_v2x_tx_bb_out, rtY_mod_frame, rtY_map_out,
+    rtY_ps_out);
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.01 seconds (the model's base sample time) here.  The

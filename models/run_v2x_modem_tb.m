@@ -37,7 +37,7 @@ set_param(sim_name, 'StopTime', num2str(Tsim))
 sim_out = sim(sim_name, Tsim);
 
 %% Save to CSV
-save_to_csv = 0;
+save_to_csv = 1;
 
 % V2X TX Baseband
 if save_to_csv
@@ -50,8 +50,7 @@ if save_to_csv
     v2x_tx_bb_in  = squeeze(sim_out.logsout.getElement('v2x_tx_bb_in').Values.Data);
     v2x_tx_bb_out = squeeze(sim_out.logsout.getElement('v2x_tx_bb_out').Values.Data);
     writematrix(v2x_tx_bb_in,  'main/data/v2x_tx_bb_in.csv')
-    writematrix(real(v2x_tx_bb_out), 'main/data/v2x_tx_bb_out_real.csv')
-    writematrix(imag(v2x_tx_bb_out), 'main/data/v2x_tx_bb_out_imag.csv')
+    writematrix(v2x_tx_bb_out, 'main/data/v2x_tx_bb_out.csv')
 
     % TX Modulator
     v2x_tx_mod_out = squeeze(sim_out.logsout.getElement('v2x_tx_mod_out').Values.Data);
@@ -60,7 +59,7 @@ if save_to_csv
 end
 
 %% Build script
-build_src = 0;
+build_src = 1;
 
 if build_src
     % Models

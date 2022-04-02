@@ -21,9 +21,10 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 // ---------------------- V2X_TX_Modulator IO ----------------------
-static creal_T rtU_tx_frame[8464]; /* '<Root>/ tx_frame' */
-static cint16_T rtY_mod_frame[67712]; /* '<Root>/mod_frame' */
-static creal_T rtY_ps_out[67712]; /* '<Root>/ps_out' */
+static boolean_T rtU_v2x_tx_bb_out[TX_BB_OUT_LEN];
+static cint16_T rtY_mod_frame[TX_MOD_OUT_LEN];
+static creal_T rtY_map_out[TX_MOD_MAP_LEN];
+static creal_T rtY_ps_out[TX_MOD_OUT_LEN];
 
 // ---------------------- Function prototype ----------------------
 void v2x_tx_mod_one_step(RT_MODEL *const rtM);
@@ -47,7 +48,7 @@ void v2x_tx_mod_one_step(RT_MODEL *const rtM)
     /* Set model inputs here */
 
     /* Step the model */
-    V2X_TX_Modulator_step(rtM, rtU_tx_frame, rtY_mod_frame, rtY_ps_out);
+    V2X_TX_Modulator_step(rtM, rtU_v2x_tx_bb_out, rtY_mod_frame, rtY_map_out, rtY_ps_out);
 
     /* Get model outputs here */
 
@@ -60,15 +61,15 @@ void v2x_tx_mod_one_step(RT_MODEL *const rtM)
 }
 
 // ---------------------- External functions ----------------------
-int get_tx_mod_out_frame(creal_T* input_frame, cint16_T* output_frame)
+int get_tx_mod_out_frame(boolean_T* input_frame, cint16_T* output_frame)
 {
     // Pack model data into RTM
     RT_MODEL *const rtM = rtMPtr;
     rtM->dwork = &rtDW;
 
     // Initialize and run model
-    V2X_TX_Modulator_initialize(rtM, rtU_tx_frame, rtY_mod_frame, rtY_ps_out);
-    memcpy(rtU_tx_frame, input_frame, TX_BB_OUT_LEN*sizeof(rtU_tx_frame[0]));
+    V2X_TX_Modulator_initialize(rtM, rtU_v2x_tx_bb_out, rtY_mod_frame, rtY_map_out, rtY_ps_out);
+    memcpy(rtU_v2x_tx_bb_out, input_frame, TX_BB_OUT_LEN*sizeof(rtU_v2x_tx_bb_out[0]));
     v2x_tx_mod_one_step(rtM);
 
     // Save output to external value

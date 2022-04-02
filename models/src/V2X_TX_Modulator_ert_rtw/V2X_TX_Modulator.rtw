@@ -6,8 +6,8 @@ CompiledModel {
   ModelReferenceTargetType "NONE"
   Version		  "9.6 (R2021b) 14-May-2021"
   SimulinkVersion	  "10.4"
-  ModelVersion		  "1.138"
-  GeneratedOn		  "Sun Mar 27 16:30:36 2022"
+  ModelVersion		  "1.150"
+  GeneratedOn		  "Sat Apr  2 13:40:51 2022"
   HasSimStructVars	  0
   HasVariants		  0
   PreserveExternInFcnDecls 1
@@ -889,11 +889,11 @@ CompiledModel {
     tlcTargetType	    "RT"
     RelativeBuildDir	    "V2X_TX_Modulator_ert_rtw"
   }
-  RTWContext		  [277196496, 537]
+  RTWContext		  [-1514085376, 615]
   RTWCGIR		  1
   TLCBlkFcnInCGIR	  1
   SLCI			  off
-  SubsystemHdlForRightClickBuild 80.0001220703125
+  SubsystemHdlForRightClickBuild 71.0006103515625
   SubsystemPathForRightClickBuild "v2x_modem_tb"
   SubsystemNameForRightClickBuild "V2X_TX_Modulator"
   LocalSharedCodeManagerFile "C:\\Users\\jacob\\Documents\\Important\\UCSD\\2021-2022 Year\\WES Capstone\\capstone\\mo"
@@ -911,9 +911,9 @@ CompiledModel {
     FinalStateName	    ""
     CompiledLoggingSaveFormat "Dataset"
   }
-  NumModelInputs	  8464
-  NumModelOutputs	  135424
-  NumNonVirtBlocksInModel 4
+  NumModelInputs	  16928
+  NumModelOutputs	  143888
+  NumNonVirtBlocksInModel 6
   DirectFeedthrough	  yes
   NumContStates		  0
   NumPeriodicContStates	  0
@@ -925,8 +925,8 @@ CompiledModel {
   NumNonsampledZCs	  0
   NumZCEvents		  0
   ZCVectorlength	  0
-  NumBlockSignals	  135424
-  NumBlockParams	  89
+  NumBlockSignals	  143888
+  NumBlockParams	  97
   NumAlgebraicLoops	  0
   NumDataTransfers	  0
   HasRootTriggerPort	  no
@@ -1219,7 +1219,7 @@ CompiledModel {
       IsNumericType	      0
     }
     DataType {
-      DTName		      "sfix12_En10"
+      DTName		      "sfix16_En14"
       Id		      15
       CGTypeIdx		      15
       ContainerCGTypeIdx      4
@@ -1229,8 +1229,8 @@ CompiledModel {
       GroundHasNonZero	      0
       GroundValueBin	      [0U, 0U]
       StorageId		      4
-      RequiredBits	      12
-      FixedExp		      -10
+      RequiredBits	      16
+      FixedExp		      -14
       IsFixedPoint	      1
     }
   }
@@ -1280,17 +1280,21 @@ CompiledModel {
   NumBlockTypeCounts	  3
   BlockTypeCount {
     Type		    "Outport"
-    Count		    2
+    Count		    3
   }
   BlockTypeCount {
     Type		    "S-Function"
-    Count		    1
+    Count		    2
   }
   BlockTypeCount {
     Type		    "DataTypeConversion"
     Count		    1
   }
-  NumSFunctionNameCounts  1
+  NumSFunctionNameCounts  2
+  SFunctionNameCount {
+    Name		    "scomapskmod4"
+    Count		    1
+  }
   SFunctionNameCount {
     Name		    "sdspupfir2"
     Count		    1
@@ -1402,31 +1406,37 @@ CompiledModel {
       Type		      root
       SubsystemBlockIndex     [-1, -1]
       NVOwnerSysIdx	      0
-      NumBlocks		      4
+      NumBlocks		      5
       NumInportBlocks	      1
       InportBlocks	      [0]
-      NumOutportBlocks	      2
-      OutportBlocks	      [1:2]
+      NumOutportBlocks	      3
+      OutportBlocks	      [1:3]
       NumSubsystemBlocks      1
-      SubsystemBlocks	      [3]
+      SubsystemBlocks	      [4]
       NumChildSubsystems      1
       ChildSubsystems	      [1]
       Block {
 	Name			"<Root>/ tx_frame"
 	SLName			" tx_frame"
-	SID			"541"
+	SID			"542"
 	Type			Inport
       }
       Block {
 	Name			"<Root>/mod_frame"
 	SLName			"mod_frame"
-	SID			"542"
+	SID			"543"
+	Type			Outport
+      }
+      Block {
+	Name			"<Root>/map_out"
+	SLName			"map_out"
+	SID			"545"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/ps_out"
 	SLName			"ps_out"
-	SID			"544"
+	SID			"546"
 	Type			Outport
       }
       Block {
@@ -1439,13 +1449,19 @@ CompiledModel {
     Subsystem {
       Name		      "<Root>/V2X_TX_Modulator"
       SLName		      "V2X_TX_Modulator"
-      SubsystemBlockIndex     [0, 3]
+      SubsystemBlockIndex     [0, 4]
       NVOwnerSysIdx	      0
-      NumBlocks		      2
-      NumSubsystemBlocks      1
-      SubsystemBlocks	      [0]
-      NumChildSubsystems      1
-      ChildSubsystems	      [2]
+      NumBlocks		      3
+      NumSubsystemBlocks      2
+      SubsystemBlocks	      [0:1]
+      NumChildSubsystems      2
+      ChildSubsystems	      [2:3]
+      Block {
+	Name			"<S1>/Mapper"
+	SLName			"Mapper"
+	SID			"479:197"
+	Type			SubSystem
+      }
       Block {
 	Name			"<S1>/Pulse Shaping"
 	SLName			"Pulse Shaping"
@@ -1460,31 +1476,44 @@ CompiledModel {
       }
     }
     Subsystem {
+      Name		      "<S1>/Mapper"
+      SLName		      "Mapper"
+      SubsystemBlockIndex     [1, 0]
+      NVOwnerSysIdx	      0
+      NumBlocks		      1
+      Block {
+	Name			"<S2>/QPSK Modulator Baseband"
+	SLName			"QPSK\nModulator\nBaseband"
+	SID			"479:199"
+	Type			"S-Function"
+      }
+    }
+    Subsystem {
       Name		      "<S1>/Pulse Shaping"
       SLName		      "Pulse Shaping"
-      SubsystemBlockIndex     [1, 0]
+      SubsystemBlockIndex     [1, 1]
       NVOwnerSysIdx	      0
       NumBlocks		      1
       NumSubsystemBlocks      1
       SubsystemBlocks	      [0]
       NumChildSubsystems      1
-      ChildSubsystems	      [3]
+      ChildSubsystems	      [4]
       Block {
-	Name			"<S2>/Raised Cosine Transmit Filter"
+	Name			"<S3>/Raised Cosine Transmit Filter"
 	SLName			"Raised Cosine\nTransmit Filter"
 	SID			"479:62"
 	Type			SubSystem
       }
     }
     Subsystem {
-      Name		      "<S2>/Raised Cosine Transmit Filter"
+      Name		      "<S3>/Raised Cosine Transmit Filter"
       SLName		      "Raised Cosine\nTransmit Filter"
       MaskType		      "Raised Cosine Transmit Filter"
-      SubsystemBlockIndex     [2, 0]
+      SubsystemBlockIndex     [3, 0]
       NVOwnerSysIdx	      0
       NumBlocks		      1
       Block {
-	Name			"<S3>/FIR Interpolation"
+	Name			"<S4>/FIR Interpolation"
 	SLName			"FIR\nInterpolation"
 	SID			"479:62:21"
 	Type			"S-Function"
@@ -1508,7 +1537,7 @@ CompiledModel {
 	NumDWorks		3
       }
     }
-    NumSubsystems	    4
+    NumSubsystems	    5
   }
   CodeVariants {
     NumCodeVariantGroups    0
@@ -1572,8 +1601,8 @@ CompiledModel {
       GrSrc		      [0, 0]
       Identifier	      "v2x_tx_bb_out"
       TID		      0
-      CGTypeIdx		      21
-      ContainerCGTypeIdx      31
+      CGTypeIdx		      20
+      ContainerCGTypeIdx      32
       UnitIdx		      0
       Interpolation	      0
       RequiresGlobalAccess    no
@@ -1610,7 +1639,7 @@ CompiledModel {
       isActiveDuringCodegen   1
       IsSpecifiedAsNewStorageClass 0
     }
-    NumExternalOutputs	    2
+    NumExternalOutputs	    3
     StructAlignment	    -1
     ExternalOutput {
       ExternalOutputIdx	      0
@@ -1619,9 +1648,9 @@ CompiledModel {
       BlockName		      "<Root>/mod_frame"
       GrSrc		      [0, 1]
       Identifier	      ""
-      CGTypeIdx		      23
+      CGTypeIdx		      22
       UnitIdx		      0
-      ContainerCGTypeIdx      33
+      ContainerCGTypeIdx      34
       VarGroupIdx	      [1,0]
       RequiresGlobalAccess    no
       OriginalPortIndex	      0
@@ -1630,17 +1659,33 @@ CompiledModel {
     ExternalOutput {
       ExternalOutputIdx	      1
       ArgSrc		      Y1
-      Block		      [0,1]
-      BlockName		      "<Root>/ps_out"
+      Block		      [0,2]
+      BlockName		      "<Root>/map_out"
       GrSrc		      [0, 2]
       Identifier	      ""
-      SigLabel		      "<ps_out>"
-      CGTypeIdx		      24
+      SigLabel		      "<map_out>"
+      CGTypeIdx		      25
       UnitIdx		      0
-      ContainerCGTypeIdx      34
+      ContainerCGTypeIdx      36
       VarGroupIdx	      [1,1]
       RequiresGlobalAccess    no
       OriginalPortIndex	      1
+      IsMessage		      0
+    }
+    ExternalOutput {
+      ExternalOutputIdx	      2
+      ArgSrc		      Y2
+      Block		      [0,1]
+      BlockName		      "<Root>/ps_out"
+      GrSrc		      [0, 3]
+      Identifier	      ""
+      SigLabel		      "<ps_out>"
+      CGTypeIdx		      26
+      UnitIdx		      0
+      ContainerCGTypeIdx      37
+      VarGroupIdx	      [1,2]
+      RequiresGlobalAccess    no
+      OriginalPortIndex	      2
       IsMessage		      0
     }
   }
@@ -1897,31 +1942,42 @@ CompiledModel {
       IsSpecifiedAsNewStorageClass 0
     }
     NumGlobalBlockOutputs   0
-    NumLocalBlockOutputs    2
+    NumLocalBlockOutputs    3
     NumExternalBlockOutputs 0
     NumConstBlockOutputs    0
     NumConstOutputExpr	    0
     LocalBlockOutput {
-      Identifier	      "rtb_FIRInterpolation"
+      Identifier	      "rtb_QPSKModulatorBaseband"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      24
-      ContainerCGTypeIdx      34
+      CGTypeIdx		      25
+      ContainerCGTypeIdx      36
       LogicalSrc	      B0
       DrivesRootOutport	      yes
       SigDeclSysIdx	      0
-      GrSrc		      [3, 0, 0, -1]
-      SigSrc		      [0, -1, 2, -1]
+      GrSrc		      [2, 0, 0, -1]
+      SigSrc		      [0, -1, 3, -1]
+    }
+    LocalBlockOutput {
+      Identifier	      "rtb_FIRInterpolation"
+      SysCsIdx		      [0, -1]
+      CGTypeIdx		      26
+      ContainerCGTypeIdx      37
+      LogicalSrc	      B1
+      DrivesRootOutport	      yes
+      SigDeclSysIdx	      0
+      GrSrc		      [4, 0, 0, -1]
+      SigSrc		      [0, -1, 3, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_convert"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      23
-      ContainerCGTypeIdx      33
-      LogicalSrc	      B1
+      CGTypeIdx		      22
+      ContainerCGTypeIdx      34
+      LogicalSrc	      B2
       DrivesRootOutport	      yes
       SigDeclSysIdx	      0
-      GrSrc		      [1, 1, 0, -1]
-      SigSrc		      [0, -1, 2, -1]
+      GrSrc		      [1, 2, 0, -1]
+      SigSrc		      [0, -1, 3, -1]
     }
   }
   DWorks {
@@ -2002,15 +2058,15 @@ CompiledModel {
     NumNonLocalDWorks	    4
     DWork {
       VarGroupIdx	      [2, 0]
-      CGTypeIdx		      27
+      CGTypeIdx		      29
       LogStateName	      "TapDelayBuff"
-      ContainerCGTypeIdx      35
+      ContainerCGTypeIdx      38
       Name		      "TapDelayBuff"
       LogicalSrc	      D0
       UsedAs		      "DSTATE"
       DataLoggingOn	      1
-      GrSrc		      [3, 0]
-      SigSrc		      [0, -1, 2, 0]
+      GrSrc		      [4, 0]
+      SigSrc		      [0, -1, 3, 0]
       hierInfoIdx	      -1
       flatElemIdx	      0
     }
@@ -2132,7 +2188,7 @@ CompiledModel {
     ArgDefIdx		    -1
     MemoryMapIdx	    [-1, -1, -1]
     OriginalDataTypeIdx	    0
-    CGTypeIdx		    41
+    CGTypeIdx		    46
     Tunable		    off
     OrigIdentifier	    ""
     StorageClass	    Auto
@@ -2283,10 +2339,10 @@ CompiledModel {
     Alignment		    -1
   }
   ModelParameters {
-    NumParameters	    2
+    NumParameters	    3
     NumInrtP		    0
     NumConstPrmsWithInit    0
-    NumConstPrms	    2
+    NumConstPrms	    3
     NumExportedGlobal	    0
     NumImportedExtern	    0
     NumImportedExternPointer 0
@@ -2302,7 +2358,7 @@ CompiledModel {
       MemoryMapIdx	      [-1, -1, -1]
       HasObject		      0
       OriginalDataTypeIdx     0
-      CGTypeIdx		      41
+      CGTypeIdx		      46
       WorkspaceVarName	      ""
       IsPseudoWorkspaceVar    no
       Tunable		      no
@@ -2340,36 +2396,53 @@ CompiledModel {
       IsSpecifiedAsNewStorageClass 0
     }
     Parameter {
-      Identifier	      "FIRInterpolation_FILTER_COEFF"
+      Identifier	      "QPSKModulatorBaseband_modmap"
       LogicalSrc	      P0
       Protected		      no
       Value		      SLData(0)
-      CGTypeIdx		      36
-      ContainerCGTypeIdx      28
+      CGTypeIdx		      40
+      ContainerCGTypeIdx      39
       ReferencedBy	      Matrix(1,4)
-[[0, -1, 2, 1];]
+[[0, -1, 3, 0];]
       GraphicalRef	      Matrix(1,2)
-[[3, 0];]
-      GraphicalSource	      [3, 0]
+[[2, 0];]
+      GraphicalSource	      [2, 0]
       OwnerSysIdx	      [0, -1]
       VarGroupIdx	      [3, 0]
       InConstSection	      1
       WasAccessedAsVariable   1
     }
     Parameter {
-      Identifier	      "FIRInterpolation_IC"
+      Identifier	      "FIRInterpolation_FILTER_COEFF"
       LogicalSrc	      P1
       Protected		      no
       Value		      SLData(1)
-      CGTypeIdx		      42
-      ContainerCGTypeIdx      43
+      CGTypeIdx		      41
+      ContainerCGTypeIdx      30
       ReferencedBy	      Matrix(1,4)
-[[0, -1, 2, 0];]
+[[0, -1, 3, 2];]
       GraphicalRef	      Matrix(1,2)
-[[3, 0];]
-      GraphicalSource	      [3, 0]
+[[4, 0];]
+      GraphicalSource	      [4, 0]
       OwnerSysIdx	      [0, -1]
       VarGroupIdx	      [3, 1]
+      InConstSection	      1
+      WasAccessedAsVariable   1
+    }
+    Parameter {
+      Identifier	      "FIRInterpolation_IC"
+      LogicalSrc	      P2
+      Protected		      no
+      Value		      SLData(2)
+      CGTypeIdx		      47
+      ContainerCGTypeIdx      48
+      ReferencedBy	      Matrix(1,4)
+[[0, -1, 3, 1];]
+      GraphicalRef	      Matrix(1,2)
+[[4, 0];]
+      GraphicalSource	      [4, 0]
+      OwnerSysIdx	      [0, -1]
+      VarGroupIdx	      [3, 2]
       InConstSection	      1
     }
   }
@@ -2379,23 +2452,23 @@ CompiledModel {
     NumReducedBlocks	    3
     Block {
       Type		      "ComplexToRealImag"
-      Name		      "<S2>/Complex to Real-Imag"
-      SLName		      "<S2>/Complex to\nReal-Imag"
+      Name		      "<S3>/Complex to Real-Imag"
+      SLName		      "<S3>/Complex to\nReal-Imag"
       SID		      "V2X_TX_Modulator:479:60"
       OptimizationInfo	      "Unused code path elimination"
       InComment		      0
     }
     Block {
       Type		      "ComplexToRealImag"
-      Name		      "<S2>/Complex to Real-Imag1"
-      SLName		      "<S2>/Complex to\nReal-Imag1"
+      Name		      "<S3>/Complex to Real-Imag1"
+      SLName		      "<S3>/Complex to\nReal-Imag1"
       SID		      "V2X_TX_Modulator:479:61"
       OptimizationInfo	      "Unused code path elimination"
       InComment		      0
     }
     Block {
       Type		      "Scope"
-      Name		      "<S2>/Scope"
+      Name		      "<S3>/Scope"
       SID		      "V2X_TX_Modulator:479:63"
       OptimizationInfo	      "Unused code path elimination"
       InComment		      0
@@ -2448,16 +2521,19 @@ CompiledModel {
     }
     totalFileList	    []
   }
-  NumSubsystems		  3
+  NumSubsystems		  4
   Subsystem {
     Name		    "<Root>/V2X_TX_Modulator"
+  }
+  Subsystem {
+    Name		    "<S1>/Mapper"
   }
   Subsystem {
     Name		    "<S1>/Pulse Shaping"
   }
   Subsystem {
-    Name		    "<S2>/Raised Cosine Transmit Filter"
-    SLName		    "<S2>/Raised Cosine\nTransmit Filter"
+    Name		    "<S3>/Raised Cosine Transmit Filter"
+    SLName		    "<S3>/Raised Cosine\nTransmit Filter"
   }
   NumModelReferenceBlocksInModel 0
   NumModelReferenceBlocks 0
@@ -3063,7 +3139,7 @@ CompiledModel {
   }
   CanonicalPrmArgDefDefaults {
     OriginalDataTypeIdx	    0
-    CGTypeIdx		    41
+    CGTypeIdx		    46
     IsUsed		    yes
     DeclareAsPointer	    no
   }
@@ -3155,7 +3231,7 @@ CompiledModel {
     }
     Variables {
       LocalBlockIODef {
-	NumFlatFields		2
+	NumFlatFields		3
       }
       ExternBlockIODef {
       }
@@ -3175,12 +3251,12 @@ CompiledModel {
     NumIncludedModelReference 0
     SystemSourceFileName    "V2X_TX_Modulator"
     SystemHeaderFileName    "V2X_TX_Modulator"
-    NumBlocks		    3
+    NumBlocks		    4
     NumVirtualOutportBlocks 0
     Block {
       Type		      Outport
       BlockIdx		      [0, 0, 0]
-      SL_BlockIdx	      2
+      SL_BlockIdx	      3
       GrSrc		      [0, 1]
       ExprCommentInfo {
       }
@@ -3194,11 +3270,11 @@ CompiledModel {
       RollRegions	      [0:67711]
       NumDataInputPorts	      1
       DataInputPort {
-	SignalSrc		[L1@67712]
+	SignalSrc		[L2@67712]
 	SignalOffset		[0:67711]
 	SignalRegion		[0@67712]
-	CGTypeIdx		23
-	ContainerCGTypeIdx	33
+	CGTypeIdx		22
+	ContainerCGTypeIdx	34
       }
       NumDataOutputPorts      0
       OutportParamSettings {
@@ -3211,8 +3287,8 @@ CompiledModel {
     Block {
       Type		      Outport
       BlockIdx		      [0, 0, 1]
-      SL_BlockIdx	      3
-      GrSrc		      [0, 2]
+      SL_BlockIdx	      4
+      GrSrc		      [0, 3]
       ExprCommentInfo {
       }
       ExprCommentSrcIdx {
@@ -3225,11 +3301,42 @@ CompiledModel {
       RollRegions	      [0:67711]
       NumDataInputPorts	      1
       DataInputPort {
-	SignalSrc		[L0@67712]
+	SignalSrc		[L1@67712]
 	SignalOffset		[0:67711]
 	SignalRegion		[0@67712]
-	CGTypeIdx		24
-	ContainerCGTypeIdx	34
+	CGTypeIdx		26
+	ContainerCGTypeIdx	37
+      }
+      NumDataOutputPorts      0
+      OutportParamSettings {
+	PortNumber		3
+	OutputLocation		Y76176
+      }
+      VariantCondition	      ""
+      SystemInlineVariantPreprocessorCondition ""
+    }
+    Block {
+      Type		      Outport
+      BlockIdx		      [0, 0, 2]
+      SL_BlockIdx	      5
+      GrSrc		      [0, 2]
+      ExprCommentInfo {
+      }
+      ExprCommentSrcIdx {
+      }
+      Name		      "<Root>/map_out"
+      Identifier	      "map_out"
+      TID		      0
+      PID		      -1
+      firstEntryOfTsMapIsGCD  yes
+      RollRegions	      [0:8463]
+      NumDataInputPorts	      1
+      DataInputPort {
+	SignalSrc		[L0@8464]
+	SignalOffset		[0:8463]
+	SignalRegion		[0@8464]
+	CGTypeIdx		25
+	ContainerCGTypeIdx	36
       }
       NumDataOutputPorts      0
       OutportParamSettings {
@@ -3241,45 +3348,58 @@ CompiledModel {
     }
     Block {
       Type		      Opaque
-      BlockIdx		      [0, 0, 2]
-      SL_BlockIdx	      2
+      BlockIdx		      [0, 0, 3]
+      SL_BlockIdx	      3
       ExprCommentInfo {
       }
       ExprCommentSrcIdx {
       }
       Name		      "<Root>/Opaque"
-      Identifier	      "FIRInterpolation"
+      Identifier	      "QPSKModulatorBaseband"
       TID		      0
       PID		      -1
       firstEntryOfTsMapIsGCD  yes
       NumDataOutputPorts      0
-      TLCFileName	      "s0_b0_atyoe"
+      TLCFileName	      "s0_b0_dyuze"
       OpaqueBlockMethode {
 	HasOutputs		1
 	HasModelInitialize	1
 	HasModelExternalOutputInit 1
 	HasModelExternalInputInit 1
       }
-      Parameters	      [2, 89]
+      Parameters	      [3, 97]
       Parameter {
 	BlockParamIdx		0
+	Name			"modmap"
+	MdlPrmIdx		0
+	Value			Vector(8)
+[0.70710678118654757, 0.70710678118654757, -0.70710678118654746, 0.70710678118654757, -0.70710678118654768, ...
+-0.70710678118654746, 0.70710678118654735, -0.70710678118654768]
+	CGTypeIdx		40
+	ContainerCGTypeIdx	39
+	String			""
+	StringType		"Computed"
+	NeedParenthesis		1
+      }
+      Parameter {
+	BlockParamIdx		1
 	Name			"IC"
-	MdlPrmIdx		1
+	MdlPrmIdx		2
 	Value			[0.0+0.0i]
-	CGTypeIdx		42
-	ContainerCGTypeIdx	43
+	CGTypeIdx		47
+	ContainerCGTypeIdx	48
 	String			""
 	StringTransformed	"a.outBufIC"
 	StringType		"Computed"
 	NeedParenthesis		1
       }
       Parameter {
-	BlockParamIdx		1
+	BlockParamIdx		2
 	Name			"FILTER_COEFF"
-	MdlPrmIdx		0
-	Value			SLData(0)
-	CGTypeIdx		36
-	ContainerCGTypeIdx	28
+	MdlPrmIdx		1
+	Value			SLData(1)
+	CGTypeIdx		41
+	ContainerCGTypeIdx	30
 	String			"a.h"
 	StringType		"Expression"
 	NeedParenthesis		1
@@ -3291,8 +3411,8 @@ CompiledModel {
       NumRTWdatas	      0
     }
   }
-  BlockParamChecksum	  ["3767079723U", "2310566088U", "2853510958U", "1717163375U"]
-  ModelChecksum		  ["4029927640U", "2685399396U", "2675259543U", "2021520825U"]
+  BlockParamChecksum	  ["186017955U", "2602138404U", "1383526863U", "585815306U"]
+  ModelChecksum		  ["2448394753U", "11422320U", "2471639897U", "3518185374U"]
   IncludeCodeGenSettings  1
   CGTypes {
     CGTypeDefaults {
@@ -3302,7 +3422,7 @@ CompiledModel {
       TypeName		      "-1"
       SymbolicVectorDims      "-1"
     }
-    NumCGTypes		    44
+    NumCGTypes		    49
     DeclareUsedMultiWordBits 0
     IndexType		    6
     CGType {
@@ -3367,7 +3487,7 @@ CompiledModel {
       SLTypeIdx		      14
     }
     CGType {
-      Name		      "sfix12_En10"
+      Name		      "sfix16_En14"
       SLTypeIdx		      15
     }
     CGType {
@@ -3383,14 +3503,21 @@ CompiledModel {
       Name		      "ZCSigState"
     }
     CGType {
-    }
-    CGType {
-      Dimensions	      [8464, 1]
+      Dimensions	      [16928, 1]
     }
     CGType {
     }
     CGType {
       Dimensions	      [67712, 1]
+    }
+    CGType {
+    }
+    CGType {
+      NumDimensions	      1
+      Dimensions	      [76176]
+    }
+    CGType {
+      Dimensions	      [8464, 1]
     }
     CGType {
       Dimensions	      [67712, 1]
@@ -3414,11 +3541,8 @@ CompiledModel {
       Dimensions	      [176]
     }
     CGType {
-      Name		      "creal_T"
-    }
-    CGType {
       NumDimensions	      1
-      Dimensions	      [8464]
+      Dimensions	      [16928]
     }
     CGType {
       Name		      "cint16_T"
@@ -3428,12 +3552,26 @@ CompiledModel {
       Dimensions	      [67712]
     }
     CGType {
+      Name		      "creal_T"
+    }
+    CGType {
+      NumDimensions	      1
+      Dimensions	      [8464]
+    }
+    CGType {
       NumDimensions	      1
       Dimensions	      [67712]
     }
     CGType {
       NumDimensions	      1
       Dimensions	      [10]
+    }
+    CGType {
+      NumDimensions	      1
+      Dimensions	      [8]
+    }
+    CGType {
+      Dimensions	      [8, 1]
     }
     CGType {
       Dimensions	      [11, 8]
@@ -3524,32 +3662,32 @@ CompiledModel {
     RTWCGModule {
       RateGrouping	      0
       PeriodicRateGrouping    0
-      TLCFileName	      "s0_b0_atyoe"
+      TLCFileName	      "s0_b0_dyuze"
       RTWFcnConst {
 	HasInstanceSetup	"no"
 	baseTidOfTasks		"[0]"
 	Outputs_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_atyoe_Outputs"
+	  TLCFileName		  "s0_b0_dyuze_Outputs"
 	  StackSize		  48
 	}
 	ModelInitialize_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_atyoe_ModelInitialize"
+	  TLCFileName		  "s0_b0_dyuze_ModelInitialize"
 	  StackSize		  0
 	}
 	ModelExternalOutputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_atyoe_ModelExternalOutputInit"
+	  TLCFileName		  "s0_b0_dyuze_ModelExternalOutputInit"
 	  StackSize		  4
 	}
 	ModelExternalInputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_atyoe_ModelExternalInputInit"
+	  TLCFileName		  "s0_b0_dyuze_ModelExternalInputInit"
 	  StackSize		  4
 	}
       }
@@ -3597,6 +3735,7 @@ CompiledModel {
       }
       Function {
 	Name			"ModelExternalInputInit"
+	IsSimulinkVariantFcn	1
 	FunctionType		"ModelExternalInputInit"
 	FcnHeaders		[1]
 	ForbidStaticMemberDecl	1
@@ -3631,7 +3770,7 @@ CompiledModel {
       HasElement	      "EXTU_VARIANT_EXISTS"
       InstanceIdx	      -1
       IsPointer		      1
-      CGTypeIdx		      37
+      CGTypeIdx		      42
       NumVarGroupElements     1
       VarGroupContains	      "SignalElementOnly"
       VarGroupElements	      [U0]
@@ -3645,12 +3784,12 @@ CompiledModel {
       HasElement	      "EXTY_VARIANT_EXISTS"
       InstanceIdx	      -1
       IsPointer		      1
-      CGTypeIdx		      38
-      NumVarGroupElements     2
+      CGTypeIdx		      43
+      NumVarGroupElements     3
       VarGroupContains	      "SignalElementOnly"
-      VarGroupElements	      [Y0, Y1]
-      NumVariantConditions    2
-      VariantConditions	      ["", ""]
+      VarGroupElements	      [Y0, Y1, Y2]
+      NumVariantConditions    3
+      VariantConditions	      ["", "", ""]
     }
     VarGroup {
       Name		      "rtDW"
@@ -3660,7 +3799,7 @@ CompiledModel {
       HasElement	      "DW_VARIANT_EXISTS"
       InstanceIdx	      -1
       IsPointer		      1
-      CGTypeIdx		      39
+      CGTypeIdx		      44
       NumVarGroupElements     1
       VarGroupContains	      "SignalElementOnly"
       VarGroupElements	      [W0]
@@ -3673,12 +3812,12 @@ CompiledModel {
       SysIdx		      0
       HasElement	      "CONSTP_VARIANT_EXISTS"
       InstanceIdx	      -1
-      CGTypeIdx		      40
-      NumVarGroupElements     2
+      CGTypeIdx		      45
+      NumVarGroupElements     3
       VarGroupContains	      "SignalElementOnly"
-      VarGroupElements	      [CP0, CP1]
-      NumVariantConditions    2
-      VariantConditions	      ["", ""]
+      VarGroupElements	      [CP0, CP1, CP2]
+      NumVariantConditions    3
+      VariantConditions	      ["", "", ""]
     }
     VarGroupVarIdx	    []
   }
