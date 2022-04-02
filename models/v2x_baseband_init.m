@@ -4,23 +4,19 @@ function ini = v2x_baseband_init()
     ini.T = 0.01;
 
     % Packet params
-    ini.pkt_params = get_pkt_params();
+    ini.pkt = get_pkt_params();
 
     % Scrambler params
-    ini.scramb_params = get_scramb_params();
+    ini.scramb = get_scramb_params();
 
     % Encoder params
-    ini.enc_params = get_enc_params(ini.pkt_params.data_len);
+    ini.enc = get_enc_params(ini.pkt.data_len);
     
-    % Mapper params
-    ini.map_params = get_map_params(ini.enc_params.out_len);
-
     % Preamble params
-    ini.preamble_params = get_preamble_params();
+    ini.preamble = get_preamble_params();
 
     % TX output/RX input frame length
-    ini.intfc_params = get_intfc_params(ini.preamble_params.len, ...
-                                        ini.map_params.map_out_len);
+    ini.intfc = get_intfc_params(ini.preamble.bit.len, ini.enc.len);
 end
 
 %% Helper Function
@@ -78,24 +74,26 @@ function enc_params = get_enc_params(data_len)
     % Default MATLAB N, K for RS Encoder/Decoder
     enc_params.n = 7;
     enc_params.k = 3;
-    enc_params.out_len = (enc_params.n/enc_params.k) * data_len;
-end
-
-function map_params = get_map_params(data_len)
-    map_params.map_out_len = data_len/2; % 2 bits per symbol
+    enc_params.len = (enc_params.n/enc_params.k) * data_len;
 end
 
 function preamble_params = get_preamble_params()
-%     preamble_params.seq = repmat(get_barker(13), 1, 3)';
-%     preamble_params.len = length(preamble_params.seq);
-%     preamble_params.thresh = 0.7 * preamble_params.len;
+    % Bit version
+    preamble_params.bit.seq = repmat(pngen(6, 32), 1, 2)'; % 64 bit sequence
+    preamble_params.bit.seq = repelem(preamble_params.bit.seq, 2); % Repeat bits for QPSK IQ
+    preamble_params.bit.len = length(preamble_params.bit.seq);
 
-    preamble_params.seq = repmat(pngen(6, 32), 1, 2)'; % 64 bit sequence
-    preamble_params.len = length(preamble_params.seq);
-    preamble_params.thresh = 0.5 * preamble_params.len;
+    % QPSK version
+    qpskmod = comm.QPSKModulator('BitInput', true);
+    preamble_params.qpsk.seq = qpskmod(preamble_params.bit.seq);
+    preamble_params.qpsk.len = length(preamble_params.qpsk.seq);
+
+    % Threshold
+    preamble_params.thresh = 0.7 * preamble_params.qpsk.len;
 end
 
-function intfc_params = get_intfc_params(preamble_len, map_out_len)
-    intfc_params.tx_frame_len = preamble_len + map_out_len;
-    intfc_params.rx_frame_len = intfc_params.tx_frame_len;
+function intfc_params = get_intfc_params(preamble_len, enc_out_len)
+    intfc_params.tx_bit_len = preamble_len + enc_out_len;
+    intfc_params.tx_sym_len = intfc_params.tx_bit_len/2;
+    intfc_params.rx_bit_len = intfc_params.tx_bit_len;
 end

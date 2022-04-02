@@ -18,12 +18,13 @@ Ts = ini.T;
 %% Baseband params
 bb_ini = v2x_baseband_init();
 mod_ini = v2x_modem_init();
+mod_dt = mod_ini.intfc_dt;
 
 %% Channel params
 phi = 20; % Phase offset (deg)
 f0 = 500; % Frequency offset (Hz), none in this sim because no carrier freq
 
-SNR_dB = 10;
+SNR_dB = 20;
 % M = 2; % Bits per symbol
 % EbN0_dB = 10; % Eb/N0 in dB
 % sym_per = 1/mod_ini.Fc;
@@ -40,6 +41,11 @@ save_to_csv = 0;
 
 % V2X TX Baseband
 if save_to_csv
+%     % Convert to bin files instead of CSV later...
+%     fileID = fopen('nine.bin', 'w');
+%     fwrite(fileID,[1:9]);
+%     fclose(fileID);
+
     % TX Baseband
     v2x_tx_bb_in  = squeeze(sim_out.logsout.getElement('v2x_tx_bb_in').Values.Data);
     v2x_tx_bb_out = squeeze(sim_out.logsout.getElement('v2x_tx_bb_out').Values.Data);

@@ -4,16 +4,20 @@ function ini = v2x_modem_init()
     ini.bb = v2x_baseband_init();
 
     % AGC params
-    ini.agc_params = get_agc_params();
+    ini.agc = get_agc_params();
 
     % Pulse shaping params
-    ini.srrc_params = get_srrc_params();
+    ini.srrc = get_srrc_params();
 
-    % Tminig recovery params
-    ini.timing_recov_params = get_timing_recov_params();
+    % DAC/ADC data type (12 bitwidth, interface in SW is 16 bits where last
+    % 4 LSBs get truncated)
+    ini.intfc_dt = fixdt(1, 16, 14);
+
+    % Symbol timing recovery params
+    ini.str = get_sym_timing_recov_params();
 
     % Frequency params
-    ini.freq_params = get_freq_params();
+    ini.freq = get_freq_params();
 end
 
 %% Helper Function
@@ -33,10 +37,10 @@ function srrc_params = get_srrc_params()
     srrc_params.shift = -10;
 end
 
-function timing_recov_params = get_timing_recov_params()
-    timing_recov_params.damping_fact = 1;
-    timing_recov_params.norm_loop_bw = 0.01;
-    timing_recov_params.detector_gain = 2.7;
+function str_params = get_sym_timing_recov_params()
+    str_params.damping_fact = 1;
+    str_params.norm_loop_bw = 0.01;
+    str_params.detector_gain = 2.7;
 end
 
 function freq_params = get_freq_params()
