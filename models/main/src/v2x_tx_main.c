@@ -19,10 +19,12 @@
 #include "v2x_tx_main.h"
 #include "v2x_tx_bb_wrapper.h"
 #include "v2x_tx_mod_wrapper.h"
+#include "v2x_rx_bb_wrapper.h"
 
 // ---------------------- Global variables ----------------------
 boolean_T g_tx_bb_out_frame[TX_BB_OUT_LEN];
 cint16_T g_tx_mod_out_frame[TX_MOD_OUT_LEN];
+boolean_T g_rx_bb_out_frame[RX_BB_OUT_LEN];
 unsigned int g_num_tx_frames;
 
 // ---------------------- Function prototypes ----------------------
@@ -34,9 +36,10 @@ int16_T double_to_fixed_txmod(double x);
 #if DEBUG_BUILD
 static boolean_T test_tx_bb_out[TX_BB_OUT_LEN];
 static creal_T test_tx_mod_out[TX_MOD_OUT_LEN];
+static boolean_T test_rx_bb_out[RX_BB_OUT_LEN];
 
 void load_bin(int frame_num);
-int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame);
+int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame, boolean_T* rx_bb_out_frame);
 #endif
 
 // ---------------------- Debug ----------------------
@@ -63,11 +66,19 @@ void load_bin(int frame_num)
         test_tx_mod_out[i].im = (real_T) tx_mod_out_imag[TX_MOD_OUT_LEN * frame_num + i];
     }
 
+    // RX Modulator expected output
+    boolean_T rx_bb_out[RX_BB_OUT_LEN * NUM_FRAMES];
+    read_bool_from_bin("data/v2x_rx_bb_out.bin", rx_bb_out, RX_BB_OUT_LEN * NUM_FRAMES);
+    for(unsigned int i = 0; i < RX_BB_OUT_LEN; i++)
+    {
+        test_rx_bb_out[i] = rx_bb_out[RX_BB_OUT_LEN * frame_num + i];
+    }
+
     // Return
     return;
 }
 
-int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame)
+int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame, boolean_T* rx_bb_out_frame)
 {
     // Error flag
     int ret_val = 0;
@@ -104,6 +115,18 @@ int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame
             printf("TX MOD ERROR: actual[%d].re: %f, expected[%d].re: %f\n",
                   n, temp_imag, n, test_tx_mod_out[n].im);
             ret_val = -4;
+            break;
+        }
+    }
+
+    // RX Baseband
+    for (unsigned int n = 0; n < 20; n++) // RX_BB_OUT_LEN
+    {
+        if (rx_bb_out_frame[n] != test_rx_bb_out[n])
+        {
+            printf("RX BB ERROR: actual[%d]: %d, expected[%d]: %d\n",
+                  n, rx_bb_out_frame[n], n, test_rx_bb_out[n]);
+            ret_val = -5;
             break;
         }
     }
@@ -146,12 +169,12 @@ void read_float_from_bin(const char* filename, float* data, unsigned int filesiz
 // https://embeddedartistry.com/blog/2018/07/12/simple-fixed-point-conversion-in-c/
 double fixed_to_double_txmod(int16_T x)
 {
-    return ((double) x / (double) (1 << TX_MOD_FRACT_BITS));
+    return ((double) x / (double) (1 << MOD_FRACT_BITS));
 }
 
 int16_T double_to_fixed_txmod(double x)
 {
-    return (int16_T) (round(x * (1 << TX_MOD_FRACT_BITS)));
+    return (int16_T) (round(x * (1 << MOD_FRACT_BITS)));
 }
 
 // ---------------------- Main ----------------------
@@ -179,7 +202,8 @@ int_T main(int_T argc, const char *argv[])
         load_bin(i);
         get_tx_bb_out_frame(g_tx_bb_out_frame, i);
         get_tx_mod_out_frame(g_tx_bb_out_frame, g_tx_mod_out_frame);
-        int ret_val = compare_actual_vs_exp(g_tx_bb_out_frame, g_tx_mod_out_frame);
+        get_rx_bb_out_frame(g_rx_bb_out_frame, i);
+        int ret_val = compare_actual_vs_exp(g_tx_bb_out_frame, g_tx_mod_out_frame, g_rx_bb_out_frame);
 
         if (ret_val != 0)
         {

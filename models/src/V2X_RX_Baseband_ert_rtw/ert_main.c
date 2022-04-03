@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.150
+ * Model version                  : 1.152
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sat Apr  2 13:40:57 2022
+ * C/C++ source code generated on : Sat Apr  2 21:13:17 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -28,7 +28,7 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 /* '<Root>/rx_frame' */
-static boolean_T rtU_v2x_rx_demod_out[16928];
+static boolean_T rtU_v2x_rx_bb_in[16928];
 
 /* '<Root>/data_frame' */
 static boolean_T rtY_data_frame[7200];
@@ -69,7 +69,7 @@ void rt_OneStep(RT_MODEL *const rtM)
   /* Set model inputs here */
 
   /* Step the model */
-  V2X_RX_Baseband_step(rtM, rtU_v2x_rx_demod_out, rtY_data_frame, rtY_dec_in,
+  V2X_RX_Baseband_step(rtM, rtU_v2x_rx_bb_in, rtY_data_frame, rtY_dec_in,
                        rtY_descr_in);
 
   /* Get model outputs here */
@@ -100,8 +100,8 @@ int_T main(int_T argc, const char *argv[])
   rtM->dwork = &rtDW;
 
   /* Initialize model */
-  V2X_RX_Baseband_initialize(rtM, rtU_v2x_rx_demod_out, rtY_data_frame,
-    rtY_dec_in, rtY_descr_in);
+  V2X_RX_Baseband_initialize(rtM, rtU_v2x_rx_bb_in, rtY_data_frame, rtY_dec_in,
+    rtY_descr_in);
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.01 seconds (the model's base sample time) here.  The

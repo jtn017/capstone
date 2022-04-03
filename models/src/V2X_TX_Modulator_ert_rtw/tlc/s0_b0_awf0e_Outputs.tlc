@@ -1,4 +1,4 @@
-%implements s0_b0_dyuze_Outputs "C"
+%implements s0_b0_awf0e_Outputs "C"
 
 %function Outputs(block, system) Output
 %assign cfgTxt = ""
@@ -19,7 +19,7 @@ int32_T symbolIndex;
 %<SLibCG_TrackEO(1)>\
 %<SLibCG_TrackEO(0)>\
 %<SLibCG_TrackEI(0)>\
-/* {S!d64}S-Function (scomapskmod4): '<S2>/QPSK Modulator Baseband' incorporates:
+/* {S!d106}S-Function (scomapskmod4): '<S2>/QPSK Modulator Baseband' incorporates:
  *  Inport: '<Root>/ tx_frame'
  */
 /*@>5c0c*/inIdx/*@>c9b*/ = /*@>a8fb*/0;
@@ -34,7 +34,7 @@ int32_T symbolIndex;
     /*@>5c23*/rtY_map_out/*@>465c*/[/*@>5c25*/outIdx]./*@>abd5*/im/*@>cd9*/ = /*@>9fb9*/rtConstP./*@>abf9*/QPSKModulatorBaseband_modmap/*@>9bdf*/[inIdx_0/*@>9bd9*/ + /*@>9bdc*/1];
     /*@>5bf3*/outIdx/*@>a9e5*/++;
 }
-/* {S!d66}S-Function (sdspupfir2): '<S4>/FIR Interpolation' incorporates:
+/* {S!d108}S-Function (sdspupfir2): '<S4>/FIR Interpolation' incorporates:
  *  DataTypeConversion: '<S1>/convert'
  *  S-Function (scomapskmod4): '<S2>/QPSK Modulator Baseband'
  */
@@ -80,11 +80,11 @@ int32_T symbolIndex;
 /*@>48eb*/for (/*@>a91f*/i = /*@>a91e*/0; /*@>a929*/i < /*@>a927*/10; /*@>a925*/i/*@>a9e3*/++) {
     /*@>9ffb*/rtDW->/*@>ac08*/FIRInterpolation_TapDelayBuff/*@>5725*/[/*@>5d0a*/9/*@>57f8*/ - /*@>5d08*/i]/*@>572d*/ = /*@>9be5*/rtY_map_out/*@>9be7*/[/*@>9be3*/i/*@>9be1*/ + /*@>9be4*/8454];
 }
-/* {E!d66}End of S-Function (sdspupfir2): '<S4>/FIR Interpolation' */
+/* {E!d108}End of S-Function (sdspupfir2): '<S4>/FIR Interpolation' */
 
-/* {S!d70}Outport: '<Root>/mod_frame' */
+/* {S!d112}Outport: '<Root>/mod_frame' */
 /*@>4131*/for (/*@>a90e*/i = /*@>a90d*/0; /*@>a918*/i < /*@>a916*/67712; /*@>a914*/i/*@>a9e6*/++) {
-    /* {S!d68}DataTypeConversion: '<S1>/convert' incorporates:
+    /* {S!d110}DataTypeConversion: '<S1>/convert' incorporates:
  *  S-Function (sdspupfir2): '<S4>/FIR Interpolation'
  */
     /*@>5e3c*/accumulator_re/*@>5e3e*/ = /*@>9453*/floor(/*@>9beb*/rtY_ps_out/*@>9bed*/[/*@>9bea*/i].re/*@>5e37*/ * /*@>5e36*/16384.0);
@@ -108,7 +108,7 @@ int32_T symbolIndex;
         /*@>5c1b*/rtY_mod_frame/*@>4601*/[/*@>5c1d*/i]./*@>abe7*/im/*@>4120*/ = /*@>6892*/MAX_int16_T;
     }
 }
-/* {E!d70}End of Outport: '<Root>/mod_frame' */
+/* {E!d112}End of Outport: '<Root>/mod_frame' */
 %<SLibInsertSolverResetCode()>\
 %closefile cfgTxt
 %<cfgTxt>

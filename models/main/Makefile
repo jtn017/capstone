@@ -37,12 +37,16 @@ main: $(GEN_OBJ) $(MAIN_OBJ)
 	$(CC) $(CFLAGS) $(GEN_OBJ) $(MAIN_OBJ) -lm -levent -o v2x_tx_main
 
 mv_gen_code:
-	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband.c gen/.
-	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband.h gen/.
-	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband_data.c gen/.
-	cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator.c gen/.
-	cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator.h gen/.
-	cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator_data.c gen/.
+# cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband.c gen/.
+# cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband.h gen/.
+# cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband_data.c gen/.
+# cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator.c gen/.
+# cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator.h gen/.
+# cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator_data.c gen/.
+# cp ../src/V2X_TX_Modulator_ert_rtw/rtwtypes.h gen/.
+	cp ../src/V2X_RX_Baseband_ert_rtw/V2X_RX_Baseband.c gen/.
+	cp ../src/V2X_RX_Baseband_ert_rtw/V2X_RX_Baseband.h gen/.
+	cp ../src/V2X_RX_Baseband_ert_rtw/V2X_RX_Baseband_data.c gen/.
 
 # Object targets
 $(ODIR)/%.o: $(GEN_SDIR)/%.c

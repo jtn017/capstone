@@ -22,7 +22,7 @@
 #include "V2X_RX_Baseband.h"
 
 /* Constant parameters (default storage) */
-const ConstP rtConstP = {
+const ConstP rtConstP_rx_bb = {
   /* Computed Parameter: RSDecoder_table1
    * Referenced by: '<S5>/RS Decoder'
    */

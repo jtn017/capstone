@@ -1,10 +1,10 @@
-%implements s0_b0_dyuze_ModelExternalInputInit "C"
+%implements s0_b0_5vf0e_ModelExternalInputInit "C"
 
 %function ModelExternalInputInit(block, system) Output
 %assign cfgTxt = ""
 %openfile cfgTxt
 %assign localVarDecl = ""
-(void)memset(&rtU_v2x_tx_bb_out[0], 0, 16928U * sizeof(boolean_T));
+(void)memset(&rtU_v2x_tx_bb_in[0], 0, 7200U * sizeof(boolean_T));
 %<SLibCG_TrackEI(0)>\
 %closefile cfgTxt
 %<cfgTxt>

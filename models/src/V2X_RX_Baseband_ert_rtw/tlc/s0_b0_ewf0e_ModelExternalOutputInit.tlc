@@ -1,4 +1,4 @@
-%implements s0_b0_iyuze_ModelExternalOutputInit "C"
+%implements s0_b0_ewf0e_ModelExternalOutputInit "C"
 
 %function ModelExternalOutputInit(block, system) Output
 %assign cfgTxt = ""

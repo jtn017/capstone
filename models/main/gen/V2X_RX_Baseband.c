@@ -115,12 +115,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
       for (j = 6; j >= 0; j--) {
         /*  start of gf_pow():gf_pow raises x^yd  */
         temp = (RSDecoder_OmegaZActual_idx_0 + 1) * j *
-          rtConstP.RSDecoder_table2[1] % 7;
+          rtConstP_rx_bb.RSDecoder_table2[1] % 7;
         if (temp == 0) {
           temp = 7;
         }
 
-        intVal = rtConstP.RSDecoder_table1[temp - 1];
+        intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
 
         /*  end of gf_pow()  */
         /* CCode[nfull-1-j] is the current input code symbol. */
@@ -130,13 +130,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
         if ((temp == 0) || (intVal == 0)) {
           intVal = 0;
         } else {
-          temp = (rtConstP.RSDecoder_table2[temp - 1] +
-                  rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+          temp = (rtConstP_rx_bb.RSDecoder_table2[temp - 1] +
+                  rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
           if (temp == 0) {
             temp = 7;
           }
 
-          intVal = rtConstP.RSDecoder_table1[temp - 1];
+          intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
         }
 
         /* end of gf_mul() */
@@ -219,14 +219,14 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                  0)) {
               intVal = 0;
             } else {
-              temp = (rtConstP.RSDecoder_table2[temp - 1] +
-                      rtConstP.RSDecoder_table2[RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0]
+              temp = (rtConstP_rx_bb.RSDecoder_table2[temp - 1] +
+                      rtConstP_rx_bb.RSDecoder_table2[RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0]
                       - 1]) % 7;
               if (temp == 0) {
                 temp = 7;
               }
 
-              intVal = rtConstP.RSDecoder_table1[temp - 1];
+              intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
             }
 
             /* end of gf_mul() */
@@ -247,13 +247,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
           if ((RSDecoder_TempVec2t1[0] == 0) || (rtDW->RSDecoder_Dz[0] == 0)) {
             intVal = 0;
           } else {
-            temp = (rtConstP.RSDecoder_table2[RSDecoder_TempVec2t1[0] - 1] +
-                    rtConstP.RSDecoder_table2[rtDW->RSDecoder_Dz[0] - 1]) % 7;
+            temp = (rtConstP_rx_bb.RSDecoder_table2[RSDecoder_TempVec2t1[0] - 1] +
+                    rtConstP_rx_bb.RSDecoder_table2[rtDW->RSDecoder_Dz[0] - 1]) % 7;
             if (temp == 0) {
               temp = 7;
             }
 
-            intVal = rtConstP.RSDecoder_table1[temp - 1];
+            intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
           }
 
           /* end of gf_mul() */
@@ -263,13 +263,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
           if ((RSDecoder_TempVec2t1[1] == 0) || (rtDW->RSDecoder_Dz[1] == 0)) {
             intVal = 0;
           } else {
-            temp = (rtConstP.RSDecoder_table2[RSDecoder_TempVec2t1[1] - 1] +
-                    rtConstP.RSDecoder_table2[rtDW->RSDecoder_Dz[1] - 1]) % 7;
+            temp = (rtConstP_rx_bb.RSDecoder_table2[RSDecoder_TempVec2t1[1] - 1] +
+                    rtConstP_rx_bb.RSDecoder_table2[rtDW->RSDecoder_Dz[1] - 1]) % 7;
             if (temp == 0) {
               temp = 7;
             }
 
-            intVal = rtConstP.RSDecoder_table1[temp - 1];
+            intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
           }
 
           /* end of gf_mul() */
@@ -279,13 +279,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
           if ((RSDecoder_TempVec2t1[2] == 0) || (rtDW->RSDecoder_Dz[2] == 0)) {
             intVal = 0;
           } else {
-            temp = (rtConstP.RSDecoder_table2[RSDecoder_TempVec2t1[2] - 1] +
-                    rtConstP.RSDecoder_table2[rtDW->RSDecoder_Dz[2] - 1]) % 7;
+            temp = (rtConstP_rx_bb.RSDecoder_table2[RSDecoder_TempVec2t1[2] - 1] +
+                    rtConstP_rx_bb.RSDecoder_table2[rtDW->RSDecoder_Dz[2] - 1]) % 7;
             if (temp == 0) {
               temp = 7;
             }
 
-            intVal = rtConstP.RSDecoder_table1[temp - 1];
+            intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
           }
 
           /* end of gf_mul() */
@@ -295,13 +295,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
           if ((RSDecoder_TempVec2t1[3] == 0) || (rtDW->RSDecoder_Dz[3] == 0)) {
             intVal = 0;
           } else {
-            temp = (rtConstP.RSDecoder_table2[RSDecoder_TempVec2t1[3] - 1] +
-                    rtConstP.RSDecoder_table2[rtDW->RSDecoder_Dz[3] - 1]) % 7;
+            temp = (rtConstP_rx_bb.RSDecoder_table2[RSDecoder_TempVec2t1[3] - 1] +
+                    rtConstP_rx_bb.RSDecoder_table2[rtDW->RSDecoder_Dz[3] - 1]) % 7;
             if (temp == 0) {
               temp = 7;
             }
 
-            intVal = rtConstP.RSDecoder_table1[temp - 1];
+            intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
           }
 
           /* end of gf_mul() */
@@ -322,22 +322,22 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (temp == 0) {
                 temp = 1;
               } else {
-                temp = rtConstP.RSDecoder_table1[6 -
-                  rtConstP.RSDecoder_table2[temp - 1]];
+                temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+                  rtConstP_rx_bb.RSDecoder_table2[temp - 1]];
               }
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if ((temp == 0) || (intVal == 0)) {
                 rtDW->RSDecoder_Dz[RSDecoder_OmegaZActual_idx_0] = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[temp - 1] +
-                        rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                temp = (rtConstP_rx_bb.RSDecoder_table2[temp - 1] +
+                        rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
                 rtDW->RSDecoder_Dz[RSDecoder_OmegaZActual_idx_0] =
-                  rtConstP.RSDecoder_table1[temp - 1];
+                  rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
@@ -428,12 +428,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
             if (intVal == 0) {
               rtDW->RSDecoder_d[j] = (j == 0);
             } else {
-              temp = rtConstP.RSDecoder_table2[intVal - 1] * j % 7;
+              temp = rtConstP_rx_bb.RSDecoder_table2[intVal - 1] * j % 7;
               if (temp == 0) {
                 temp = 7;
               }
 
-              rtDW->RSDecoder_d[j] = rtConstP.RSDecoder_table1[temp - 1];
+              rtDW->RSDecoder_d[j] = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
             }
 
             /*  end of gf_pow()  */
@@ -444,13 +444,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
             if ((rtDW->RSDecoder_d[j] == 0) || (RSDecoder_PsiZStar[j] == 0)) {
               intVal = 0;
             } else {
-              temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_d[j] - 1] +
-                      rtConstP.RSDecoder_table2[RSDecoder_PsiZStar[j] - 1]) % 7;
+              temp = (rtConstP_rx_bb.RSDecoder_table2[rtDW->RSDecoder_d[j] - 1] +
+                      rtConstP_rx_bb.RSDecoder_table2[RSDecoder_PsiZStar[j] - 1]) % 7;
               if (temp == 0) {
                 temp = 7;
               }
 
-              intVal = rtConstP.RSDecoder_table1[temp - 1];
+              intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
             }
 
             /* end of gf_mul() */
@@ -463,7 +463,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
 
             /*  start of gf_div():gf_div divides the scalars x/b */
             /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
-            intVal = rtConstP.RSDecoder_table1[6];
+            intVal = rtConstP_rx_bb.RSDecoder_table1[6];
 
             /* end of gf_mul() */
             /*  end of gf_div() */
@@ -471,20 +471,20 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
             if (RSDecoder_OmegaZActual_idx_0 == 0) {
               temp = 1;
             } else {
-              temp = rtConstP.RSDecoder_table1[6 -
-                rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_0 - 1]];
+              temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+                rtConstP_rx_bb.RSDecoder_table2[RSDecoder_OmegaZActual_idx_0 - 1]];
             }
 
             /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
             if (temp == 0) {
               RSDecoder_OmegaZActual_idx_2 = 0;
             } else {
-              temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
+              temp = rtConstP_rx_bb.RSDecoder_table2[temp - 1] % 7;
               if (temp == 0) {
                 temp = 7;
               }
 
-              RSDecoder_OmegaZActual_idx_2 = rtConstP.RSDecoder_table1[temp - 1];
+              RSDecoder_OmegaZActual_idx_2 = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
             }
 
             /* end of gf_mul() */
@@ -496,11 +496,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
             }
 
             if (0 < RSDecoder_OmegaZActual_idx_1 - 1) {
-              if (rtConstP.RSDecoder_table1[6] == 0) {
+              if (rtConstP_rx_bb.RSDecoder_table1[6] == 0) {
                 inv = 1;
               } else {
-                inv = rtConstP.RSDecoder_table1[6 -
-                  rtConstP.RSDecoder_table2[rtConstP.RSDecoder_table1[6] - 1]];
+                inv = rtConstP_rx_bb.RSDecoder_table1[6 -
+                  rtConstP_rx_bb.RSDecoder_table2[rtConstP_rx_bb.RSDecoder_table1[6] - 1]];
               }
             }
 
@@ -513,14 +513,14 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                                  == 0)) {
                 z = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[inv - 1] +
-                        rtConstP.RSDecoder_table2[RSDecoder_PsiZStar[RSDecoder_OmegaZActual_idx_3]
+                temp = (rtConstP_rx_bb.RSDecoder_table2[inv - 1] +
+                        rtConstP_rx_bb.RSDecoder_table2[RSDecoder_PsiZStar[RSDecoder_OmegaZActual_idx_3]
                         - 1]) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                z = rtConstP.RSDecoder_table1[temp - 1];
+                z = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
@@ -536,13 +536,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if ((z == 0) || (intVal == 0)) {
                 temp = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[z - 1] +
-                        rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                temp = (rtConstP_rx_bb.RSDecoder_table2[z - 1] +
+                        rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                temp = rtConstP.RSDecoder_table1[temp - 1];
+                temp = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
@@ -552,14 +552,14 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if ((z == 0) || (RSDecoder_OmegaZActual_idx_2 == 0)) {
                 z = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[z - 1] +
-                        rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_2 -
+                temp = (rtConstP_rx_bb.RSDecoder_table2[z - 1] +
+                        rtConstP_rx_bb.RSDecoder_table2[RSDecoder_OmegaZActual_idx_2 -
                         1]) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                z = rtConstP.RSDecoder_table1[temp - 1];
+                z = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
@@ -584,20 +584,20 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
           if (RSDecoder_Errloc[j] == 0) {
             temp = 1;
           } else {
-            temp = rtConstP.RSDecoder_table1[6 -
-              rtConstP.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
+            temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+              rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
           }
 
           /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
           if (temp == 0) {
             RSDecoder_Errloc[j] = 0;
           } else {
-            temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
+            temp = rtConstP_rx_bb.RSDecoder_table2[temp - 1] % 7;
             if (temp == 0) {
               temp = 7;
             }
 
-            RSDecoder_Errloc[j] = rtConstP.RSDecoder_table1[temp - 1];
+            RSDecoder_Errloc[j] = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
           }
 
           /* end of gf_mul() */
@@ -675,56 +675,56 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if ((intVal == 0) || (RSDecoder_Syndrome[0] == 0)) {
                 temp = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[intVal - 1] +
-                        rtConstP.RSDecoder_table2[RSDecoder_Syndrome[0] - 1]) %
+                temp = (rtConstP_rx_bb.RSDecoder_table2[intVal - 1] +
+                        rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Syndrome[0] - 1]) %
                   7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                temp = rtConstP.RSDecoder_table1[temp - 1];
+                temp = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0] ^= temp;
               if ((intVal == 0) || (RSDecoder_Syndrome[1] == 0)) {
                 temp = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[intVal - 1] +
-                        rtConstP.RSDecoder_table2[RSDecoder_Syndrome[1] - 1]) %
+                temp = (rtConstP_rx_bb.RSDecoder_table2[intVal - 1] +
+                        rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Syndrome[1] - 1]) %
                   7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                temp = rtConstP.RSDecoder_table1[temp - 1];
+                temp = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0 + 1] ^= temp;
               if ((intVal == 0) || (RSDecoder_Syndrome[2] == 0)) {
                 temp = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[intVal - 1] +
-                        rtConstP.RSDecoder_table2[RSDecoder_Syndrome[2] - 1]) %
+                temp = (rtConstP_rx_bb.RSDecoder_table2[intVal - 1] +
+                        rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Syndrome[2] - 1]) %
                   7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                temp = rtConstP.RSDecoder_table1[temp - 1];
+                temp = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0 + 2] ^= temp;
               if ((intVal == 0) || (RSDecoder_Syndrome[3] == 0)) {
                 temp = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[intVal - 1] +
-                        rtConstP.RSDecoder_table2[RSDecoder_Syndrome[3] - 1]) %
+                temp = (rtConstP_rx_bb.RSDecoder_table2[intVal - 1] +
+                        rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Syndrome[3] - 1]) %
                   7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                temp = rtConstP.RSDecoder_table1[temp - 1];
+                temp = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0 + 3] ^= temp;
@@ -757,7 +757,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (RSDecoder_Errloc[j] == 0) {
                 intVal = 1;
               } else {
-                intVal = rtConstP.RSDecoder_table1[6];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[6];
               }
 
               /*  end of gf_pow()  */
@@ -766,13 +766,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                 if (intVal == 0) {
                   Temp3 = 0;
                 } else {
-                  temp = (rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_0
-                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                  temp = (rtConstP_rx_bb.RSDecoder_table2[RSDecoder_OmegaZActual_idx_0
+                          - 1] + rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  Temp3 = rtConstP.RSDecoder_table1[temp - 1];
+                  Temp3 = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
@@ -782,7 +782,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (RSDecoder_Errloc[j] == 0) {
                 intVal = 1;
               } else {
-                intVal = rtConstP.RSDecoder_table1[6];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[6];
               }
 
               /*  end of gf_pow()  */
@@ -791,13 +791,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                 if ((rtDW->RSDecoder_PsiZDeriv[0] == 0) || (intVal == 0)) {
                   Temp4 = 0;
                 } else {
-                  temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[0]
-                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                  temp = (rtConstP_rx_bb.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[0]
+                          - 1] + rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  Temp4 = rtConstP.RSDecoder_table1[temp - 1];
+                  Temp4 = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
@@ -808,31 +808,31 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (RSDecoder_Errloc[j] == 0) {
                 temp = 1;
               } else {
-                temp = rtConstP.RSDecoder_table1[6 -
-                  rtConstP.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
+                temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+                  rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
               }
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
                 intVal = 0;
               } else {
-                temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
               if (intVal != 0) {
-                temp = rtConstP.RSDecoder_table2[intVal - 1] % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[intVal - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
@@ -841,13 +841,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                 if (intVal == 0) {
                   intVal = 0;
                 } else {
-                  temp = (rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_1
-                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                  temp = (rtConstP_rx_bb.RSDecoder_table2[RSDecoder_OmegaZActual_idx_1
+                          - 1] + rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  intVal = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
@@ -859,31 +859,31 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (RSDecoder_Errloc[j] == 0) {
                 temp = 1;
               } else {
-                temp = rtConstP.RSDecoder_table1[6 -
-                  rtConstP.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
+                temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+                  rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
               }
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
                 intVal = 0;
               } else {
-                temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
               if (intVal != 0) {
-                temp = rtConstP.RSDecoder_table2[intVal - 1] % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[intVal - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
@@ -892,13 +892,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                 if ((rtDW->RSDecoder_PsiZDeriv[1] == 0) || (intVal == 0)) {
                   intVal = 0;
                 } else {
-                  temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[1]
-                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                  temp = (rtConstP_rx_bb.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[1]
+                          - 1] + rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  intVal = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
@@ -910,31 +910,31 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (RSDecoder_Errloc[j] == 0) {
                 temp = 1;
               } else {
-                temp = rtConstP.RSDecoder_table1[6 -
-                  rtConstP.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
+                temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+                  rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
               }
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
                 intVal = 0;
               } else {
-                temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
               if (intVal != 0) {
-                temp = (rtConstP.RSDecoder_table2[intVal - 1] << 1) % 7;
+                temp = (rtConstP_rx_bb.RSDecoder_table2[intVal - 1] << 1) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
@@ -943,13 +943,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                 if (intVal == 0) {
                   intVal = 0;
                 } else {
-                  temp = (rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_2
-                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                  temp = (rtConstP_rx_bb.RSDecoder_table2[RSDecoder_OmegaZActual_idx_2
+                          - 1] + rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  intVal = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
@@ -961,31 +961,31 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (RSDecoder_Errloc[j] == 0) {
                 temp = 1;
               } else {
-                temp = rtConstP.RSDecoder_table1[6 -
-                  rtConstP.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
+                temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+                  rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
               }
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
                 intVal = 0;
               } else {
-                temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
               if (intVal != 0) {
-                temp = (rtConstP.RSDecoder_table2[intVal - 1] << 1) % 7;
+                temp = (rtConstP_rx_bb.RSDecoder_table2[intVal - 1] << 1) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
@@ -994,13 +994,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                 if ((rtDW->RSDecoder_PsiZDeriv[2] == 0) || (intVal == 0)) {
                   intVal = 0;
                 } else {
-                  temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[2]
-                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                  temp = (rtConstP_rx_bb.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[2]
+                          - 1] + rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  intVal = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
@@ -1012,31 +1012,31 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (RSDecoder_Errloc[j] == 0) {
                 temp = 1;
               } else {
-                temp = rtConstP.RSDecoder_table1[6 -
-                  rtConstP.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
+                temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+                  rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
               }
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
                 intVal = 0;
               } else {
-                temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
               if (intVal != 0) {
-                temp = rtConstP.RSDecoder_table2[intVal - 1] * 3 % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[intVal - 1] * 3 % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
@@ -1045,13 +1045,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                 if (intVal == 0) {
                   intVal = 0;
                 } else {
-                  temp = (rtConstP.RSDecoder_table2[RSDecoder_OmegaZActual_idx_3
-                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                  temp = (rtConstP_rx_bb.RSDecoder_table2[RSDecoder_OmegaZActual_idx_3
+                          - 1] + rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  intVal = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
@@ -1063,31 +1063,31 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (RSDecoder_Errloc[j] == 0) {
                 temp = 1;
               } else {
-                temp = rtConstP.RSDecoder_table1[6 -
-                  rtConstP.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
+                temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+                  rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Errloc[j] - 1]];
               }
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if (temp == 0) {
                 intVal = 0;
               } else {
-                temp = rtConstP.RSDecoder_table2[temp - 1] % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[temp - 1] % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
               if (intVal != 0) {
-                temp = rtConstP.RSDecoder_table2[intVal - 1] * 3 % 7;
+                temp = rtConstP_rx_bb.RSDecoder_table2[intVal - 1] * 3 % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /*  end of gf_pow()  */
@@ -1096,13 +1096,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
                 if ((rtDW->RSDecoder_PsiZDeriv[3] == 0) || (intVal == 0)) {
                   intVal = 0;
                 } else {
-                  temp = (rtConstP.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[3]
-                          - 1] + rtConstP.RSDecoder_table2[intVal - 1]) % 7;
+                  temp = (rtConstP_rx_bb.RSDecoder_table2[rtDW->RSDecoder_PsiZDeriv[3]
+                          - 1] + rtConstP_rx_bb.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
 
-                  intVal = rtConstP.RSDecoder_table1[temp - 1];
+                  intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
                 }
 
                 /* end of gf_mul() */
@@ -1114,28 +1114,28 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
               if (Temp4 == 0) {
                 temp = 1;
               } else {
-                temp = rtConstP.RSDecoder_table1[6 -
-                  rtConstP.RSDecoder_table2[Temp4 - 1]];
+                temp = rtConstP_rx_bb.RSDecoder_table1[6 -
+                  rtConstP_rx_bb.RSDecoder_table2[Temp4 - 1]];
               }
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if ((temp == 0) || (Temp3 == 0)) {
                 intVal = 0;
               } else {
-                temp = (rtConstP.RSDecoder_table2[temp - 1] +
-                        rtConstP.RSDecoder_table2[Temp3 - 1]) % 7;
+                temp = (rtConstP_rx_bb.RSDecoder_table2[temp - 1] +
+                        rtConstP_rx_bb.RSDecoder_table2[Temp3 - 1]) % 7;
                 if (temp == 0) {
                   temp = 7;
                 }
 
-                intVal = rtConstP.RSDecoder_table1[temp - 1];
+                intVal = rtConstP_rx_bb.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
               /*  end of gf_div() */
               /* Find exponent representations of Errloc ==> get actual error locations */
               /* Correct the current error */
-              temp = 6 - rtConstP.RSDecoder_table2[RSDecoder_Errloc[j] - 1];
+              temp = 6 - rtConstP_rx_bb.RSDecoder_table2[RSDecoder_Errloc[j] - 1];
               rtDW->RSDecoder_CCode[temp] ^= intVal;
             }
 
@@ -1196,7 +1196,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
     for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 16;
          RSDecoder_OmegaZActual_idx_0++) {
       bitIdx -= (uint8_T)
-        (rtConstP.Descrambler_Polynomial[RSDecoder_OmegaZActual_idx_0 + 1] *
+        (rtConstP_rx_bb.Descrambler_Polynomial[RSDecoder_OmegaZActual_idx_0 + 1] *
          shiftReg[RSDecoder_OmegaZActual_idx_0]);
     }
 

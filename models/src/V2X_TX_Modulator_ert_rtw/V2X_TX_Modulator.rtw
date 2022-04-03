@@ -6,8 +6,8 @@ CompiledModel {
   ModelReferenceTargetType "NONE"
   Version		  "9.6 (R2021b) 14-May-2021"
   SimulinkVersion	  "10.4"
-  ModelVersion		  "1.150"
-  GeneratedOn		  "Sat Apr  2 13:40:51 2022"
+  ModelVersion		  "1.152"
+  GeneratedOn		  "Sat Apr  2 21:13:12 2022"
   HasSimStructVars	  0
   HasVariants		  0
   PreserveExternInFcnDecls 1
@@ -889,11 +889,11 @@ CompiledModel {
     tlcTargetType	    "RT"
     RelativeBuildDir	    "V2X_TX_Modulator_ert_rtw"
   }
-  RTWContext		  [-1514085376, 615]
+  RTWContext		  [-1636282928, 615]
   RTWCGIR		  1
   TLCBlkFcnInCGIR	  1
   SLCI			  off
-  SubsystemHdlForRightClickBuild 71.0006103515625
+  SubsystemHdlForRightClickBuild 75.0032958984375
   SubsystemPathForRightClickBuild "v2x_modem_tb"
   SubsystemNameForRightClickBuild "V2X_TX_Modulator"
   LocalSharedCodeManagerFile "C:\\Users\\jacob\\Documents\\Important\\UCSD\\2021-2022 Year\\WES Capstone\\capstone\\mo"
@@ -1418,25 +1418,25 @@ CompiledModel {
       Block {
 	Name			"<Root>/ tx_frame"
 	SLName			" tx_frame"
-	SID			"542"
+	SID			"548"
 	Type			Inport
       }
       Block {
 	Name			"<Root>/mod_frame"
 	SLName			"mod_frame"
-	SID			"543"
+	SID			"549"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/map_out"
 	SLName			"map_out"
-	SID			"545"
+	SID			"551"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/ps_out"
 	SLName			"ps_out"
-	SID			"546"
+	SID			"552"
 	Type			Outport
       }
       Block {
@@ -3360,7 +3360,7 @@ CompiledModel {
       PID		      -1
       firstEntryOfTsMapIsGCD  yes
       NumDataOutputPorts      0
-      TLCFileName	      "s0_b0_dyuze"
+      TLCFileName	      "s0_b0_awf0e"
       OpaqueBlockMethode {
 	HasOutputs		1
 	HasModelInitialize	1
@@ -3662,32 +3662,32 @@ CompiledModel {
     RTWCGModule {
       RateGrouping	      0
       PeriodicRateGrouping    0
-      TLCFileName	      "s0_b0_dyuze"
+      TLCFileName	      "s0_b0_awf0e"
       RTWFcnConst {
 	HasInstanceSetup	"no"
 	baseTidOfTasks		"[0]"
 	Outputs_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_dyuze_Outputs"
+	  TLCFileName		  "s0_b0_awf0e_Outputs"
 	  StackSize		  48
 	}
 	ModelInitialize_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_dyuze_ModelInitialize"
+	  TLCFileName		  "s0_b0_awf0e_ModelInitialize"
 	  StackSize		  0
 	}
 	ModelExternalOutputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_dyuze_ModelExternalOutputInit"
+	  TLCFileName		  "s0_b0_awf0e_ModelExternalOutputInit"
 	  StackSize		  4
 	}
 	ModelExternalInputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_dyuze_ModelExternalInputInit"
+	  TLCFileName		  "s0_b0_awf0e_ModelExternalInputInit"
 	  StackSize		  4
 	}
       }

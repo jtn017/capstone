@@ -76,7 +76,7 @@ struct tag_RTM {
 };
 
 /* Constant parameters (default storage) */
-extern const ConstP rtConstP;
+extern const ConstP rtConstP_rx_bb;
 
 /* Model entry point functions */
 extern void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, boolean_T

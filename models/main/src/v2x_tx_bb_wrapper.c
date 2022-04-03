@@ -69,7 +69,7 @@ int get_tx_input_frame(int frame_num)
 
     // Set data
     memcpy(rtU_v2x_tx_bb_in, info_packet, INFO_PKT_LEN*sizeof(rtU_v2x_tx_bb_in[0]));
-    memcpy(rtU_v2x_tx_bb_in, audio_packet, AUDIO_PKT_LEN*sizeof(rtU_v2x_tx_bb_in[0]));
+    memcpy(rtU_v2x_tx_bb_in + INFO_PKT_LEN, audio_packet, AUDIO_PKT_LEN*sizeof(rtU_v2x_tx_bb_in[0]));
 #endif
 
     // No errors
