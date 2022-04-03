@@ -43,46 +43,21 @@ int get_audio_packet(bool audio_packet[INFO_PKT_LEN])
     return 0;
 }
 
-// ---------------------- Debug functions ----------------------
-#if DEBUG_BUILD
-// Function prototype
-const char* getfield_wrap(char* line, int num);
-
-// Function declarations
-const char* getfield_wrap(char* line, int num)
-{
-    const char* tok;
-    for (tok = strtok(line, ",");
-            tok && *tok;
-            tok = strtok(NULL, ",\n"))
-    {
-        if (!--num)
-            return tok;
-    }
-    return NULL;
-}
-#endif
-
 // ---------------------- Internal functions ----------------------
 int get_tx_input_frame(int frame_num)
 {
 #if DEBUG_BUILD
-    // Load input
-    FILE* instream = fopen("data/v2x_tx_bb_in.csv", "r");
-    char line[1024];
-    for (int n = 0; n < TX_BB_IN_LEN; n++)
-    {
-        fgets(line, sizeof(line), instream);
-        char* tmp = strdup(line);
-        rtU_v2x_tx_bb_in[n] = (boolean_T) atoi(getfield_wrap(tmp, frame_num));
-        free(tmp);
-    }
-    fclose(instream);
+    // Grab data from file
+    boolean_T buffer[TX_BB_IN_LEN * NUM_FRAMES];
+    FILE * bin_file = fopen("data/v2x_tx_bb_in.bin", "rb");
+    fread(buffer, sizeof(buffer), 1, bin_file);
+    fclose(bin_file);
 
-    // for (int n = 0; n < 150; n++)
-    // {
-    //     printf("rtU_v2x_tx_bb_in[%d]: %d\n", n, rtU_v2x_tx_bb_in[n]);
-    // }
+    // Save to global
+    for(unsigned int i = 0; i < TX_BB_IN_LEN; i++)
+    {
+        rtU_v2x_tx_bb_in[i] = buffer[TX_BB_IN_LEN * frame_num + i];
+    }
 #else
     // Variable declarations
     bool info_packet[INFO_PKT_LEN];

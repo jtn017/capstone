@@ -19,15 +19,12 @@ Ts = ini.T;
 bb_ini = v2x_baseband_init();
 mod_ini = v2x_modem_init();
 mod_dt = mod_ini.intfc_dt;
+info_pkt_static = get_info_pkt();
 
 %% Channel params
 phi = 20; % Phase offset (deg)
 f0 = 500; % Frequency offset (Hz), none in this sim because no carrier freq
-
 SNR_dB = 20;
-% M = 2; % Bits per symbol
-% EbN0_dB = 10; % Eb/N0 in dB
-% sym_per = 1/mod_ini.Fc;
 
 %% Simulation
 Tsim = Ts * 3;
@@ -37,29 +34,32 @@ set_param(sim_name, 'StopTime', num2str(Tsim))
 sim_out = sim(sim_name, Tsim);
 
 %% Save to CSV
-save_to_csv = 1;
+save_to_bin = 1;
 
 % V2X TX Baseband
-if save_to_csv
-%     % Convert to bin files instead of CSV later...
-%     fileID = fopen('nine.bin', 'w');
-%     fwrite(fileID,[1:9]);
-%     fclose(fileID);
-
+if save_to_bin
     % TX Baseband
+    v2x_tx_bb_in_fileID = fopen('main/data/v2x_tx_bb_in.bin', 'w');
+    v2x_tx_bb_out_fileID = fopen('main/data/v2x_tx_bb_out.bin', 'w');
     v2x_tx_bb_in  = squeeze(sim_out.logsout.getElement('v2x_tx_bb_in').Values.Data);
     v2x_tx_bb_out = squeeze(sim_out.logsout.getElement('v2x_tx_bb_out').Values.Data);
-    writematrix(v2x_tx_bb_in,  'main/data/v2x_tx_bb_in.csv')
-    writematrix(v2x_tx_bb_out, 'main/data/v2x_tx_bb_out.csv')
+    fwrite(v2x_tx_bb_in_fileID, v2x_tx_bb_in);
+    fwrite(v2x_tx_bb_out_fileID, v2x_tx_bb_out);
+    fclose(v2x_tx_bb_in_fileID);
+    fclose(v2x_tx_bb_out_fileID);
 
     % TX Modulator
+    v2x_tx_mod_out_real_fileID = fopen('main/data/v2x_tx_mod_out_real.bin', 'w');
+    v2x_tx_mod_out_imag_fileID = fopen('main/data/v2x_tx_mod_out_imag.bin', 'w');
     v2x_tx_mod_out = squeeze(sim_out.logsout.getElement('v2x_tx_mod_out').Values.Data);
-    writematrix(real(double(v2x_tx_mod_out)), 'main/data/v2x_tx_mod_out_real.csv')
-    writematrix(imag(double(v2x_tx_mod_out)), 'main/data/v2x_tx_mod_out_imag.csv')
+    fwrite(v2x_tx_mod_out_real_fileID, real(single(v2x_tx_mod_out)), 'single');
+    fwrite(v2x_tx_mod_out_imag_fileID, imag(single(v2x_tx_mod_out)), 'single');
+    fclose(v2x_tx_mod_out_real_fileID);
+    fclose(v2x_tx_mod_out_imag_fileID);
 end
 
 %% Build script
-build_src = 1;
+build_src = 0;
 
 if build_src
     % Models
@@ -81,4 +81,32 @@ if build_src
     slbuild(v2x_tx_bb_fp)
     slbuild(v2x_tx_mod_fp)
     slbuild(v2x_rx_bb_fp)
+end
+
+%% Helper functions
+function info_pkt = get_info_pkt()
+    % Name
+    name = 'V2X!';
+    name_bin_mat = dec2bin(name, 8) - '0';
+    name_bin = name_bin_mat(:);
+
+    % Location: UCSD
+    pos.lat = single(32.880100);
+    pos.lon = single(-117.234000);
+    pos.lat_bin = (dec2bin(typecast(pos.lat, 'uint32'), 32) - '0')';
+    pos.lon_bin = (dec2bin(typecast(pos.lon, 'uint32'), 32) - '0')';
+
+    % Speed 
+    speed = uint8(60);
+    speed_bin = (dec2bin(speed, 8) - '0')';
+
+    % Navigation:
+    nav.dir = uint8(3);
+    nav.dir_bin = (dec2bin(nav.dir, 8) - '0')';
+    nav.dtns = single(5.3);
+    nav.dtns_bin = (dec2bin(typecast(nav.dtns, 'uint32'), 32) - '0')';
+
+    % Concatenate array
+    info_pkt = [name_bin; pos.lat_bin; pos.lon_bin; speed_bin; ...
+                nav.dir_bin; nav.dtns_bin];
 end
