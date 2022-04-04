@@ -19,7 +19,8 @@ Ts = ini.T;
 bb_ini = v2x_baseband_init();
 mod_ini = v2x_modem_init();
 mod_dt = mod_ini.intfc_dt;
-info_pkt_static = get_info_pkt();
+info_pkt_v1 = get_info_pkt_v1();
+info_pkt_v2 = get_info_pkt_v2();
 
 %% Channel params
 phi = 20; % Phase offset (deg)
@@ -34,7 +35,7 @@ set_param(sim_name, 'StopTime', num2str(Tsim))
 sim_out = sim(sim_name, Tsim);
 
 %% Save to CSV
-save_to_bin = 0;
+save_to_bin = 1;
 
 % V2X TX Baseband
 if save_to_bin
@@ -69,7 +70,7 @@ if save_to_bin
 end
 
 %% Build script
-build_src = 0;
+build_src = 1;
 
 if build_src
     % Models
@@ -94,8 +95,8 @@ if build_src
 end
 
 %% Helper functions
-function info_pkt = get_info_pkt()
-    % Name
+function info_pkt = get_info_pkt_v1()
+    % Name: V2X!
     name = 'V2X!';
     name_bin_mat = dec2bin(name, 8) - '0';
     name_bin = name_bin_mat(:);
@@ -106,14 +107,41 @@ function info_pkt = get_info_pkt()
     pos.lat_bin = (dec2bin(typecast(pos.lat, 'uint32'), 32) - '0')';
     pos.lon_bin = (dec2bin(typecast(pos.lon, 'uint32'), 32) - '0')';
 
-    % Speed 
+    % Speed: 60
     speed = uint8(60);
     speed_bin = (dec2bin(speed, 8) - '0')';
 
-    % Navigation:
+    % Navigation: Directions = 3, Distance to next step = 5.3
     nav.dir = uint8(3);
-    nav.dir_bin = (dec2bin(nav.dir, 8) - '0')';
     nav.dtns = single(5.3);
+    nav.dir_bin = (dec2bin(nav.dir, 8) - '0')';
+    nav.dtns_bin = (dec2bin(typecast(nav.dtns, 'uint32'), 32) - '0')';
+
+    % Concatenate array
+    info_pkt = [name_bin; pos.lat_bin; pos.lon_bin; speed_bin; ...
+                nav.dir_bin; nav.dtns_bin];
+end
+
+function info_pkt = get_info_pkt_v2()
+    % Name: Home
+    name = 'Home';
+    name_bin_mat = dec2bin(name, 8) - '0';
+    name_bin = name_bin_mat(:);
+
+    % Location: San Jose, CA
+    pos.lat = single(37.3382);
+    pos.lon = single(-121.8863);
+    pos.lat_bin = (dec2bin(typecast(pos.lat, 'uint32'), 32) - '0')';
+    pos.lon_bin = (dec2bin(typecast(pos.lon, 'uint32'), 32) - '0')';
+
+    % Speed: 45
+    speed = uint8(45);
+    speed_bin = (dec2bin(speed, 8) - '0')';
+
+    % Navigation: Directions = 1, Distance to next step = 0.6789
+    nav.dir = uint8(1);
+    nav.dtns = single(0.6789);
+    nav.dir_bin = (dec2bin(nav.dir, 8) - '0')';
     nav.dtns_bin = (dec2bin(typecast(nav.dtns, 'uint32'), 32) - '0')';
 
     % Concatenate array

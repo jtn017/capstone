@@ -11,7 +11,7 @@
 #define AUDIO_PKT_LEN 7056
 
 // TX Baseband
-#define TX_BB_IN_LEN 7200
+#define TX_BB_IN_LEN 7200/8
 #define TX_BB_ENC_LEN 16800
 #define TX_BB_OUT_LEN 16928
 

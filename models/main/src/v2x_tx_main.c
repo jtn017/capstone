@@ -24,11 +24,11 @@
 // ---------------------- Global variables ----------------------
 boolean_T g_tx_bb_out_frame[TX_BB_OUT_LEN];
 cint16_T g_tx_mod_out_frame[TX_MOD_OUT_LEN];
-boolean_T g_rx_bb_out_frame[RX_BB_OUT_LEN];
+uint8_T g_rx_bb_out_frame[RX_BB_OUT_LEN];
 unsigned int g_num_tx_frames;
 
 // ---------------------- Function prototypes ----------------------
-void read_bool_from_bin(const char* filename, boolean_T* data, unsigned int filesize);
+void read_char_from_bin(const char* filename, char* data, unsigned int filesize);
 void read_float_from_bin(const char* filename, float* data, unsigned int filesize);
 
 double fixed_to_double_txmod(int16_T x);
@@ -39,7 +39,7 @@ static creal_T test_tx_mod_out[TX_MOD_OUT_LEN];
 static boolean_T test_rx_bb_out[RX_BB_OUT_LEN];
 
 void load_bin(int frame_num);
-int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame, boolean_T* rx_bb_out_frame);
+int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame, uint8_T* rx_bb_out_frame);
 #endif
 
 // ---------------------- Debug ----------------------
@@ -48,7 +48,7 @@ void load_bin(int frame_num)
 {
     // TX Baseband expected output
     boolean_T tx_bb_out[TX_BB_OUT_LEN * NUM_FRAMES];
-    read_bool_from_bin("data/v2x_tx_bb_out.bin", tx_bb_out, TX_BB_OUT_LEN * NUM_FRAMES);
+    read_char_from_bin("data/v2x_tx_bb_out.bin", (char*) tx_bb_out, TX_BB_OUT_LEN * NUM_FRAMES);
     for(unsigned int i = 0; i < TX_BB_OUT_LEN; i++)
     {
         test_tx_bb_out[i] = tx_bb_out[TX_BB_OUT_LEN * frame_num + i];
@@ -67,8 +67,8 @@ void load_bin(int frame_num)
     }
 
     // RX Modulator expected output
-    boolean_T rx_bb_out[RX_BB_OUT_LEN * NUM_FRAMES];
-    read_bool_from_bin("data/v2x_rx_bb_out.bin", rx_bb_out, RX_BB_OUT_LEN * NUM_FRAMES);
+    uint8_T rx_bb_out[RX_BB_OUT_LEN * NUM_FRAMES];
+    read_char_from_bin("data/v2x_rx_bb_out.bin", (char*) rx_bb_out, RX_BB_OUT_LEN * NUM_FRAMES);
     for(unsigned int i = 0; i < RX_BB_OUT_LEN; i++)
     {
         test_rx_bb_out[i] = rx_bb_out[RX_BB_OUT_LEN * frame_num + i];
@@ -78,7 +78,7 @@ void load_bin(int frame_num)
     return;
 }
 
-int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame, boolean_T* rx_bb_out_frame)
+int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame, uint8_T* rx_bb_out_frame)
 {
     // Error flag
     int ret_val = 0;
@@ -137,10 +137,10 @@ int compare_actual_vs_exp(boolean_T* tx_bb_out_frame, cint16_T* tx_mod_out_frame
 #endif
 
 // ---------------------- Read from binary file ----------------------
-void read_bool_from_bin(const char* filename, boolean_T* data, unsigned int filesize)
+void read_char_from_bin(const char* filename, char* data, unsigned int filesize)
 {
-    // Reading boolean_T (1 char size) from file
-    boolean_T buffer[BIN_FILE_MAX];
+    // Reading char from file
+    char buffer[BIN_FILE_MAX];
     FILE * bin_file = fopen(filename, "rb");
     fread(buffer, sizeof(buffer), 1, bin_file);
 

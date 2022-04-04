@@ -1,12 +1,12 @@
-%implements s0_b0_ewf0e_ModelExternalOutputInit "C"
+%implements s0_b0_be81e_ModelExternalOutputInit "C"
 
 %function ModelExternalOutputInit(block, system) Output
 %assign cfgTxt = ""
 %openfile cfgTxt
 %assign localVarDecl = ""
-(void)memset(&rtY_data_frame[0], 0, 7200U * sizeof(boolean_T));
-(void)memset(&rtY_dec_in[0], 0, 16800U * sizeof(boolean_T));
-(void)memset(&rtY_descr_in[0], 0, 7200U * sizeof(boolean_T));
+(void)memset(&rtY_tx_frame[0], 0, 16928U * sizeof(boolean_T));
+(void)memset(&rtY_scramb_out[0], 0, 7200U * sizeof(boolean_T));
+(void)memset(&rtY_enc_out[0], 0, 16800U * sizeof(boolean_T));
 %<SLibCG_TrackEO(2)>\
 %<SLibCG_TrackEO(1)>\
 %<SLibCG_TrackEO(0)>\

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.150
+ * Model version                  : 1.156
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sat Apr  2 13:40:46 2022
+ * C/C++ source code generated on : Sun Apr  3 20:26:26 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -36,19 +36,20 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  uint32_T RSEncoder[5600];            /* '<S5>/RS Encoder' */
-  int8_T IntegertoBitConverter[16800]; /* '<S5>/Integer to Bit Converter' */
+  uint32_T RSEncoder[5600];            /* '<S6>/RS Encoder' */
+  int8_T IntegertoBitConverter[16800]; /* '<S6>/Integer to Bit Converter' */
+  boolean_T Transpose[7200];           /* '<S5>/Transpose' */
 } DW;
 
 /* Constant parameters (default storage) */
 typedef struct {
   /* Computed Parameter: RSEncoder_table1
-   * Referenced by: '<S5>/RS Encoder'
+   * Referenced by: '<S6>/RS Encoder'
    */
   int32_T RSEncoder_table1[7];
 
   /* Computed Parameter: RSEncoder_table2
-   * Referenced by: '<S5>/RS Encoder'
+   * Referenced by: '<S6>/RS Encoder'
    */
   int32_T RSEncoder_table2[7];
 
@@ -72,17 +73,42 @@ struct tag_RTM {
 extern const ConstP rtConstP_tx_bb;
 
 /* Model entry point functions */
-extern void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, boolean_T
-  rtU_v2x_tx_bb_in[7200], boolean_T rtY_tx_frame[16928], boolean_T
+extern void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, uint8_T
+  rtU_v2x_tx_bb_in[900], boolean_T rtY_tx_frame[16928], boolean_T
   rtY_scramb_out[7200], boolean_T rtY_enc_out[16800]);
-extern void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T
-  rtU_v2x_tx_bb_in[7200], boolean_T rtY_tx_frame[16928], boolean_T
-  rtY_scramb_out[7200], boolean_T rtY_enc_out[16800]);
+extern void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in
+  [900], boolean_T rtY_tx_frame[16928], boolean_T rtY_scramb_out[7200],
+  boolean_T rtY_enc_out[16800]);
 
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
- * Block '<S6>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S7>/Data Type Duplicate' : Unused code path elimination
+ * Block '<S8>/DTProp1' : Unused code path elimination
+ * Block '<S8>/DTProp2' : Unused code path elimination
+ * Block '<S9>/DTProp1' : Unused code path elimination
+ * Block '<S9>/DTProp2' : Unused code path elimination
+ * Block '<S10>/DTProp1' : Unused code path elimination
+ * Block '<S10>/DTProp2' : Unused code path elimination
+ * Block '<S11>/DTProp1' : Unused code path elimination
+ * Block '<S11>/DTProp2' : Unused code path elimination
+ * Block '<S12>/DTProp1' : Unused code path elimination
+ * Block '<S12>/DTProp2' : Unused code path elimination
+ * Block '<S13>/DTProp1' : Unused code path elimination
+ * Block '<S13>/DTProp2' : Unused code path elimination
+ * Block '<S14>/DTProp1' : Unused code path elimination
+ * Block '<S14>/DTProp2' : Unused code path elimination
+ * Block '<S15>/DTProp1' : Unused code path elimination
+ * Block '<S15>/DTProp2' : Unused code path elimination
+ * Block '<S8>/Modify Scaling Only' : Eliminate redundant data type conversion
+ * Block '<S9>/Modify Scaling Only' : Eliminate redundant data type conversion
+ * Block '<S10>/Modify Scaling Only' : Eliminate redundant data type conversion
+ * Block '<S11>/Modify Scaling Only' : Eliminate redundant data type conversion
+ * Block '<S12>/Modify Scaling Only' : Eliminate redundant data type conversion
+ * Block '<S13>/Modify Scaling Only' : Eliminate redundant data type conversion
+ * Block '<S14>/Modify Scaling Only' : Eliminate redundant data type conversion
+ * Block '<S15>/Modify Scaling Only' : Eliminate redundant data type conversion
+ * Block '<S5>/Reshape' : Reshape block reduction
  */
 
 /*-
@@ -107,8 +133,17 @@ extern void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T
  * '<S2>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder'
  * '<S3>'   : 'v2x_modem_tb/V2X_TX_Baseband/Preamble Prepender'
  * '<S4>'   : 'v2x_modem_tb/V2X_TX_Baseband/Scrambler'
- * '<S5>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder/Binary-Input RS Encoder'
- * '<S6>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder/Binary-Input RS Encoder/Data Type Conversion Inherited'
+ * '<S5>'   : 'v2x_modem_tb/V2X_TX_Baseband/bytes_to_bits'
+ * '<S6>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder/Binary-Input RS Encoder'
+ * '<S7>'   : 'v2x_modem_tb/V2X_TX_Baseband/Encoder/Binary-Input RS Encoder/Data Type Conversion Inherited'
+ * '<S8>'   : 'v2x_modem_tb/V2X_TX_Baseband/bytes_to_bits/Extract Bits'
+ * '<S9>'   : 'v2x_modem_tb/V2X_TX_Baseband/bytes_to_bits/Extract Bits1'
+ * '<S10>'  : 'v2x_modem_tb/V2X_TX_Baseband/bytes_to_bits/Extract Bits2'
+ * '<S11>'  : 'v2x_modem_tb/V2X_TX_Baseband/bytes_to_bits/Extract Bits3'
+ * '<S12>'  : 'v2x_modem_tb/V2X_TX_Baseband/bytes_to_bits/Extract Bits4'
+ * '<S13>'  : 'v2x_modem_tb/V2X_TX_Baseband/bytes_to_bits/Extract Bits5'
+ * '<S14>'  : 'v2x_modem_tb/V2X_TX_Baseband/bytes_to_bits/Extract Bits6'
+ * '<S15>'  : 'v2x_modem_tb/V2X_TX_Baseband/bytes_to_bits/Extract Bits7'
  */
 
 /*-

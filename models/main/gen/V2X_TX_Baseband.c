@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.150
+ * Model version                  : 1.156
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sat Apr  2 13:40:46 2022
+ * C/C++ source code generated on : Sun Apr  3 20:26:26 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -20,6 +20,44 @@
  */
 
 #include "V2X_TX_Baseband.h"
+#ifndef UCHAR_MAX
+#include <limits.h>
+#endif
+
+#if ( UCHAR_MAX != (0xFFU) ) || ( SCHAR_MAX != (0x7F) )
+#error Code was generated for compiler with different sized uchar/char. \
+Consider adjusting Test hardware word size settings on the \
+Hardware Implementation pane to match your compiler word sizes as \
+defined in limits.h of the compiler. Alternatively, you can \
+select the Test hardware is the same as production hardware option and \
+select the Enable portable word sizes option on the Code Generation > \
+Verification pane for ERT based targets, which will disable the \
+preprocessor word size checks.
+#endif
+
+#if ( USHRT_MAX != (0xFFFFU) ) || ( SHRT_MAX != (0x7FFF) )
+#error Code was generated for compiler with different sized ushort/short. \
+Consider adjusting Test hardware word size settings on the \
+Hardware Implementation pane to match your compiler word sizes as \
+defined in limits.h of the compiler. Alternatively, you can \
+select the Test hardware is the same as production hardware option and \
+select the Enable portable word sizes option on the Code Generation > \
+Verification pane for ERT based targets, which will disable the \
+preprocessor word size checks.
+#endif
+
+#if ( UINT_MAX != (0xFFFFFFFFU) ) || ( INT_MAX != (0x7FFFFFFF) )
+#error Code was generated for compiler with different sized uint/int. \
+Consider adjusting Test hardware word size settings on the \
+Hardware Implementation pane to match your compiler word sizes as \
+defined in limits.h of the compiler. Alternatively, you can \
+select the Test hardware is the same as production hardware option and \
+select the Enable portable word sizes option on the Code Generation > \
+Verification pane for ERT based targets, which will disable the \
+preprocessor word size checks.
+#endif
+
+/* Skipping ulong/long check: insufficient preprocessor integer range. */
 
 /*===========*
  * Constants *
@@ -52,7 +90,7 @@
 #endif
 
 /* Model step function */
-void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in[7200],
+void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[900],
   boolean_T rtY_tx_frame[16928], boolean_T rtY_scramb_out[7200], boolean_T
   rtY_enc_out[16800])
 {
@@ -64,13 +102,82 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in[7200],
   int32_T tmp;
   int8_T rtb_BittoIntegerConverter[2400];
   int8_T MessagePAD[3];
+  for (i = 0; i < 900; i++) {
+    /* DataTypeConversion: '<S5>/convert7' incorporates:
+     *  DataTypeConversion: '<S15>/Extract Desired Bits'
+     *  Inport: '<Root>/data_frame'
+     */
+    rtY_scramb_out[i] = ((int32_T)((uint32_T)rtU_v2x_tx_bb_in[i] >> 7) != 0);
+
+    /* DataTypeConversion: '<S5>/convert6' incorporates:
+     *  DataTypeConversion: '<S14>/Extract Desired Bits'
+     *  DataTypeConversion: '<S5>/convert7'
+     *  Inport: '<Root>/data_frame'
+     */
+    rtY_scramb_out[i + 900] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 6 & 1U) != 0U);
+
+    /* DataTypeConversion: '<S5>/convert5' incorporates:
+     *  DataTypeConversion: '<S13>/Extract Desired Bits'
+     *  DataTypeConversion: '<S5>/convert7'
+     *  Inport: '<Root>/data_frame'
+     */
+    rtY_scramb_out[i + 1800] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 5 & 1U) != 0U);
+
+    /* DataTypeConversion: '<S5>/convert4' incorporates:
+     *  DataTypeConversion: '<S12>/Extract Desired Bits'
+     *  DataTypeConversion: '<S5>/convert7'
+     *  Inport: '<Root>/data_frame'
+     */
+    rtY_scramb_out[i + 2700] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 4 & 1U) != 0U);
+
+    /* DataTypeConversion: '<S5>/convert3' incorporates:
+     *  DataTypeConversion: '<S11>/Extract Desired Bits'
+     *  DataTypeConversion: '<S5>/convert7'
+     *  Inport: '<Root>/data_frame'
+     */
+    rtY_scramb_out[i + 3600] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 3 & 1U) != 0U);
+
+    /* DataTypeConversion: '<S5>/convert2' incorporates:
+     *  DataTypeConversion: '<S10>/Extract Desired Bits'
+     *  DataTypeConversion: '<S5>/convert7'
+     *  Inport: '<Root>/data_frame'
+     */
+    rtY_scramb_out[i + 4500] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 2 & 1U) != 0U);
+
+    /* DataTypeConversion: '<S5>/convert1' incorporates:
+     *  DataTypeConversion: '<S5>/convert7'
+     *  DataTypeConversion: '<S9>/Extract Desired Bits'
+     *  Inport: '<Root>/data_frame'
+     */
+    rtY_scramb_out[i + 5400] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 1 & 1U) != 0U);
+
+    /* DataTypeConversion: '<S5>/convert' incorporates:
+     *  DataTypeConversion: '<S5>/convert7'
+     *  DataTypeConversion: '<S8>/Extract Desired Bits'
+     *  Inport: '<Root>/data_frame'
+     */
+    rtY_scramb_out[i + 6300] = ((rtU_v2x_tx_bb_in[i] & 1U) != 0U);
+  }
+
+  /* Math: '<S5>/Transpose' incorporates:
+   *  DataTypeConversion: '<S5>/convert7'
+   *  S-Function (scomscram2): '<S4>/Scrambler'
+   */
+  for (tmp = 0; tmp < 8; tmp++) {
+    for (i = 0; i < 900; i++) {
+      rtDW->Transpose[tmp + (i << 3)] = rtY_scramb_out[900 * tmp + i];
+    }
+  }
+
+  /* End of Math: '<S5>/Transpose' */
 
   /* S-Function (scomscram2): '<S4>/Scrambler' incorporates:
-   *  Inport: '<Root>/data_frame'
+   *  DataTypeConversion: '<S5>/convert7'
+   *  Math: '<S5>/Transpose'
    */
   memset(&shiftReg[0], 0, sizeof(int32_T) << 4U);
   for (B_n_idx_0 = 0; B_n_idx_0 < 7200; B_n_idx_0++) {
-    tmp = rtU_v2x_tx_bb_in[B_n_idx_0];
+    tmp = rtDW->Transpose[B_n_idx_0];
     for (i = 0; i < 16; i++) {
       tmp += (uint8_T)(rtConstP_tx_bb.Scrambler_Polynomial[i + 1] * shiftReg[i]);
     }
@@ -84,7 +191,10 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in[7200],
     shiftReg[0U] = tmp;
   }
 
-  /* S-Function (scominttobit): '<S5>/Bit to Integer Converter' incorporates:
+  /* End of S-Function (scomscram2): '<S4>/Scrambler' */
+
+  /* S-Function (scominttobit): '<S6>/Bit to Integer Converter' incorporates:
+   *  DataTypeConversion: '<S5>/convert7'
    *  S-Function (scomscram2): '<S4>/Scrambler'
    */
   /* Bit to Integer Conversion */
@@ -97,10 +207,10 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in[7200],
     rtb_BittoIntegerConverter[i] = (int8_T)B_n_idx_0;
   }
 
-  /* End of S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
+  /* End of S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
 
-  /* S-Function (scombchrsencoder): '<S5>/RS Encoder' incorporates:
-   *  S-Function (scominttobit): '<S5>/Bit to Integer Converter'
+  /* S-Function (scombchrsencoder): '<S6>/RS Encoder' incorporates:
+   *  S-Function (scominttobit): '<S6>/Bit to Integer Converter'
    */
   for (i = 0; i < 800; i++) {
     int32_T B_n_idx_1;
@@ -110,15 +220,15 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in[7200],
     int8_T MessagePAD_tmp_0;
     int8_T MessagePAD_tmp_1;
 
-    /* S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
+    /* S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
     MessagePAD_tmp = rtb_BittoIntegerConverter[i * 3];
     MessagePAD[0] = MessagePAD_tmp;
 
-    /* S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
+    /* S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
     MessagePAD_tmp_0 = rtb_BittoIntegerConverter[i * 3 + 1];
     MessagePAD[1] = MessagePAD_tmp_0;
 
-    /* S-Function (scominttobit): '<S5>/Bit to Integer Converter' */
+    /* S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
     MessagePAD_tmp_1 = rtb_BittoIntegerConverter[i * 3 + 2];
     MessagePAD[2] = MessagePAD_tmp_1;
     B_n_idx_0 = 0;
@@ -191,10 +301,10 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in[7200],
     rtDW->RSEncoder[i * 7 + 6] = (uint32_T)B_n_idx_3;
   }
 
-  /* End of S-Function (scombchrsencoder): '<S5>/RS Encoder' */
+  /* End of S-Function (scombchrsencoder): '<S6>/RS Encoder' */
 
-  /* S-Function (scominttobit): '<S5>/Integer to Bit Converter' incorporates:
-   *  S-Function (scombchrsencoder): '<S5>/RS Encoder'
+  /* S-Function (scominttobit): '<S6>/Integer to Bit Converter' incorporates:
+   *  S-Function (scombchrsencoder): '<S6>/RS Encoder'
    */
   /* Integer to Bit Conversion */
   for (i = 0; i < 5600; i++) {
@@ -207,15 +317,15 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in[7200],
     rtDW->IntegertoBitConverter[tmp - 3] = (int8_T)(u >> 1U & 1U);
   }
 
-  /* End of S-Function (scominttobit): '<S5>/Integer to Bit Converter' */
+  /* End of S-Function (scominttobit): '<S6>/Integer to Bit Converter' */
   for (i = 0; i < 16800; i++) {
-    /* DataTypeConversion: '<S6>/Conversion' incorporates:
-     *  S-Function (scominttobit): '<S5>/Integer to Bit Converter'
+    /* DataTypeConversion: '<S7>/Conversion' incorporates:
+     *  S-Function (scominttobit): '<S6>/Integer to Bit Converter'
      */
     rtY_enc_out[i] = ((uint8_T)rtDW->IntegertoBitConverter[i] != 0);
 
     /* SignalConversion generated from: '<S3>/Matrix Concatenate' incorporates:
-     *  DataTypeConversion: '<S6>/Conversion'
+     *  DataTypeConversion: '<S7>/Conversion'
      *  Outport: '<Root>/tx_frame'
      */
     rtY_tx_frame[i + 128] = rtY_enc_out[i];
@@ -228,14 +338,14 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in[7200],
 }
 
 /* Model initialize function */
-void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_in
-  [7200], boolean_T rtY_tx_frame[16928], boolean_T rtY_scramb_out[7200],
+void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in
+  [900], boolean_T rtY_tx_frame[16928], boolean_T rtY_scramb_out[7200],
   boolean_T rtY_enc_out[16800])
 {
   /* Registration code */
 
   /* external inputs */
-  (void)memset(&rtU_v2x_tx_bb_in[0], 0, 7200U * sizeof(boolean_T));
+  (void)memset(&rtU_v2x_tx_bb_in[0], 0, 900U * sizeof(uint8_T));
 
   /* external outputs */
   (void)memset(&rtY_tx_frame[0], 0, 16928U * sizeof(boolean_T));

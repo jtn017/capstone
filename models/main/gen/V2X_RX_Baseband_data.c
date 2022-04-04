@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.152
+ * Model version                  : 1.156
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sat Apr  2 21:13:17 2022
+ * C/C++ source code generated on : Sun Apr  3 20:26:47 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -24,12 +24,12 @@
 /* Constant parameters (default storage) */
 const ConstP rtConstP_rx_bb = {
   /* Computed Parameter: RSDecoder_table1
-   * Referenced by: '<S5>/RS Decoder'
+   * Referenced by: '<S6>/RS Decoder'
    */
   { 2, 4, 3, 6, 7, 5, 1 },
 
   /* Computed Parameter: RSDecoder_table2
-   * Referenced by: '<S5>/RS Decoder'
+   * Referenced by: '<S6>/RS Decoder'
    */
   { 0, 1, 3, 2, 6, 4, 5 },
 

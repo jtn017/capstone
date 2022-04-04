@@ -21,7 +21,7 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 // ---------------------- V2X_TX_Baseband IO ----------------------
-static boolean_T rtU_v2x_tx_bb_in[TX_BB_IN_LEN];
+static uint8_T rtU_v2x_tx_bb_in[TX_BB_IN_LEN];
 static boolean_T rtY_tx_frame[TX_BB_OUT_LEN];
 static boolean_T rtY_scramb_out[TX_BB_IN_LEN];
 static boolean_T rtY_enc_out[TX_BB_ENC_LEN];
@@ -48,7 +48,7 @@ int get_tx_input_frame(int frame_num)
 {
 #if DEBUG_BUILD
     // Grab data from file
-    boolean_T buffer[TX_BB_IN_LEN * NUM_FRAMES];
+    uint8_T buffer[TX_BB_IN_LEN * NUM_FRAMES];
     FILE * bin_file = fopen("data/v2x_tx_bb_in.bin", "rb");
     fread(buffer, sizeof(buffer), 1, bin_file);
     fclose(bin_file);

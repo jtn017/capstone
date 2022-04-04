@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.152
+ * Model version                  : 1.156
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sat Apr  2 21:13:07 2022
+ * C/C++ source code generated on : Sun Apr  3 20:26:26 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -28,7 +28,7 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 /* '<Root>/data_frame' */
-static boolean_T rtU_v2x_tx_bb_in[7200];
+static uint8_T rtU_v2x_tx_bb_in[900];
 
 /* '<Root>/tx_frame' */
 static boolean_T rtY_tx_frame[16928];

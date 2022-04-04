@@ -1,4 +1,4 @@
-%implements s0_b0_5vf0e_ModelInitialize "C"
+%implements s4_b0_ve81e_ModelInitialize "C"
 
 %function ModelInitialize(block, system) Output
 %assign cfgTxt = ""
@@ -6,9 +6,9 @@
 %assign localVarDecl = ""
 %<SLibInsertAsyncTaskInitializeCode(system)>
 %<SLibWriteMachineInitialize()>
-%<SLibCGIRDumpSystemUserCode(0, "Start", "Header")>\
-%<SLibCGIRDumpSystemUserCode(0, "Start", "Body")>\
-%<SLibCGIRDumpSystemUserCode(0, "Start", "Trailer")>\
+%<SLibCGIRDumpSystemUserCode(4, "Start", "Header")>\
+%<SLibCGIRDumpSystemUserCode(4, "Start", "Body")>\
+%<SLibCGIRDumpSystemUserCode(4, "Start", "Trailer")>\
 %<SLibInsertInitPeriodicCStatesFcn(system)>
 %closefile cfgTxt
 %<cfgTxt>

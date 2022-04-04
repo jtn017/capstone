@@ -22,7 +22,7 @@ static DW rtDW;                        /* Observable states */
 
 // ---------------------- V2X_RX_Baseband IO ----------------------
 static boolean_T rtU_v2x_rx_bb_in[RX_BB_IN_LEN];
-static boolean_T rtY_data_frame[RX_BB_OUT_LEN];
+static uint8_T rtY_data_frame[RX_BB_OUT_LEN];
 static boolean_T rtY_dec_in[RX_BB_DEC_LEN];
 static boolean_T rtY_descr_in[RX_BB_IN_LEN];
 
@@ -93,7 +93,7 @@ void v2x_rx_bb_one_step(RT_MODEL *const rtM)
 }
 
 // ---------------------- External functions ----------------------
-int get_rx_bb_out_frame(boolean_T* output_frame, int frame_num)
+int get_rx_bb_out_frame(uint8_T* output_frame, int frame_num)
 {
     // Pack model data into RTM
     RT_MODEL *const rtM = rtMPtr;

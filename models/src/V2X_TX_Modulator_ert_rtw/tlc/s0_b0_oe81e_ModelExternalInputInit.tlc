@@ -1,4 +1,4 @@
-%implements s0_b0_awf0e_ModelExternalInputInit "C"
+%implements s0_b0_oe81e_ModelExternalInputInit "C"
 
 %function ModelExternalInputInit(block, system) Output
 %assign cfgTxt = ""

@@ -6,8 +6,8 @@ CompiledModel {
   ModelReferenceTargetType "NONE"
   Version		  "9.6 (R2021b) 14-May-2021"
   SimulinkVersion	  "10.4"
-  ModelVersion		  "1.152"
-  GeneratedOn		  "Sat Apr  2 21:13:07 2022"
+  ModelVersion		  "1.156"
+  GeneratedOn		  "Sun Apr  3 20:26:25 2022"
   HasSimStructVars	  0
   HasVariants		  0
   PreserveExternInFcnDecls 1
@@ -889,11 +889,11 @@ CompiledModel {
     tlcTargetType	    "RT"
     RelativeBuildDir	    "V2X_TX_Baseband_ert_rtw"
   }
-  RTWContext		  [-1157282352, 615]
+  RTWContext		  [367275136, 517]
   RTWCGIR		  1
   TLCBlkFcnInCGIR	  1
   SLCI			  off
-  SubsystemHdlForRightClickBuild 74.0032958984375
+  SubsystemHdlForRightClickBuild 82.0001220703125
   SubsystemPathForRightClickBuild "v2x_modem_tb"
   SubsystemNameForRightClickBuild "V2X_TX_Baseband"
   LocalSharedCodeManagerFile "C:\\Users\\jacob\\Documents\\Important\\UCSD\\2021-2022 Year\\WES Capstone\\capstone\\mo"
@@ -911,9 +911,9 @@ CompiledModel {
     FinalStateName	    ""
     CompiledLoggingSaveFormat "Dataset"
   }
-  NumModelInputs	  7200
+  NumModelInputs	  900
   NumModelOutputs	  40928
-  NumNonVirtBlocksInModel 12
+  NumNonVirtBlocksInModel 30
   DirectFeedthrough	  yes
   NumContStates		  0
   NumPeriodicContStates	  0
@@ -925,7 +925,7 @@ CompiledModel {
   NumNonsampledZCs	  0
   NumZCEvents		  0
   ZCVectorlength	  0
-  NumBlockSignals	  65729
+  NumBlockSignals	  73829
   NumBlockParams	  165
   NumAlgebraicLoops	  0
   NumDataTransfers	  0
@@ -997,7 +997,7 @@ CompiledModel {
   MdlGenPeriodicRateGroupingCode no
   ContainsModelBlockWithCtrlRate no
   DataTypes {
-    NumDataTypes	    15
+    NumDataTypes	    23
     NumSLBuiltInDataTypes   9
     StrictBooleanCheckEnabled 1
     BitfieldContainerType   uint_T
@@ -1218,6 +1218,133 @@ CompiledModel {
       Skip		      1
       IsNumericType	      0
     }
+    DataType {
+      DTName		      "ufix1_E7"
+      Id		      15
+      CGTypeIdx		      15
+      ContainerCGTypeIdx      3
+      ContainerSLTypeIdx      3
+      Size		      1
+      IdAliasedThruTo	      15
+      GroundHasNonZero	      0
+      GroundValueBin	      [0U]
+      StorageId		      3
+      IsSigned		      0
+      RequiredBits	      1
+      FixedExp		      7
+      IsFixedPoint	      1
+    }
+    DataType {
+      DTName		      "ufix1_E6"
+      Id		      16
+      CGTypeIdx		      16
+      ContainerCGTypeIdx      3
+      ContainerSLTypeIdx      3
+      Size		      1
+      IdAliasedThruTo	      16
+      GroundHasNonZero	      0
+      GroundValueBin	      [0U]
+      StorageId		      3
+      IsSigned		      0
+      RequiredBits	      1
+      FixedExp		      6
+      IsFixedPoint	      1
+    }
+    DataType {
+      DTName		      "ufix1_E5"
+      Id		      17
+      CGTypeIdx		      17
+      ContainerCGTypeIdx      3
+      ContainerSLTypeIdx      3
+      Size		      1
+      IdAliasedThruTo	      17
+      GroundHasNonZero	      0
+      GroundValueBin	      [0U]
+      StorageId		      3
+      IsSigned		      0
+      RequiredBits	      1
+      FixedExp		      5
+      IsFixedPoint	      1
+    }
+    DataType {
+      DTName		      "ufix1_E4"
+      Id		      18
+      CGTypeIdx		      18
+      ContainerCGTypeIdx      3
+      ContainerSLTypeIdx      3
+      Size		      1
+      IdAliasedThruTo	      18
+      GroundHasNonZero	      0
+      GroundValueBin	      [0U]
+      StorageId		      3
+      IsSigned		      0
+      RequiredBits	      1
+      FixedExp		      4
+      IsFixedPoint	      1
+    }
+    DataType {
+      DTName		      "ufix1_E3"
+      Id		      19
+      CGTypeIdx		      19
+      ContainerCGTypeIdx      3
+      ContainerSLTypeIdx      3
+      Size		      1
+      IdAliasedThruTo	      19
+      GroundHasNonZero	      0
+      GroundValueBin	      [0U]
+      StorageId		      3
+      IsSigned		      0
+      RequiredBits	      1
+      FixedExp		      3
+      IsFixedPoint	      1
+    }
+    DataType {
+      DTName		      "ufix1_E2"
+      Id		      20
+      CGTypeIdx		      20
+      ContainerCGTypeIdx      3
+      ContainerSLTypeIdx      3
+      Size		      1
+      IdAliasedThruTo	      20
+      GroundHasNonZero	      0
+      GroundValueBin	      [0U]
+      StorageId		      3
+      IsSigned		      0
+      RequiredBits	      1
+      FixedExp		      2
+      IsFixedPoint	      1
+    }
+    DataType {
+      DTName		      "ufix1_E1"
+      Id		      21
+      CGTypeIdx		      21
+      ContainerCGTypeIdx      3
+      ContainerSLTypeIdx      3
+      Size		      1
+      IdAliasedThruTo	      21
+      GroundHasNonZero	      0
+      GroundValueBin	      [0U]
+      StorageId		      3
+      IsSigned		      0
+      RequiredBits	      1
+      FixedExp		      1
+      IsFixedPoint	      1
+    }
+    DataType {
+      DTName		      "ufix1"
+      Id		      22
+      CGTypeIdx		      22
+      ContainerCGTypeIdx      3
+      ContainerSLTypeIdx      3
+      Size		      1
+      IdAliasedThruTo	      22
+      GroundHasNonZero	      0
+      GroundValueBin	      [0U]
+      StorageId		      3
+      IsSigned		      0
+      RequiredBits	      1
+      IsFixedPoint	      1
+    }
   }
   SymbolicDimsConstraints {
     NumModuloSymbolicDims   0
@@ -1262,10 +1389,10 @@ CompiledModel {
     AllPackages		    [Simulink]
   }
   HasEcoderProperties	  0
-  NumBlockTypeCounts	  6
+  NumBlockTypeCounts	  7
   BlockTypeCount {
     Type		    "Concatenate"
-    Count		    1
+    Count		    2
   }
   BlockTypeCount {
     Type		    "Outport"
@@ -1284,8 +1411,12 @@ CompiledModel {
     Count		    2
   }
   BlockTypeCount {
-    Type		    "DataTypeConversion"
+    Type		    "Math"
     Count		    1
+  }
+  BlockTypeCount {
+    Type		    "DataTypeConversion"
+    Count		    17
   }
   NumSFunctionNameCounts  3
   SFunctionNameCount {
@@ -1419,25 +1550,25 @@ CompiledModel {
       Block {
 	Name			"<Root>/data_frame"
 	SLName			"data_frame"
-	SID			"548"
+	SID			"641"
 	Type			Inport
       }
       Block {
 	Name			"<Root>/tx_frame"
 	SLName			"tx_frame"
-	SID			"549"
+	SID			"642"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/scramb_out"
 	SLName			"scramb_out"
-	SID			"551"
+	SID			"644"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/enc_out"
 	SLName			"enc_out"
-	SID			"552"
+	SID			"645"
 	Type			Outport
       }
       Block {
@@ -1452,11 +1583,11 @@ CompiledModel {
       SLName		      "V2X_TX_Baseband"
       SubsystemBlockIndex     [0, 4]
       NVOwnerSysIdx	      0
-      NumBlocks		      3
-      NumSubsystemBlocks      3
-      SubsystemBlocks	      [0:2]
-      NumChildSubsystems      3
-      ChildSubsystems	      [2:4]
+      NumBlocks		      4
+      NumSubsystemBlocks      4
+      SubsystemBlocks	      [0:3]
+      NumChildSubsystems      4
+      ChildSubsystems	      [2:5]
       Block {
 	Name			"<S1>/Encoder"
 	SLName			"Encoder"
@@ -1475,6 +1606,12 @@ CompiledModel {
 	SID			"330:16"
 	Type			SubSystem
       }
+      Block {
+	Name			"<S1>/bytes_to_bits"
+	SLName			"bytes_to_bits"
+	SID			"330:64"
+	Type			SubSystem
+      }
     }
     Subsystem {
       Name		      "<S1>/Encoder"
@@ -1485,7 +1622,7 @@ CompiledModel {
       NumSubsystemBlocks      1
       SubsystemBlocks	      [0]
       NumChildSubsystems      1
-      ChildSubsystems	      [5]
+      ChildSubsystems	      [6]
       Block {
 	Name			"<S2>/Binary-Input RS Encoder"
 	SLName			"Binary-Input\nRS Encoder"
@@ -1537,6 +1674,125 @@ CompiledModel {
       }
     }
     Subsystem {
+      Name		      "<S1>/bytes_to_bits"
+      SLName		      "bytes_to_bits"
+      SubsystemBlockIndex     [1, 3]
+      NVOwnerSysIdx	      0
+      NumBlocks		      18
+      NumSubsystemBlocks      8
+      SubsystemBlocks	      [0:7]
+      NumChildSubsystems      8
+      ChildSubsystems	      [7:14]
+      Block {
+	Name			"<S5>/Extract Bits"
+	SLName			"Extract Bits"
+	SID			"330:64:22"
+	Type			SubSystem
+      }
+      Block {
+	Name			"<S5>/Extract Bits1"
+	SLName			"Extract Bits1"
+	SID			"330:64:23"
+	Type			SubSystem
+      }
+      Block {
+	Name			"<S5>/Extract Bits2"
+	SLName			"Extract Bits2"
+	SID			"330:64:24"
+	Type			SubSystem
+      }
+      Block {
+	Name			"<S5>/Extract Bits3"
+	SLName			"Extract Bits3"
+	SID			"330:64:25"
+	Type			SubSystem
+      }
+      Block {
+	Name			"<S5>/Extract Bits4"
+	SLName			"Extract Bits4"
+	SID			"330:64:26"
+	Type			SubSystem
+      }
+      Block {
+	Name			"<S5>/Extract Bits5"
+	SLName			"Extract Bits5"
+	SID			"330:64:27"
+	Type			SubSystem
+      }
+      Block {
+	Name			"<S5>/Extract Bits6"
+	SLName			"Extract Bits6"
+	SID			"330:64:28"
+	Type			SubSystem
+      }
+      Block {
+	Name			"<S5>/Extract Bits7"
+	SLName			"Extract Bits7"
+	SID			"330:64:29"
+	Type			SubSystem
+      }
+      Block {
+	Name			"<S5>/Matrix Concatenate"
+	SLName			"Matrix\nConcatenate"
+	SID			"330:64:30"
+	Type			Concatenate
+      }
+      Block {
+	Name			"<S5>/convert"
+	SLName			"convert"
+	SID			"330:64:33"
+	Type			DataTypeConversion
+      }
+      Block {
+	Name			"<S5>/convert1"
+	SLName			"convert1"
+	SID			"330:64:34"
+	Type			DataTypeConversion
+      }
+      Block {
+	Name			"<S5>/convert2"
+	SLName			"convert2"
+	SID			"330:64:35"
+	Type			DataTypeConversion
+      }
+      Block {
+	Name			"<S5>/convert3"
+	SLName			"convert3"
+	SID			"330:64:36"
+	Type			DataTypeConversion
+      }
+      Block {
+	Name			"<S5>/convert4"
+	SLName			"convert4"
+	SID			"330:64:37"
+	Type			DataTypeConversion
+      }
+      Block {
+	Name			"<S5>/convert5"
+	SLName			"convert5"
+	SID			"330:64:38"
+	Type			DataTypeConversion
+      }
+      Block {
+	Name			"<S5>/convert6"
+	SLName			"convert6"
+	SID			"330:64:39"
+	Type			DataTypeConversion
+      }
+      Block {
+	Name			"<S5>/convert7"
+	SLName			"convert7"
+	SID			"330:64:40"
+	Type			DataTypeConversion
+      }
+      Block {
+	Name			"<S5>/Transpose"
+	SLName			"Transpose"
+	SID			"330:64:32"
+	Type			Math
+      }
+    }
+    Subsystem {
       Name		      "<S2>/Binary-Input RS Encoder"
       SLName		      "Binary-Input\nRS Encoder"
       MaskType		      "Binary-Input RS Encoder"
@@ -1546,27 +1802,27 @@ CompiledModel {
       NumSubsystemBlocks      1
       SubsystemBlocks	      [0]
       NumChildSubsystems      1
-      ChildSubsystems	      [6]
+      ChildSubsystems	      [15]
       Block {
-	Name			"<S5>/Data Type Conversion Inherited"
+	Name			"<S6>/Data Type Conversion Inherited"
 	SLName			"Data Type\nConversion\nInherited"
 	SID			"330:5:3"
 	Type			SubSystem
       }
       Block {
-	Name			"<S5>/Bit to Integer Converter"
+	Name			"<S6>/Bit to Integer Converter"
 	SLName			"Bit to Integer\nConverter"
 	SID			"330:5:2"
 	Type			"S-Function"
       }
       Block {
-	Name			"<S5>/Integer to Bit Converter"
+	Name			"<S6>/Integer to Bit Converter"
 	SLName			"Integer to Bit\nConverter"
 	SID			"330:5:4"
 	Type			"S-Function"
       }
       Block {
-	Name			"<S5>/RS Encoder"
+	Name			"<S6>/RS Encoder"
 	SLName			"RS Encoder"
 	SID			"330:5:5"
 	Type			"S-Function"
@@ -1591,20 +1847,132 @@ CompiledModel {
       }
     }
     Subsystem {
-      Name		      "<S5>/Data Type Conversion Inherited"
-      SLName		      "Data Type\nConversion\nInherited"
-      MaskType		      "Conversion Inherited"
+      Name		      "<S5>/Extract Bits"
+      SLName		      "Extract Bits"
+      MaskType		      "Extract Bits"
       SubsystemBlockIndex     [5, 0]
       NVOwnerSysIdx	      0
       NumBlocks		      1
       Block {
-	Name			"<S6>/Conversion"
+	Name			"<S8>/Extract Desired Bits"
+	SLName			"Extract Desired Bits"
+	SID			"330:64:22:4"
+	Type			DataTypeConversion
+      }
+    }
+    Subsystem {
+      Name		      "<S5>/Extract Bits1"
+      SLName		      "Extract Bits1"
+      MaskType		      "Extract Bits"
+      SubsystemBlockIndex     [5, 1]
+      NVOwnerSysIdx	      0
+      NumBlocks		      1
+      Block {
+	Name			"<S9>/Extract Desired Bits"
+	SLName			"Extract Desired Bits"
+	SID			"330:64:23:4"
+	Type			DataTypeConversion
+      }
+    }
+    Subsystem {
+      Name		      "<S5>/Extract Bits2"
+      SLName		      "Extract Bits2"
+      MaskType		      "Extract Bits"
+      SubsystemBlockIndex     [5, 2]
+      NVOwnerSysIdx	      0
+      NumBlocks		      1
+      Block {
+	Name			"<S10>/Extract Desired Bits"
+	SLName			"Extract Desired Bits"
+	SID			"330:64:24:4"
+	Type			DataTypeConversion
+      }
+    }
+    Subsystem {
+      Name		      "<S5>/Extract Bits3"
+      SLName		      "Extract Bits3"
+      MaskType		      "Extract Bits"
+      SubsystemBlockIndex     [5, 3]
+      NVOwnerSysIdx	      0
+      NumBlocks		      1
+      Block {
+	Name			"<S11>/Extract Desired Bits"
+	SLName			"Extract Desired Bits"
+	SID			"330:64:25:4"
+	Type			DataTypeConversion
+      }
+    }
+    Subsystem {
+      Name		      "<S5>/Extract Bits4"
+      SLName		      "Extract Bits4"
+      MaskType		      "Extract Bits"
+      SubsystemBlockIndex     [5, 4]
+      NVOwnerSysIdx	      0
+      NumBlocks		      1
+      Block {
+	Name			"<S12>/Extract Desired Bits"
+	SLName			"Extract Desired Bits"
+	SID			"330:64:26:4"
+	Type			DataTypeConversion
+      }
+    }
+    Subsystem {
+      Name		      "<S5>/Extract Bits5"
+      SLName		      "Extract Bits5"
+      MaskType		      "Extract Bits"
+      SubsystemBlockIndex     [5, 5]
+      NVOwnerSysIdx	      0
+      NumBlocks		      1
+      Block {
+	Name			"<S13>/Extract Desired Bits"
+	SLName			"Extract Desired Bits"
+	SID			"330:64:27:4"
+	Type			DataTypeConversion
+      }
+    }
+    Subsystem {
+      Name		      "<S5>/Extract Bits6"
+      SLName		      "Extract Bits6"
+      MaskType		      "Extract Bits"
+      SubsystemBlockIndex     [5, 6]
+      NVOwnerSysIdx	      0
+      NumBlocks		      1
+      Block {
+	Name			"<S14>/Extract Desired Bits"
+	SLName			"Extract Desired Bits"
+	SID			"330:64:28:4"
+	Type			DataTypeConversion
+      }
+    }
+    Subsystem {
+      Name		      "<S5>/Extract Bits7"
+      SLName		      "Extract Bits7"
+      MaskType		      "Extract Bits"
+      SubsystemBlockIndex     [5, 7]
+      NVOwnerSysIdx	      0
+      NumBlocks		      1
+      Block {
+	Name			"<S15>/Extract Desired Bits"
+	SLName			"Extract Desired Bits"
+	SID			"330:64:29:4"
+	Type			DataTypeConversion
+      }
+    }
+    Subsystem {
+      Name		      "<S6>/Data Type Conversion Inherited"
+      SLName		      "Data Type\nConversion\nInherited"
+      MaskType		      "Conversion Inherited"
+      SubsystemBlockIndex     [6, 0]
+      NVOwnerSysIdx	      0
+      NumBlocks		      1
+      Block {
+	Name			"<S7>/Conversion"
 	SLName			"Conversion"
 	SID			"330:5:3:3"
 	Type			DataTypeConversion
       }
     }
-    NumSubsystems	    7
+    NumSubsystems	    16
   }
   CodeVariants {
     NumCodeVariantGroups    0
@@ -1668,8 +2036,8 @@ CompiledModel {
       GrSrc		      [0, 0]
       Identifier	      "v2x_tx_bb_in"
       TID		      0
-      CGTypeIdx		      19
-      ContainerCGTypeIdx      30
+      CGTypeIdx		      27
+      ContainerCGTypeIdx      50
       UnitIdx		      0
       Interpolation	      0
       RequiresGlobalAccess    no
@@ -1715,9 +2083,9 @@ CompiledModel {
       BlockName		      "<Root>/tx_frame"
       GrSrc		      [0, 1]
       Identifier	      ""
-      CGTypeIdx		      20
+      CGTypeIdx		      28
       UnitIdx		      0
-      ContainerCGTypeIdx      31
+      ContainerCGTypeIdx      51
       VarGroupIdx	      [1,0]
       RequiresGlobalAccess    no
       OriginalPortIndex	      0
@@ -1731,9 +2099,9 @@ CompiledModel {
       GrSrc		      [0, 2]
       Identifier	      ""
       SigLabel		      "<scramb_out>"
-      CGTypeIdx		      19
+      CGTypeIdx		      30
       UnitIdx		      0
-      ContainerCGTypeIdx      30
+      ContainerCGTypeIdx      52
       VarGroupIdx	      [1,1]
       RequiresGlobalAccess    no
       OriginalPortIndex	      1
@@ -1747,9 +2115,9 @@ CompiledModel {
       GrSrc		      [0, 3]
       Identifier	      ""
       SigLabel		      "<enc_out>"
-      CGTypeIdx		      22
+      CGTypeIdx		      31
       UnitIdx		      0
-      ContainerCGTypeIdx      32
+      ContainerCGTypeIdx      53
       VarGroupIdx	      [1,2]
       RequiresGlobalAccess    no
       OriginalPortIndex	      2
@@ -2009,78 +2377,100 @@ CompiledModel {
       IsSpecifiedAsNewStorageClass 0
     }
     NumGlobalBlockOutputs   0
-    NumLocalBlockOutputs    6
+    NumLocalBlockOutputs    8
     NumExternalBlockOutputs 0
     NumConstBlockOutputs    0
     NumConstOutputExpr	    1
     LocalBlockOutput {
       Identifier	      "rtb_BittoIntegerConverter"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      23
-      ContainerCGTypeIdx      35
+      CGTypeIdx		      32
+      ContainerCGTypeIdx      56
       LogicalSrc	      B0
       SigDeclSysIdx	      0
-      GrSrc		      [5, 1, 0, -1]
+      GrSrc		      [6, 1, 0, -1]
       SigSrc		      [0, -1, 4, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_RSEncoder"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      25
-      ContainerCGTypeIdx      36
+      CGTypeIdx		      34
+      ContainerCGTypeIdx      57
       LogicalSrc	      B1
       SigDeclSysIdx	      0
-      GrSrc		      [5, 3, 0, -1]
+      GrSrc		      [6, 3, 0, -1]
       SigSrc		      [0, -1, 4, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_IntegertoBitConverter"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      24
-      ContainerCGTypeIdx      37
+      CGTypeIdx		      33
+      ContainerCGTypeIdx      58
       LogicalSrc	      B2
       SigDeclSysIdx	      0
-      GrSrc		      [5, 2, 0, -1]
+      GrSrc		      [6, 2, 0, -1]
       SigSrc		      [0, -1, 4, -1]
     }
     LocalBlockOutput {
-      Identifier	      "rtb_Scrambler"
+      Identifier	      "rtb_ExtractDesiredBits"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      19
-      ContainerCGTypeIdx      30
+      CGTypeIdx		      39
+      ContainerCGTypeIdx      50
       LogicalSrc	      B3
-      DrivesRootOutport	      yes
       SigDeclSysIdx	      0
-      GrSrc		      [4, 1, 0, -1]
+      GrSrc		      [7, 0, 0, -1]
+      SigSrc		      [0, -1, 4, -1]
+      NumReusedBlockOutputs   8
+    }
+    LocalBlockOutput {
+      Identifier	      "rtb_Transpose"
+      SysCsIdx		      [0, -1]
+      CGTypeIdx		      49
+      ContainerCGTypeIdx      52
+      LogicalSrc	      B4
+      SigDeclSysIdx	      0
+      GrSrc		      [5, 17, 0, -1]
       SigSrc		      [0, -1, 4, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_Conversion"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      22
-      ContainerCGTypeIdx      32
-      LogicalSrc	      B4
+      CGTypeIdx		      31
+      ContainerCGTypeIdx      53
+      LogicalSrc	      B5
       DrivesRootOutport	      yes
       SigDeclSysIdx	      0
-      GrSrc		      [6, 0, 0, -1]
+      GrSrc		      [15, 0, 0, -1]
       SigSrc		      [0, -1, 4, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_MatrixConcatenate"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      20
-      ContainerCGTypeIdx      31
-      LogicalSrc	      B5
+      CGTypeIdx		      28
+      ContainerCGTypeIdx      51
+      LogicalSrc	      B6
       DrivesRootOutport	      yes
       SigDeclSysIdx	      0
       GrSrc		      [3, 0, 0, -1]
       SigSrc		      [0, -1, 4, -1]
     }
+    LocalBlockOutput {
+      Identifier	      "rtb_Scrambler"
+      SysCsIdx		      [0, -1]
+      CGTypeIdx		      30
+      ContainerCGTypeIdx      52
+      LogicalSrc	      B7
+      DrivesRootOutport	      yes
+      SigDeclSysIdx	      0
+      GrSrc		      [4, 1, 0, -1]
+      SigSrc		      [0, -1, 4, -1]
+      NumReusedBlockOutputs   2
+    }
     ConstOutputExpr {
       Identifier	      "rst_on_frame_start"
       SysCsIdx		      [0, -1]
       CGTypeIdx		      8
-      LogicalSrc	      B6
+      LogicalSrc	      B8
       ConstExpr		      1
       GrSrc		      [4, 0, 0, -1]
       SigSrc		      [0, -1, 0, 0]
@@ -2281,7 +2671,7 @@ CompiledModel {
     ArgDefIdx		    -1
     MemoryMapIdx	    [-1, -1, -1]
     OriginalDataTypeIdx	    0
-    CGTypeIdx		    49
+    CGTypeIdx		    70
     Tunable		    off
     OrigIdentifier	    ""
     StorageClass	    Auto
@@ -2451,7 +2841,7 @@ CompiledModel {
       MemoryMapIdx	      [-1, -1, -1]
       HasObject		      0
       OriginalDataTypeIdx     0
-      CGTypeIdx		      49
+      CGTypeIdx		      70
       WorkspaceVarName	      ""
       IsPseudoWorkspaceVar    no
       Tunable		      no
@@ -2494,8 +2884,8 @@ CompiledModel {
       Protected		      no
       Value		      SLData(0)
       OriginalDataTypeIdx     6
-      CGTypeIdx		      50
-      ContainerCGTypeIdx      51
+      CGTypeIdx		      71
+      ContainerCGTypeIdx      72
       ReferencedBy	      Matrix(1,4)
 [[0, -1, 4, 2];]
       GraphicalRef	      Matrix(1,2)
@@ -2511,13 +2901,13 @@ CompiledModel {
       Protected		      no
       Value		      SLData(1)
       OriginalDataTypeIdx     6
-      CGTypeIdx		      39
-      ContainerCGTypeIdx      38
+      CGTypeIdx		      60
+      ContainerCGTypeIdx      59
       ReferencedBy	      Matrix(1,4)
 [[0, -1, 4, 3];]
       GraphicalRef	      Matrix(1,2)
-[[5, 3];]
-      GraphicalSource	      [5, 3]
+[[6, 3];]
+      GraphicalSource	      [6, 3]
       OwnerSysIdx	      [0, -1]
       VarGroupIdx	      [3, 1]
       InConstSection	      1
@@ -2529,13 +2919,13 @@ CompiledModel {
       Protected		      no
       Value		      SLData(2)
       OriginalDataTypeIdx     6
-      CGTypeIdx		      39
-      ContainerCGTypeIdx      38
+      CGTypeIdx		      60
+      ContainerCGTypeIdx      59
       ReferencedBy	      Matrix(1,4)
 [[0, -1, 4, 4];]
       GraphicalRef	      Matrix(1,2)
-[[5, 3];]
-      GraphicalSource	      [5, 3]
+[[6, 3];]
+      GraphicalSource	      [6, 3]
       OwnerSysIdx	      [0, -1]
       VarGroupIdx	      [3, 2]
       InConstSection	      1
@@ -2547,13 +2937,13 @@ CompiledModel {
       Protected		      no
       Value		      SLData(3)
       OriginalDataTypeIdx     6
-      CGTypeIdx		      40
-      ContainerCGTypeIdx      26
+      CGTypeIdx		      61
+      ContainerCGTypeIdx      35
       ReferencedBy	      Matrix(1,4)
 [[0, -1, 4, 5];]
       GraphicalRef	      Matrix(1,2)
-[[5, 3];]
-      GraphicalSource	      [5, 3]
+[[6, 3];]
+      GraphicalSource	      [6, 3]
       OwnerSysIdx	      [0, -1]
       VarGroupIdx	      [3, 3]
       InConstSection	      1
@@ -2564,8 +2954,8 @@ CompiledModel {
       Protected		      no
       Value		      SLData(4)
       OriginalDataTypeIdx     8
-      CGTypeIdx		      33
-      ContainerCGTypeIdx      34
+      CGTypeIdx		      54
+      ContainerCGTypeIdx      55
       ReferencedBy	      Matrix(1,4)
 [[0, -1, 0, 0];]
       GraphicalRef	      Matrix(1,2)
@@ -2581,8 +2971,8 @@ CompiledModel {
       Protected		      no
       Value		      SLData(5)
       OriginalDataTypeIdx     8
-      CGTypeIdx		      28
-      ContainerCGTypeIdx      41
+      CGTypeIdx		      37
+      ContainerCGTypeIdx      62
       ReferencedBy	      Matrix(1,4)
 [[0, -1, 4, 6];]
       GraphicalRef	      Matrix(1,2)
@@ -2599,8 +2989,8 @@ CompiledModel {
       Protected		      no
       Value		      SLData(6)
       OriginalDataTypeIdx     3
-      CGTypeIdx		      43
-      ContainerCGTypeIdx      42
+      CGTypeIdx		      64
+      ContainerCGTypeIdx      63
       ReferencedBy	      Matrix(1,4)
 [[0, -1, 4, 1];]
       GraphicalRef	      Matrix(1,2)
@@ -2615,13 +3005,188 @@ CompiledModel {
   TestPointedBlockParametersLogicalSrc []
   TestPointedModelArgumentsLogicalSrc []
   ReducedBlocks {
-    NumReducedBlocks	    1
+    NumReducedBlocks	    26
     Block {
       Type		      "DataTypeDuplicate"
-      Name		      "<S6>/Data Type Duplicate"
-      SLName		      "<S6>/Data Type\nDuplicate"
+      Name		      "<S7>/Data Type Duplicate"
+      SLName		      "<S7>/Data Type\nDuplicate"
       SID		      "V2X_TX_Baseband:330:5:3:4"
       OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S8>/DTProp1"
+      SID		      "V2X_TX_Baseband:330:64:22:2"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S8>/DTProp2"
+      SID		      "V2X_TX_Baseband:330:64:22:3"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S9>/DTProp1"
+      SID		      "V2X_TX_Baseband:330:64:23:2"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S9>/DTProp2"
+      SID		      "V2X_TX_Baseband:330:64:23:3"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S10>/DTProp1"
+      SID		      "V2X_TX_Baseband:330:64:24:2"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S10>/DTProp2"
+      SID		      "V2X_TX_Baseband:330:64:24:3"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S11>/DTProp1"
+      SID		      "V2X_TX_Baseband:330:64:25:2"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S11>/DTProp2"
+      SID		      "V2X_TX_Baseband:330:64:25:3"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S12>/DTProp1"
+      SID		      "V2X_TX_Baseband:330:64:26:2"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S12>/DTProp2"
+      SID		      "V2X_TX_Baseband:330:64:26:3"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S13>/DTProp1"
+      SID		      "V2X_TX_Baseband:330:64:27:2"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S13>/DTProp2"
+      SID		      "V2X_TX_Baseband:330:64:27:3"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S14>/DTProp1"
+      SID		      "V2X_TX_Baseband:330:64:28:2"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S14>/DTProp2"
+      SID		      "V2X_TX_Baseband:330:64:28:3"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S15>/DTProp1"
+      SID		      "V2X_TX_Baseband:330:64:29:2"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "S-Function"
+      Name		      "<S15>/DTProp2"
+      SID		      "V2X_TX_Baseband:330:64:29:3"
+      OptimizationInfo	      "Unused code path elimination"
+      InComment		      0
+    }
+    Block {
+      Type		      "DataTypeConversion"
+      Name		      "<S8>/Modify Scaling Only"
+      SID		      "V2X_TX_Baseband:330:64:22:5"
+      OptimizationInfo	      "Eliminate redundant data type conversion"
+      InComment		      0
+    }
+    Block {
+      Type		      "DataTypeConversion"
+      Name		      "<S9>/Modify Scaling Only"
+      SID		      "V2X_TX_Baseband:330:64:23:5"
+      OptimizationInfo	      "Eliminate redundant data type conversion"
+      InComment		      0
+    }
+    Block {
+      Type		      "DataTypeConversion"
+      Name		      "<S10>/Modify Scaling Only"
+      SID		      "V2X_TX_Baseband:330:64:24:5"
+      OptimizationInfo	      "Eliminate redundant data type conversion"
+      InComment		      0
+    }
+    Block {
+      Type		      "DataTypeConversion"
+      Name		      "<S11>/Modify Scaling Only"
+      SID		      "V2X_TX_Baseband:330:64:25:5"
+      OptimizationInfo	      "Eliminate redundant data type conversion"
+      InComment		      0
+    }
+    Block {
+      Type		      "DataTypeConversion"
+      Name		      "<S12>/Modify Scaling Only"
+      SID		      "V2X_TX_Baseband:330:64:26:5"
+      OptimizationInfo	      "Eliminate redundant data type conversion"
+      InComment		      0
+    }
+    Block {
+      Type		      "DataTypeConversion"
+      Name		      "<S13>/Modify Scaling Only"
+      SID		      "V2X_TX_Baseband:330:64:27:5"
+      OptimizationInfo	      "Eliminate redundant data type conversion"
+      InComment		      0
+    }
+    Block {
+      Type		      "DataTypeConversion"
+      Name		      "<S14>/Modify Scaling Only"
+      SID		      "V2X_TX_Baseband:330:64:28:5"
+      OptimizationInfo	      "Eliminate redundant data type conversion"
+      InComment		      0
+    }
+    Block {
+      Type		      "DataTypeConversion"
+      Name		      "<S15>/Modify Scaling Only"
+      SID		      "V2X_TX_Baseband:330:64:29:5"
+      OptimizationInfo	      "Eliminate redundant data type conversion"
+      InComment		      0
+    }
+    Block {
+      Type		      "Reshape"
+      Name		      "<S5>/Reshape"
+      SID		      "V2X_TX_Baseband:330:64:31"
+      OptimizationInfo	      "Reshape block reduction"
       InComment		      0
     }
   }
@@ -2672,7 +3237,7 @@ CompiledModel {
     }
     totalFileList	    []
   }
-  NumSubsystems		  6
+  NumSubsystems		  15
   Subsystem {
     Name		    "<Root>/V2X_TX_Baseband"
   }
@@ -2686,12 +3251,39 @@ CompiledModel {
     Name		    "<S1>/Scrambler"
   }
   Subsystem {
+    Name		    "<S1>/bytes_to_bits"
+  }
+  Subsystem {
     Name		    "<S2>/Binary-Input RS Encoder"
     SLName		    "<S2>/Binary-Input\nRS Encoder"
   }
   Subsystem {
-    Name		    "<S5>/Data Type Conversion Inherited"
-    SLName		    "<S5>/Data Type\nConversion\nInherited"
+    Name		    "<S6>/Data Type Conversion Inherited"
+    SLName		    "<S6>/Data Type\nConversion\nInherited"
+  }
+  Subsystem {
+    Name		    "<S5>/Extract Bits"
+  }
+  Subsystem {
+    Name		    "<S5>/Extract Bits1"
+  }
+  Subsystem {
+    Name		    "<S5>/Extract Bits2"
+  }
+  Subsystem {
+    Name		    "<S5>/Extract Bits3"
+  }
+  Subsystem {
+    Name		    "<S5>/Extract Bits4"
+  }
+  Subsystem {
+    Name		    "<S5>/Extract Bits5"
+  }
+  Subsystem {
+    Name		    "<S5>/Extract Bits6"
+  }
+  Subsystem {
+    Name		    "<S5>/Extract Bits7"
   }
   NumModelReferenceBlocksInModel 0
   NumModelReferenceBlocks 0
@@ -3297,7 +3889,7 @@ CompiledModel {
   }
   CanonicalPrmArgDefDefaults {
     OriginalDataTypeIdx	    0
-    CGTypeIdx		    49
+    CGTypeIdx		    70
     IsUsed		    yes
     DeclareAsPointer	    no
   }
@@ -3389,7 +3981,7 @@ CompiledModel {
     }
     Variables {
       LocalBlockIODef {
-	NumFlatFields		6
+	NumFlatFields		8
       }
       ExternBlockIODef {
       }
@@ -3442,8 +4034,8 @@ CompiledModel {
 	}
 	Value			[1]
 	OriginalDataTypeIdx	8
-	CGTypeIdx		33
-	ContainerCGTypeIdx	34
+	CGTypeIdx		54
+	ContainerCGTypeIdx	55
 	String			"true"
 	StringType		"Expression"
       }
@@ -3454,7 +4046,7 @@ CompiledModel {
     Block {
       Type		      Outport
       BlockIdx		      [0, 0, 1]
-      SL_BlockIdx	      7
+      SL_BlockIdx	      25
       GrSrc		      [0, 3]
       ExprCommentInfo {
       }
@@ -3468,11 +4060,11 @@ CompiledModel {
       RollRegions	      [0:16799]
       NumDataInputPorts	      1
       DataInputPort {
-	SignalSrc		[L4@16800]
+	SignalSrc		[L5@16800]
 	SignalOffset		[0:16799]
 	SignalRegion		[0@16800]
-	CGTypeIdx		22
-	ContainerCGTypeIdx	32
+	CGTypeIdx		31
+	ContainerCGTypeIdx	53
       }
       NumDataOutputPorts      0
       OutportParamSettings {
@@ -3485,7 +4077,7 @@ CompiledModel {
     Block {
       Type		      Outport
       BlockIdx		      [0, 0, 2]
-      SL_BlockIdx	      8
+      SL_BlockIdx	      26
       GrSrc		      [0, 2]
       ExprCommentInfo {
       }
@@ -3499,11 +4091,11 @@ CompiledModel {
       RollRegions	      [0:7199]
       NumDataInputPorts	      1
       DataInputPort {
-	SignalSrc		[L3@7200]
+	SignalSrc		[L7@7200]
 	SignalOffset		[0:7199]
 	SignalRegion		[0@7200]
-	CGTypeIdx		19
-	ContainerCGTypeIdx	30
+	CGTypeIdx		30
+	ContainerCGTypeIdx	52
       }
       NumDataOutputPorts      0
       OutportParamSettings {
@@ -3516,7 +4108,7 @@ CompiledModel {
     Block {
       Type		      Outport
       BlockIdx		      [0, 0, 3]
-      SL_BlockIdx	      11
+      SL_BlockIdx	      29
       GrSrc		      [0, 1]
       ExprCommentInfo {
       }
@@ -3530,11 +4122,11 @@ CompiledModel {
       RollRegions	      [0:16927]
       NumDataInputPorts	      1
       DataInputPort {
-	SignalSrc		[L5@16928]
+	SignalSrc		[L6@16928]
 	SignalOffset		[0:16927]
 	SignalRegion		[0@16928]
-	CGTypeIdx		20
-	ContainerCGTypeIdx	31
+	CGTypeIdx		28
+	ContainerCGTypeIdx	51
       }
       NumDataOutputPorts      0
       OutportParamSettings {
@@ -3558,7 +4150,7 @@ CompiledModel {
       PID		      -1
       firstEntryOfTsMapIsGCD  yes
       NumDataOutputPorts      0
-      TLCFileName	      "s0_b0_5vf0e"
+      TLCFileName	      "s0_b0_be81e"
       OpaqueBlockMethode {
 	HasOutputs		1
 	HasModelInitialize	1
@@ -3572,8 +4164,8 @@ CompiledModel {
 	MdlPrmIdx		4
 	Value			[1]
 	OriginalDataTypeIdx	8
-	CGTypeIdx		33
-	ContainerCGTypeIdx	34
+	CGTypeIdx		54
+	ContainerCGTypeIdx	55
 	String			"true"
 	StringType		"Expression"
       }
@@ -3583,8 +4175,8 @@ CompiledModel {
 	MdlPrmIdx		6
 	Value			SLData(6)
 	OriginalDataTypeIdx	3
-	CGTypeIdx		43
-	ContainerCGTypeIdx	42
+	CGTypeIdx		64
+	ContainerCGTypeIdx	63
 	String			""
 	StringTransformed	"poly"
 	StringType		"Computed"
@@ -3596,8 +4188,8 @@ CompiledModel {
 	MdlPrmIdx		0
 	Value			[0]
 	OriginalDataTypeIdx	6
-	CGTypeIdx		50
-	ContainerCGTypeIdx	51
+	CGTypeIdx		71
+	ContainerCGTypeIdx	72
 	String			""
 	StringTransformed	"ini_sta"
 	StringType		"Computed"
@@ -3608,8 +4200,8 @@ CompiledModel {
 	MdlPrmIdx		1
 	Value			[2, 4, 3, 6, 7, 5, 1]
 	OriginalDataTypeIdx	6
-	CGTypeIdx		39
-	ContainerCGTypeIdx	38
+	CGTypeIdx		60
+	ContainerCGTypeIdx	59
 	String			""
 	StringType		"Computed"
 	NeedParenthesis		1
@@ -3620,8 +4212,8 @@ CompiledModel {
 	MdlPrmIdx		2
 	Value			[0, 1, 3, 2, 6, 4, 5]
 	OriginalDataTypeIdx	6
-	CGTypeIdx		39
-	ContainerCGTypeIdx	38
+	CGTypeIdx		60
+	ContainerCGTypeIdx	59
 	String			""
 	StringType		"Computed"
 	NeedParenthesis		1
@@ -3632,8 +4224,8 @@ CompiledModel {
 	MdlPrmIdx		3
 	Value			[3, 1, 2, 3]
 	OriginalDataTypeIdx	6
-	CGTypeIdx		40
-	ContainerCGTypeIdx	26
+	CGTypeIdx		61
+	ContainerCGTypeIdx	35
 	String			""
 	StringTransformed	"params.genPoly"
 	StringType		"Computed"
@@ -3645,8 +4237,8 @@ CompiledModel {
 	MdlPrmIdx		5
 	Value			SLData(5)
 	OriginalDataTypeIdx	8
-	CGTypeIdx		28
-	ContainerCGTypeIdx	41
+	CGTypeIdx		37
+	ContainerCGTypeIdx	62
 	String			""
 	StringTransformed	"ini.preamble.bit.seq"
 	StringType		"Computed"
@@ -3660,7 +4252,7 @@ CompiledModel {
     }
   }
   BlockParamChecksum	  ["2249264818U", "242417685U", "2788248901U", "2331796961U"]
-  ModelChecksum		  ["4262075017U", "2437884218U", "2759284947U", "3295633122U"]
+  ModelChecksum		  ["3712985976U", "1969968459U", "2267655417U", "3681087074U"]
   IncludeCodeGenSettings  1
   CGTypes {
     CGTypeDefaults {
@@ -3670,7 +4262,7 @@ CompiledModel {
       TypeName		      "-1"
       SymbolicVectorDims      "-1"
     }
-    NumCGTypes		    52
+    NumCGTypes		    73
     DeclareUsedMultiWordBits 0
     IndexType		    6
     CGType {
@@ -3735,6 +4327,38 @@ CompiledModel {
       SLTypeIdx		      14
     }
     CGType {
+      Name		      "ufix1_E7"
+      SLTypeIdx		      15
+    }
+    CGType {
+      Name		      "ufix1_E6"
+      SLTypeIdx		      16
+    }
+    CGType {
+      Name		      "ufix1_E5"
+      SLTypeIdx		      17
+    }
+    CGType {
+      Name		      "ufix1_E4"
+      SLTypeIdx		      18
+    }
+    CGType {
+      Name		      "ufix1_E3"
+      SLTypeIdx		      19
+    }
+    CGType {
+      Name		      "ufix1_E2"
+      SLTypeIdx		      20
+    }
+    CGType {
+      Name		      "ufix1_E1"
+      SLTypeIdx		      21
+    }
+    CGType {
+      Name		      "ufix1"
+      SLTypeIdx		      22
+    }
+    CGType {
       Name		      "void"
     }
     CGType {
@@ -3747,7 +4371,7 @@ CompiledModel {
       Name		      "ZCSigState"
     }
     CGType {
-      Dimensions	      [7200, 1]
+      Dimensions	      [900, 1]
     }
     CGType {
       Dimensions	      [16928, 1]
@@ -3755,6 +4379,9 @@ CompiledModel {
     CGType {
       NumDimensions	      1
       Dimensions	      [24000]
+    }
+    CGType {
+      Dimensions	      [7200, 1]
     }
     CGType {
       Dimensions	      [16800, 1]
@@ -3784,12 +4411,49 @@ CompiledModel {
       Dimensions	      [16]
     }
     CGType {
+      Dimensions	      [900, 1]
+    }
+    CGType {
+      Dimensions	      [900, 1]
+    }
+    CGType {
+      Dimensions	      [900, 1]
+    }
+    CGType {
+      Dimensions	      [900, 1]
+    }
+    CGType {
+      Dimensions	      [900, 1]
+    }
+    CGType {
+      Dimensions	      [900, 1]
+    }
+    CGType {
+      Dimensions	      [900, 1]
+    }
+    CGType {
+      Dimensions	      [900, 1]
+    }
+    CGType {
+      Dimensions	      [900, 1]
+    }
+    CGType {
+      Dimensions	      [900, 8]
+    }
+    CGType {
+      Dimensions	      [8, 900]
+    }
+    CGType {
       NumDimensions	      1
-      Dimensions	      [7200]
+      Dimensions	      [900]
     }
     CGType {
       NumDimensions	      1
       Dimensions	      [16928]
+    }
+    CGType {
+      NumDimensions	      1
+      Dimensions	      [7200]
     }
     CGType {
       NumDimensions	      1
@@ -3924,32 +4588,32 @@ CompiledModel {
     RTWCGModule {
       RateGrouping	      0
       PeriodicRateGrouping    0
-      TLCFileName	      "s0_b0_5vf0e"
+      TLCFileName	      "s0_b0_be81e"
       RTWFcnConst {
 	HasInstanceSetup	"no"
 	baseTidOfTasks		"[0]"
 	Outputs_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_5vf0e_Outputs"
+	  TLCFileName		  "s0_b0_be81e_Outputs"
 	  StackSize		  2507
 	}
 	ModelInitialize_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_5vf0e_ModelInitialize"
+	  TLCFileName		  "s0_b0_be81e_ModelInitialize"
 	  StackSize		  0
 	}
 	ModelExternalOutputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_5vf0e_ModelExternalOutputInit"
+	  TLCFileName		  "s0_b0_be81e_ModelExternalOutputInit"
 	  StackSize		  4
 	}
 	ModelExternalInputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_5vf0e_ModelExternalInputInit"
+	  TLCFileName		  "s0_b0_be81e_ModelExternalInputInit"
 	  StackSize		  4
 	}
       }
@@ -4032,7 +4696,7 @@ CompiledModel {
       HasElement	      "EXTU_VARIANT_EXISTS"
       InstanceIdx	      -1
       IsPointer		      1
-      CGTypeIdx		      44
+      CGTypeIdx		      65
       NumVarGroupElements     1
       VarGroupContains	      "SignalElementOnly"
       VarGroupElements	      [U0]
@@ -4046,7 +4710,7 @@ CompiledModel {
       HasElement	      "EXTY_VARIANT_EXISTS"
       InstanceIdx	      -1
       IsPointer		      1
-      CGTypeIdx		      45
+      CGTypeIdx		      66
       NumVarGroupElements     3
       VarGroupContains	      "SignalElementOnly"
       VarGroupElements	      [Y0, Y1, Y2]
@@ -4061,12 +4725,12 @@ CompiledModel {
       HasElement	      "DW_VARIANT_EXISTS"
       InstanceIdx	      -1
       IsPointer		      1
-      CGTypeIdx		      47
-      NumVarGroupElements     2
+      CGTypeIdx		      68
+      NumVarGroupElements     3
       VarGroupContains	      "SignalElementOnly"
-      VarGroupElements	      [L1, L2]
-      NumVariantConditions    2
-      VariantConditions	      ["", ""]
+      VarGroupElements	      [L1, L2, L4]
+      NumVariantConditions    3
+      VariantConditions	      ["", "", ""]
     }
     VarGroup {
       Name		      "rtConstP"
@@ -4074,15 +4738,15 @@ CompiledModel {
       SysIdx		      0
       HasElement	      "CONSTP_VARIANT_EXISTS"
       InstanceIdx	      -1
-      CGTypeIdx		      48
+      CGTypeIdx		      69
       NumVarGroupElements     7
       VarGroupContains	      "SignalElementOnly"
       VarGroupElements	      [CP0, CP1, CP2, CP3, CP4, CP5, CP6]
       NumVariantConditions    7
       VariantConditions	      ["", "", "", "", "", "", ""]
     }
-    VarGroupVarIdx	    Matrix(2,2)
-[[2, 1]; [2, 0];]
+    VarGroupVarIdx	    Matrix(3,2)
+[[2, 2]; [2, 1]; [2, 0];]
   }
   SharedFunctions {
   }
