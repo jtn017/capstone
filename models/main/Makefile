@@ -28,7 +28,7 @@ MAIN_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(MAIN_SRC)))
 MKDIR = $(mkdir -p)
 
 # Make targets
-all: main
+all: $(ODIR) main
 
 # test: $(GEN_OBJ) $(TEST_OBJ)
 # 	$(CC) $(CFLAGS) $(GEN_OBJ) $(TEST_OBJ) -lm -levent -o v2x_tx_bb_test
@@ -58,8 +58,11 @@ $(ODIR)/%.o: $(MAIN_SDIR)/%.c
 $(ODIR)/%.o: $(TEST_SDIR)/%.c
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
+$(ODIR):
+	mkdir -p $(ODIR)
+
 # Clean
-.PHONY: clean
+.PHONY: clean 
 
 clean:
 	rm -f $(ODIR)/*.o
