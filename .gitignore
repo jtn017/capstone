@@ -4,3 +4,5 @@ slprj
 *.asv
 *.slxc
 obj
+models/main/v2x_tx_main
+*.ipynb
