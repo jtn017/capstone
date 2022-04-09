@@ -134,7 +134,7 @@ int readinifile(sdrini_t *ini)
     }
 
     ini->f_cf=GHZ(readinidouble(fendfile,"FEND","CF1"));
-    ini->msToProcess=readiniint(fendfile,"FEND","MILISECONDS");
+    ini->msToProcess=readiniint(fendfile,"FEND","MILLISECONDS");
     ini->f_sf=MHZ(readinidouble(fendfile,"FEND","SF1"));
     ini->buffer_size=readiniint(fendfile,"FEND","BUFFERSIZE");
     ini->bb_dc_offset_tracking=readiniint(fendfile,"FEND","BB_DC_OFFSET_TRACKING");

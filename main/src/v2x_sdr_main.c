@@ -8,32 +8,35 @@
 #include "v2x_sdr_xcvr.h"
 
 // Globals
-sdrini_t sdrini={0};
-sdrstat_t sdrstat={0};
+sdrini_t  sdr_ini  = {0};
+sdrstat_t sdr_stat = {0};
 
 // ---------------------- Function Prototype ----------------------
-void startsdr(void);
+void start_sdr(void);
 
 // ---------------------- SDR functions ----------------------
-void startsdr(void)
+void start_sdr(void)
 {	
-    /* stream data, write it to file then prepare to read file.*/	
-    if(startxcvr(&sdrini,&sdrstat) < 0){
+    // Stream data, write it to file then prepare to read file	
+    if(run_xcvr(&sdr_ini, &sdr_stat) < 0)
+    {
         printf("Transceiver FAILED!\n");
-        return ;
+        return;
     }
+
+    // Return
     printf("SDR Program COMPLETED!\n");
-    return ;
+    return;
 }
 
 // ---------------------- Main ----------------------
-int main (int argc, char **argv)
+int main(int argc, char **argv)
 {
     /* read in configuration/initialization file */
-    if (readinifile(&sdrini) < 0){
+    if (readinifile(&sdr_ini) < 0){
         return -1;
     }
-    startsdr();
-    
+
+    start_sdr();
     return 0;
 }
