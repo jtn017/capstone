@@ -7,25 +7,28 @@
 #define NUM_FRAMES 4
 
 // Constants
-#define INFO_PKT_LEN 144
-#define AUDIO_PKT_LEN 7056
+#define INFO_PKT_BITS 144
+#define INFO_PKT_BYTES (INFO_PKT_BITS/8)
+#define AUDIO_PKT_BITS 7056
+#define AUDIO_PKT_BYTES (AUDIO_PKT_BITS/8)
 
 // TX Baseband
-#define TX_BB_IN_LEN 7200/8
-#define TX_BB_ENC_LEN 16800
-#define TX_BB_OUT_LEN 16928
+#define TX_BB_IN_BITS 7200
+#define TX_BB_IN_BYTES (TX_BB_IN_BITS/8)
+#define TX_BB_ENC_BITS 16800
+#define TX_BB_OUT_BITS 16928
 
 // TX Modulator
-#define TX_MOD_MAP_LEN 8464
-#define TX_MOD_OUT_LEN 67712
+#define TX_MOD_MAP_SYMS 8464
+#define TX_MOD_OUT_SYMS 67712
 
 // RX Baseband
-#define RX_BB_IN_LEN (TX_BB_OUT_LEN)
-#define RX_BB_OUT_LEN (TX_BB_IN_LEN)
-#define RX_BB_DEC_LEN (TX_BB_ENC_LEN)
+#define RX_BB_IN_BITS (TX_BB_OUT_BITS)
+#define RX_BB_OUT_BYTES (TX_BB_IN_BYTES)
+#define RX_BB_DEC_BITS (TX_BB_ENC_BITS)
 
 // Binary file
-#define BIN_FILE_MAX (TX_MOD_OUT_LEN * NUM_FRAMES)
+#define BIN_FILE_MAX (TX_MOD_OUT_SYMS * NUM_FRAMES)
 
 // Fixed point conversion
 // Modulator is sfix16_En14

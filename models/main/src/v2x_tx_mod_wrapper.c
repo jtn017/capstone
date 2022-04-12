@@ -21,16 +21,16 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 // ---------------------- V2X_TX_Modulator IO ----------------------
-static boolean_T rtU_v2x_tx_bb_out[TX_BB_OUT_LEN];
-static cint16_T rtY_mod_frame[TX_MOD_OUT_LEN];
-static creal_T rtY_map_out[TX_MOD_MAP_LEN];
-static creal_T rtY_ps_out[TX_MOD_OUT_LEN];
+static boolean_T rtU_v2x_tx_bb_out[TX_BB_OUT_BITS];
+static cint16_T rtY_mod_frame[TX_MOD_OUT_SYMS];
+static creal_T rtY_map_out[TX_MOD_MAP_SYMS];
+static creal_T rtY_ps_out[TX_MOD_OUT_SYMS];
 
 // ---------------------- Function prototype ----------------------
-void v2x_tx_mod_one_step(RT_MODEL *const rtM);
+static void v2x_tx_mod_one_step(RT_MODEL *const rtM);
 
 // ---------------------- Internal functions ----------------------
-void v2x_tx_mod_one_step(RT_MODEL *const rtM)
+static void v2x_tx_mod_one_step(RT_MODEL *const rtM)
 {
     static boolean_T OverrunFlag = false;
 
@@ -61,20 +61,16 @@ void v2x_tx_mod_one_step(RT_MODEL *const rtM)
 }
 
 // ---------------------- External functions ----------------------
-int get_tx_mod_out_frame(boolean_T* input_frame, cint16_T* output_frame)
+void tx_mod_init(void)
 {
-    // Pack model data into RTM
-    RT_MODEL *const rtM = rtMPtr;
-    rtM->dwork = &rtDW;
-
-    // Initialize and run model
-    V2X_TX_Modulator_initialize(rtM, rtU_v2x_tx_bb_out, rtY_mod_frame, rtY_map_out, rtY_ps_out);
-    memcpy(rtU_v2x_tx_bb_out, input_frame, TX_BB_OUT_LEN*sizeof(rtU_v2x_tx_bb_out[0]));
-    v2x_tx_mod_one_step(rtM);
-
-    // Save output to external value
-    memcpy(output_frame, rtY_mod_frame, TX_MOD_OUT_LEN*sizeof(rtY_mod_frame[0]));
-
-    return 0;
+    rtMPtr->dwork = &rtDW;
+    V2X_TX_Modulator_initialize(rtMPtr, rtU_v2x_tx_bb_out, rtY_mod_frame, rtY_map_out, rtY_ps_out);
 }
 
+void get_tx_mod_out(boolean_T* input, cint16_T* output)
+{
+    tx_mod_init();
+    memcpy(rtU_v2x_tx_bb_out, input, TX_BB_OUT_BITS*sizeof(rtU_v2x_tx_bb_out[0]));
+    v2x_tx_mod_one_step(rtMPtr);
+    memcpy(output, rtY_mod_frame, TX_MOD_OUT_SYMS*sizeof(rtY_mod_frame[0]));
+}

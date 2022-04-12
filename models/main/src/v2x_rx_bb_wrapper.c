@@ -21,48 +21,45 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 // ---------------------- V2X_RX_Baseband IO ----------------------
-static boolean_T rtU_v2x_rx_bb_in[RX_BB_IN_LEN];
-static uint8_T rtY_data_frame[RX_BB_OUT_LEN];
-static boolean_T rtY_dec_in[RX_BB_DEC_LEN];
-static boolean_T rtY_descr_in[RX_BB_IN_LEN];
+static boolean_T rtU_v2x_rx_bb_in[RX_BB_IN_BITS];
+static uint8_T rtY_data_frame[RX_BB_OUT_BYTES];
+static boolean_T rtY_dec_in[RX_BB_DEC_BITS];
+static boolean_T rtY_descr_in[RX_BB_IN_BITS];
 
 // ---------------------- Function prototype ----------------------
-void v2x_rx_bb_one_step(RT_MODEL *const rtM);
-int get_rx_input_frame(int frame_num);
-int get_data_from_adc();
+static void v2x_rx_bb_one_step(RT_MODEL *const rtM);
+static void get_rx_input(int frame_num);
+static void get_adc_packet(bool adc_packet[RX_BB_IN_BITS]);
 
 // ---------------------- Temporary functions ----------------------
-int get_adc_packet(bool adc_packet[RX_BB_IN_LEN])
+static void get_adc_packet(bool adc_packet[RX_BB_IN_BITS])
 {
-    return 0;
+    return;
 }
 
 // ---------------------- Internal functions ----------------------
-int get_rx_input_frame(int frame_num)
+static void get_rx_input(int frame_num)
 {
 #if DEBUG_BUILD
     // Grab data from file
-    boolean_T buffer[RX_BB_IN_LEN * NUM_FRAMES];
+    boolean_T buffer[RX_BB_IN_BITS * NUM_FRAMES];
     FILE * bin_file = fopen("data/v2x_rx_bb_in.bin", "rb");
     fread(buffer, sizeof(buffer), 1, bin_file);
     fclose(bin_file);
 
     // Save to global
-    for(unsigned int i = 0; i < RX_BB_IN_LEN; i++)
+    for(unsigned int i = 0; i < RX_BB_IN_BITS; i++)
     {
-        rtU_v2x_rx_bb_in[i] = buffer[RX_BB_IN_LEN * frame_num + i];
+        rtU_v2x_rx_bb_in[i] = buffer[RX_BB_IN_BITS * frame_num + i];
     }
 #else
-    bool adc_packet[RX_BB_IN_LEN];
+    bool adc_packet[RX_BB_IN_BITS];
     get_adc_packet(adc_packet);
-    memcpy(rtU_v2x_rx_bb_in, adc_packet, RX_BB_IN_LEN*sizeof(rtU_v2x_rx_bb_in[0]));
+    memcpy(rtU_v2x_rx_bb_in, adc_packet, RX_BB_IN_BITS*sizeof(rtU_v2x_rx_bb_in[0]));
 #endif
-
-    // No errors
-    return 0;
 }
 
-void v2x_rx_bb_one_step(RT_MODEL *const rtM)
+static void v2x_rx_bb_one_step(RT_MODEL *const rtM)
 {
     static boolean_T OverrunFlag = false;
 
@@ -93,21 +90,15 @@ void v2x_rx_bb_one_step(RT_MODEL *const rtM)
 }
 
 // ---------------------- External functions ----------------------
-int get_rx_bb_out_frame(uint8_T* output_frame, int frame_num)
+void rx_bb_init(void)
 {
-    // Pack model data into RTM
-    RT_MODEL *const rtM = rtMPtr;
-    rtM->dwork = &rtDW;
-
-    // Initialize and run model
-    V2X_RX_Baseband_initialize(rtM, rtU_v2x_rx_bb_in, rtY_data_frame, rtY_dec_in, rtY_descr_in);
-
-    get_rx_input_frame(frame_num);
-    v2x_rx_bb_one_step(rtM);
-
-    // Save output to external value
-    memcpy(output_frame, rtY_data_frame, RX_BB_OUT_LEN*sizeof(rtY_data_frame[0]));
-
-    return 0;
+    rtMPtr->dwork = &rtDW;
+    V2X_RX_Baseband_initialize(rtMPtr, rtU_v2x_rx_bb_in, rtY_data_frame, rtY_dec_in, rtY_descr_in);
 }
 
+void get_rx_bb_out(uint8_T* output, int frame_num)
+{
+    get_rx_input(frame_num);
+    v2x_rx_bb_one_step(rtMPtr);
+    memcpy(output, rtY_data_frame, RX_BB_OUT_BYTES*sizeof(rtY_data_frame[0]));
+}
