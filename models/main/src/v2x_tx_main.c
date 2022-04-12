@@ -16,7 +16,6 @@
 
 // Custom files
 #include "v2x_constants.h"
-#include "v2x_tx_main.h"
 #include "v2x_tx_bb_wrapper.h"
 #include "v2x_tx_mod_wrapper.h"
 #include "v2x_rx_bb_wrapper.h"

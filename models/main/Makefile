@@ -4,7 +4,6 @@ CFLAGS = -Wall -g
 
 # Source directories
 ODIR = obj
-TEST_SDIR = tst
 MAIN_SDIR = src
 GEN_SDIR = gen
 
@@ -20,18 +19,11 @@ GEN_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(GEN_SRC)))
 MAIN_SRC = $(wildcard $(MAIN_SDIR)/*.c)
 MAIN_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(MAIN_SRC)))
 
-# # Test files
-# TEST_SRC = $(wildcard $(TEST_SDIR)/*.c)
-# TEST_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(TEST_SRC)))
-
 # Other commands
 MKDIR = $(mkdir -p)
 
 # Make targets
 all: $(ODIR) main
-
-# test: $(GEN_OBJ) $(TEST_OBJ)
-# 	$(CC) $(CFLAGS) $(GEN_OBJ) $(TEST_OBJ) -lm -levent -o v2x_tx_bb_test
 
 main: $(GEN_OBJ) $(MAIN_OBJ) 
 	$(CC) $(CFLAGS) $(GEN_OBJ) $(MAIN_OBJ) -lm -levent -o v2x_tx_main
@@ -53,9 +45,6 @@ $(ODIR)/%.o: $(GEN_SDIR)/%.c
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 $(ODIR)/%.o: $(MAIN_SDIR)/%.c
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
-
-$(ODIR)/%.o: $(TEST_SDIR)/%.c
 	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 $(ODIR):
