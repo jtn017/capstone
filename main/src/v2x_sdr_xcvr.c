@@ -9,10 +9,18 @@
 * Based off code from Noel Martinez noelmartinez38@gmail 
 * and Javier Arribas, jarribas(at)cttc.es
 */
+
+// Includes (SDR)
 #include "v2x_sdr.h"
 
-/* helper macros */
+// Includes (Simulink)
+#include "rtwtypes.h"
+#include "v2x_constants.h"
+#include "v2x_tx_bb_wrapper.h"
+#include "v2x_tx_mod_wrapper.h"
+#include "v2x_rx_bb_wrapper.h"
 
+// Helper macros
 #define ASSERT(expr) { \
     if (!(expr)) { \
         (void) fprintf(stderr, "assertion failed (%s:%d)\n", __FILE__, __LINE__); \
@@ -224,13 +232,9 @@ bool config_ad9361_rx_local(struct stream_cfg *cfg, struct iio_context *ctx)
     return true;
 }
 
-// --------- Debug functions ----------
-#define TX_MOD_LEN 67712 // I or Q
-#define TX_MOD_LEN_FULL (TX_MOD_LEN * 2) // I + Q
-#define NUM_FRAMES 4
-#define TX_MOD_FILE_SIZE (TX_MOD_LEN * NUM_FRAMES)
+// --------- TX modulator functions ----------
+#define TX_MOD_FILE_SIZE (TX_MOD_OUT_SYMS * NUM_FRAMES)
 #define TX_MOD_FILE_SIZE_FULL (TX_MOD_FILE_SIZE * 2)
-#define MOD_FRACT_BITS 14
 
 int16_t g_tx_mod_out[TX_MOD_FILE_SIZE_FULL];
 
@@ -274,8 +278,17 @@ static void load_global_txmod(void)
 
 static void load_frame_txmod(int frame_num, int16_t *tx_mod_out)
 {
-    memcpy(tx_mod_out, g_tx_mod_out + TX_MOD_LEN_FULL * frame_num, 
-           TX_MOD_LEN_FULL * sizeof(tx_mod_out[0]));
+    memcpy(tx_mod_out, g_tx_mod_out + TX_MOD_OUT_SYMS * 2 * frame_num, 
+           TX_MOD_OUT_SYMS * 2 * sizeof(tx_mod_out[0]));
+}
+
+static void load_frame_txmod_v2(int16_t *input)
+{
+    boolean_T tx_bb_out[TX_BB_OUT_BITS];
+    cint16_T tx_mod_out[TX_MOD_OUT_SYMS];
+    get_tx_bb_out(tx_bb_out, 0);
+    get_tx_mod_out(tx_bb_out, tx_mod_out);
+    memcpy(input, (int16_t *) tx_mod_out, TX_MOD_OUT_SYMS * 2 * sizeof(input[0]));
 }
 
 //*************************************
@@ -539,9 +552,16 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
     int numbuf = init_xcvr(ini, &stat, &tx, &rx, &txcfg, &rxcfg);
 
     //------------------------- Debug settings -------------------------
-    int16_t tx_mod_out[TX_MOD_LEN_FULL];
+    int16_t tx_mod_out[TX_MOD_OUT_SYMS * 2];
     numbuf = NUM_FRAMES;
+#if DEBUG_BUILD
     load_global_txmod();
+#else
+    // Initialize generated code
+    tx_bb_init();
+    tx_mod_init();
+    rx_bb_init();
+#endif
 
     //------------------------- Data acquisition variables -------------------------
     pthread_t monitor_thread; // Thread to monitor overflows/underflows
@@ -568,7 +588,8 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
 
     // Setup RX thread
     xflow_pthread_data.dev = rx;
-    if ((ret = pthread_create(&monitor_thread, NULL, monitor_thread_fn,(void *)&xflow_pthread_data)))
+    if ((ret = pthread_create(&monitor_thread, NULL, monitor_thread_fn, 
+         (void *)&xflow_pthread_data)))
     { 
         fprintf(stderr, "Failed to crate monitor thread: %s\n",
         strerror(-ret));
@@ -587,10 +608,17 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
            
         for (int i = 0; i < numbuf; i++)
         {
+            // Debug statements
+            printf("Entetered frame: %d\n", i);
+
             // WRITE: Get pointers to TX buf and write IQ to TX buf port 0
             p_start = iio_buffer_first(txbuf, tx0_i);
+#if DEBUG_BUILD
             load_frame_txmod(i, tx_mod_out);
-            memmove(p_start, tx_mod_out, TX_MOD_LEN_FULL);
+#else
+            load_frame_txmod_v2(tx_mod_out);
+#endif
+            memmove(p_start, tx_mod_out, TX_MOD_OUT_SYMS * 2);
 
             // Schecule TX Buffer
             nbytes_tx = iio_buffer_push(txbuf);
