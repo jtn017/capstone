@@ -102,3 +102,128 @@ void get_rx_bb_out(uint8_T* output, int frame_num)
     v2x_rx_bb_one_step(rtMPtr);
     memcpy(output, rtY_data_frame, RX_BB_OUT_BYTES*sizeof(rtY_data_frame[0]));
 }
+
+#define MAX 20
+#define N_FLOAT_DIGITS 6
+#define EXPLICIT_INITIALIZATION
+
+// ---------------------- External functions ----------------------
+int parse_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
+{
+    // Get number of bytes in info packet
+    unsigned int payload_size = INFO_PKT_BYTES;
+
+    // Crete buffer and copy packets contents locally
+    uint8_T payload[payload_size];
+    memcpy(payload, in_frame, payload_size);
+
+    // Reset memory of struct to 0
+    memset(pyld, 0, sizeof(*pyld));
+
+    /* 
+        Use implicit or explicit initialization.
+        Note that shorter version requires using memcpy twice
+        since struct is not aligned to 32-bits (just some C-weirdness).
+    */
+#ifndef EXPLICIT_INITIALIZATION 
+    memcpy(&pyld->name, &payload[0], 4);
+    memcpy(&pyld->lat, &payload[4], 4);
+    memcpy(&pyld->lon, &payload[8], 4);
+    pyld->speed = payload[12];
+    pyld->dir = payload[13];
+    memcpy(&pyld->dist_next_step, &payload[14], 4);
+#else
+    memcpy(pyld, &payload[0], 14);
+    memcpy(&pyld->dist_next_step, &payload[14], 4);
+#endif
+    
+    return 0;
+}
+
+void tx_payload_wifimodule(struct payload_struct * pyld, int * fd){
+
+    char str1[200];
+    char str2[200];
+    char str3[200];
+    char str4[200];
+    char str5[200];
+    char str6[200];
+
+    int ret;
+
+    // Reset char string structure to 0
+    struct char_strings strs;
+    memset(&strs, 0, sizeof(strs));
+
+    // Copy every member of payload into string arrays
+    memcpy(&strs.name, pyld->name, 4);
+    gcvt(pyld->lat, N_FLOAT_DIGITS, strs.lat);
+    gcvt(pyld->lon, N_FLOAT_DIGITS, strs.lon);
+    snprintf( strs.speed, N_FLOAT_DIGITS, "%d", pyld->speed );
+    snprintf( strs.dir, N_FLOAT_DIGITS, "%d", pyld->dir );
+    gcvt(pyld->dist_next_step, N_FLOAT_DIGITS, strs.dist_next_step);
+
+    /*
+    printf("%s\n",strs.name);
+    printf("%s\n",strs.lat);
+    printf("%s\n",strs.lon);
+    printf("%s\n",strs.speed);
+    printf("%s\n",strs.dir);
+    printf("%s\n",strs.dist_next_step);
+    */
+
+    // Create HTTP GET requests(URL path and query)
+    sprintf(str1, "GET /name?value=%s HTTP/1.1\r\n", strs.name);
+    sprintf(str2, "GET /lat?value=%s HTTP/1.1\r\n", strs.lat);
+    sprintf(str3, "GET /lon?value=%s HTTP/1.1\r\n", strs.lon);
+    sprintf(str4, "GET /speed?value=%s HTTP/1.1\r\n", strs.speed);
+    sprintf(str5, "GET /dir?value=%s HTTP/1.1\r\n", strs.dir);
+    sprintf(str6, "GET /dist_next_step?value=%s HTTP/1.1\r\n", strs.dist_next_step);
+
+#ifdef HTTP_SOCKET
+    // Do a GET HTTP request to ESP8266 Module
+    ret = write(*fd, str1, strlen(str1)); 
+    if (ret != strlen(str1)){
+		printf("Something went wrong with str1!\n");
+	}
+
+    ret = write(*fd, str2, strlen(str2)); 
+    if (ret != strlen(str2)){
+		printf("Something went wrong with str2!\n");
+	}
+
+    ret = write(*fd, str3, strlen(str3)); 
+    if (ret != strlen(str3)){
+		printf("Something went wrong with str3!\n");
+	}
+
+    ret = write(*fd, str4, strlen(str4)); 
+    if (ret != strlen(str4)){
+		printf("Something went wrong with str4!\n");
+	}
+
+    ret = write(*fd, str5, strlen(str5)); 
+    if (ret != strlen(str5)){
+		printf("Something went wrong with str5!\n");
+	}
+
+    ret = write(*fd, str6, strlen(str6)); 
+    if (ret != strlen(str6)){
+		printf("Something went wrong with str6!\n");
+	}
+#endif
+
+    /*
+    printf("%s\n",str1);
+    printf("%s\n",str2);
+    printf("%s\n",str3);
+    printf("%s\n",str4);
+    printf("%s\n",str5);
+    printf("%s\n",str6);
+    */
+
+    return;
+}
+
+
+
