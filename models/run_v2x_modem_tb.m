@@ -99,13 +99,16 @@ function info_pkt = get_info_pkt_v1()
     % Name: V2X!
     name = 'V2X!';
     name_bin_mat = dec2bin(name, 8) - '0';
-    name_bin = name_bin_mat(:);
+    name_bin_mat2 = name_bin_mat.';
+    name_bin = name_bin_mat2(:);
 
     % Location: UCSD
     pos.lat = single(32.880100);
     pos.lon = single(-117.234000);
-    pos.lat_bin = (dec2bin(typecast(pos.lat, 'uint32'), 32) - '0')';
-    pos.lon_bin = (dec2bin(typecast(pos.lon, 'uint32'), 32) - '0')';
+%     pos.lat_bin = (dec2bin(typecast(pos.lat, 'uint32'), 32) - '0')';
+%     pos.lon_bin = (dec2bin(typecast(pos.lon, 'uint32'), 32) - '0')';
+    pos.lat_bin = (float_2_bin(pos.lat) - '0')';
+    pos.lon_bin = (float_2_bin(pos.lon) - '0')';
 
     % Speed: 60
     speed = uint8(60);
@@ -115,7 +118,8 @@ function info_pkt = get_info_pkt_v1()
     nav.dir = uint8(3);
     nav.dtns = single(5.3);
     nav.dir_bin = (dec2bin(nav.dir, 8) - '0')';
-    nav.dtns_bin = (dec2bin(typecast(nav.dtns, 'uint32'), 32) - '0')';
+%     nav.dtns_bin = (dec2bin(typecast(nav.dtns, 'uint32'), 32) - '0')';
+    nav.dtns_bin = (float_2_bin(nav.dtns) - '0')';
 
     % Concatenate array
     info_pkt = [name_bin; pos.lat_bin; pos.lon_bin; speed_bin; ...
@@ -126,13 +130,16 @@ function info_pkt = get_info_pkt_v2()
     % Name: Home
     name = 'Home';
     name_bin_mat = dec2bin(name, 8) - '0';
-    name_bin = name_bin_mat(:);
+    name_bin_mat2 = name_bin_mat.';
+    name_bin = name_bin_mat2(:);
 
     % Location: San Jose, CA
     pos.lat = single(37.3382);
     pos.lon = single(-121.8863);
-    pos.lat_bin = (dec2bin(typecast(pos.lat, 'uint32'), 32) - '0')';
-    pos.lon_bin = (dec2bin(typecast(pos.lon, 'uint32'), 32) - '0')';
+%     pos.lat_bin = (dec2bin(typecast(pos.lat, 'uint32'), 32) - '0')';
+%     pos.lon_bin = (dec2bin(typecast(pos.lon, 'uint32'), 32) - '0')';
+    pos.lat_bin = (float_2_bin(pos.lat) - '0')';
+    pos.lon_bin = (float_2_bin(pos.lon) - '0')';
 
     % Speed: 45
     speed = uint8(45);
@@ -142,9 +149,20 @@ function info_pkt = get_info_pkt_v2()
     nav.dir = uint8(1);
     nav.dtns = single(0.6789);
     nav.dir_bin = (dec2bin(nav.dir, 8) - '0')';
-    nav.dtns_bin = (dec2bin(typecast(nav.dtns, 'uint32'), 32) - '0')';
+%     nav.dtns_bin = (dec2bin(typecast(nav.dtns, 'uint32'), 32) - '0')';
+    nav.dtns_bin = (float_2_bin(nav.dtns) - '0')';
 
     % Concatenate array
     info_pkt = [name_bin; pos.lat_bin; pos.lon_bin; speed_bin; ...
                 nav.dir_bin; nav.dtns_bin];
+end
+
+function [bitstr] = float_2_bin(x)
+
+hex = num2hex(x);        % string of 16 hex digits for x
+dec = hex2dec(hex');     % decimal for each digit (1 per row)
+dec2 = [dec(7:8);dec(5:6); dec(3:4);dec(1:2)];
+bin = dec2bin(dec2,2);    % 4 binary digits per row
+bitstr = reshape(bin',[1 32]);  % string of 32 bits in order
+
 end

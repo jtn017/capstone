@@ -187,11 +187,48 @@ void get_tx_frame(int fd, short event, void *arg)
     g_num_tx_frames++;
 }
 
+int socket_connect(char *host, in_port_t port){
+	struct hostent *hp;
+	struct sockaddr_in addr;
+	int on = 1, sock;     
+
+	if((hp = gethostbyname(host)) == NULL){
+		herror("gethostbyname");
+		exit(1);
+	}
+	bcopy(hp->h_addr, &addr.sin_addr, hp->h_length);
+	addr.sin_port = htons(port);
+	addr.sin_family = AF_INET;
+	sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
+	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char *)&on, sizeof(int));
+
+	if(sock == -1){
+		perror("setsockopt");
+		exit(1);
+	}
+	
+	if(connect(sock, (struct sockaddr *)&addr, sizeof(struct sockaddr_in)) == -1){
+		perror("connect");
+		exit(1);
+	}
+	return sock;
+}
+
 int_T main(int_T argc, const char *argv[])
 {
     // Unused arguments
     (void)(argc);
     (void)(argv);
+
+    struct payload_struct pyld;
+    int fd;
+
+#ifdef HTTP_SOCKET
+    char ip_addr[] = "192.168.1.16";
+    in_port_t port = 80;
+
+    fd = socket_connect(ip_addr,port);
+#endif
 
     // Initialize generated code
     tx_bb_init();
@@ -216,6 +253,10 @@ int_T main(int_T argc, const char *argv[])
         else
         {
             printf("Frame %d matches recorded CSV!\n", i);
+            if (i != 0) {
+                parse_payload_packet(g_rx_bb_out, &pyld);
+                tx_payload_wifimodule(&pyld, &fd);
+            }
         }
     }
 #else
@@ -235,6 +276,10 @@ int_T main(int_T argc, const char *argv[])
     event_set(&ev, 0, EV_PERSIST, get_tx_frame, NULL);
     evtimer_add(&ev, &tv);
     event_dispatch();
+#endif
+
+#ifdef HTTP_SOCKET
+    close(fd);
 #endif
 
     return 0;
