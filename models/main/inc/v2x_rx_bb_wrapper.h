@@ -17,7 +17,8 @@
 void rx_bb_init(void);
 void get_rx_bb_out(uint8_T* output_frame, int frame_num);
 int parse_payload_packet(uint8_T* in_frame, struct payload_struct * pyld);
-void tx_payload_wifimodule(struct payload_struct * pyld, int * fd);
+// void tx_payload_wifimodule(struct payload_struct * pyld, int * fd);
+void tx_payload_wifimodule(struct payload_struct * pyld);
 
 
 #endif // V2X_RX_BASE_WRAPPER_H

@@ -17,8 +17,6 @@
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-
-
 // Replace with your network credentials
 const char* ssid     = "NETGEAR66";
 const char* password = "shinyvase603";
@@ -59,6 +57,7 @@ void setup() {
   server.on("/speed",handleSpeed); // use this route to update the sensor value
   server.on("/dir",handleDir); // use this route to update the sensor value
   server.on("/dist_next_step",handleDistToNext); // use this route to update the sensor value
+  server.on("/reset",handleReset); // use this route to update the sensor value
   
   server.begin();
 
@@ -75,6 +74,8 @@ void setup() {
   }
   Serial.print("IP Address: "); 
   Serial.println(WiFi.localIP());
+
+  handleReset();
   
 }
 void loop() {
@@ -141,10 +142,30 @@ void handleDistToNext(){
   Serial.println("Updated Dist. to Next Step!");
 }
 
+void handleReset(){
+  display.clearDisplay();
+  display.print(String(""));
+  display.println();
+  display.print(String(""));
+  display.println();
+  display.print(String(""));
+  display.println();
+  display.print(String(""));
+  display.println();
+  display.print(String(""));
+  display.println();
+  display.print(String(""));
+  display.println();
+    
+  display.display();
+}
+
 void displayall(void){
 
   display.clearDisplay();
   display.setTextSize(1);      // Normal 1:1 pixel scale
+  display.setRotation(1);
+  //display.flip();
   display.setTextColor(WHITE); // Draw white text
   display.setCursor(0, 0);     // Start at top-left corner
   display.cp437(true);         // Use full 256 char 'Code Page 437' font

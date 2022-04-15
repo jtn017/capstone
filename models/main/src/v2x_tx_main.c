@@ -221,14 +221,7 @@ int_T main(int_T argc, const char *argv[])
     (void)(argv);
 
     struct payload_struct pyld;
-    int fd;
 
-#ifdef HTTP_SOCKET
-    char ip_addr[] = "192.168.1.16";
-    in_port_t port = 80;
-
-    fd = socket_connect(ip_addr,port);
-#endif
 
     // Initialize generated code
     tx_bb_init();
@@ -255,7 +248,9 @@ int_T main(int_T argc, const char *argv[])
             printf("Frame %d matches recorded CSV!\n", i);
             if (i != 0) {
                 parse_payload_packet(g_rx_bb_out, &pyld);
-                tx_payload_wifimodule(&pyld, &fd);
+                // tx_payload_wifimodule(&pyld, &fd);
+                // tx_payload_wifimodule(&pyld, fds);
+                tx_payload_wifimodule(&pyld);
             }
         }
     }
@@ -276,10 +271,6 @@ int_T main(int_T argc, const char *argv[])
     event_set(&ev, 0, EV_PERSIST, get_tx_frame, NULL);
     evtimer_add(&ev, &tv);
     event_dispatch();
-#endif
-
-#ifdef HTTP_SOCKET
-    close(fd);
 #endif
 
     return 0;

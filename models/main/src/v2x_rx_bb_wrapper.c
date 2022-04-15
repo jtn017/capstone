@@ -140,7 +140,23 @@ int parse_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
     return 0;
 }
 
-void tx_payload_wifimodule(struct payload_struct * pyld, int * fd){
+#define BUFFER_SIZE 1024
+
+void tx_payload_wifimodule(struct payload_struct * pyld){
+
+    // int fd;
+    unsigned int n_sockets = N_SOCKETS;
+    int fds[n_sockets];
+
+#ifdef HTTP_SOCKET
+    char ip_addr[] = "192.168.1.16";
+    in_port_t port = 80;
+
+    // fd = socket_connect(ip_addr,port);
+    for(int i=0;i<n_sockets;i++){
+        fds[i] = socket_connect(ip_addr,port);
+    }
+#endif
 
     char str1[200];
     char str2[200];
@@ -149,7 +165,7 @@ void tx_payload_wifimodule(struct payload_struct * pyld, int * fd){
     char str5[200];
     char str6[200];
 
-    int ret;
+    char buffer[BUFFER_SIZE];
 
     // Reset char string structure to 0
     struct char_strings strs;
@@ -173,41 +189,42 @@ void tx_payload_wifimodule(struct payload_struct * pyld, int * fd){
     */
 
     // Create HTTP GET requests(URL path and query)
-    sprintf(str1, "GET /name?value=%s HTTP/1.1\r\n", strs.name);
-    sprintf(str2, "GET /lat?value=%s HTTP/1.1\r\n", strs.lat);
-    sprintf(str3, "GET /lon?value=%s HTTP/1.1\r\n", strs.lon);
-    sprintf(str4, "GET /speed?value=%s HTTP/1.1\r\n", strs.speed);
-    sprintf(str5, "GET /dir?value=%s HTTP/1.1\r\n", strs.dir);
-    sprintf(str6, "GET /dist_next_step?value=%s HTTP/1.1\r\n", strs.dist_next_step);
+    sprintf(str1, "GET /name?value=%s HTTP/1.1\r\n\r\n", strs.name);
+    sprintf(str2, "GET /lat?value=%s HTTP/1.1\r\n\r\n", strs.lat);
+    sprintf(str3, "GET /lon?value=%s HTTP/1.1\r\n\r\n", strs.lon);
+    sprintf(str4, "GET /speed?value=%s HTTP/1.1\r\n\r\n", strs.speed);
+    sprintf(str5, "GET /dir?value=%s HTTP/1.1\r\n\r\n", strs.dir);
+    sprintf(str6, "GET /dist_next_step?value=%s HTTP/1.1\r\n\r\n", strs.dist_next_step);
 
 #ifdef HTTP_SOCKET
+    int ret;
     // Do a GET HTTP request to ESP8266 Module
-    ret = write(*fd, str1, strlen(str1)); 
+    ret = write(fds[0], str1, strlen(str1)); 
     if (ret != strlen(str1)){
 		printf("Something went wrong with str1!\n");
 	}
 
-    ret = write(*fd, str2, strlen(str2)); 
+    ret = write(fds[1], str2, strlen(str2)); 
     if (ret != strlen(str2)){
 		printf("Something went wrong with str2!\n");
 	}
 
-    ret = write(*fd, str3, strlen(str3)); 
+    ret = write(fds[2], str3, strlen(str3)); 
     if (ret != strlen(str3)){
 		printf("Something went wrong with str3!\n");
 	}
 
-    ret = write(*fd, str4, strlen(str4)); 
+    ret = write(fds[3], str4, strlen(str4)); 
     if (ret != strlen(str4)){
 		printf("Something went wrong with str4!\n");
 	}
 
-    ret = write(*fd, str5, strlen(str5)); 
+    ret = write(fds[4], str5, strlen(str5)); 
     if (ret != strlen(str5)){
 		printf("Something went wrong with str5!\n");
 	}
 
-    ret = write(*fd, str6, strlen(str6)); 
+    ret = write(fds[5], str6, strlen(str6)); 
     if (ret != strlen(str6)){
 		printf("Something went wrong with str6!\n");
 	}
@@ -221,6 +238,16 @@ void tx_payload_wifimodule(struct payload_struct * pyld, int * fd){
     printf("%s\n",str5);
     printf("%s\n",str6);
     */
+
+#ifdef HTTP_SOCKET
+    // close(fds);
+    
+    for(int i=0;i<n_sockets;i++){
+        shutdown(fds[i], SHUT_RDWR); 
+        close(fds[i]);
+    }
+
+#endif
 
     return;
 }
