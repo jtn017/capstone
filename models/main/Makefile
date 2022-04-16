@@ -26,7 +26,7 @@ MKDIR = $(mkdir -p)
 all: $(ODIR) main
 
 main: $(GEN_OBJ) $(MAIN_OBJ) 
-	$(CC) $(CFLAGS) $(GEN_OBJ) $(MAIN_OBJ) -lm -levent -o v2x_tx_main
+	$(CC) $(CFLAGS) $(GEN_OBJ) $(MAIN_OBJ) -lm -levent -lcurl -o v2x_tx_main
 
 mv_gen_code:
 	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband.c gen/.

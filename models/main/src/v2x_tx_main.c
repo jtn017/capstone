@@ -187,33 +187,6 @@ void get_tx_frame(int fd, short event, void *arg)
     g_num_tx_frames++;
 }
 
-int socket_connect(char *host, in_port_t port){
-	struct hostent *hp;
-	struct sockaddr_in addr;
-	int on = 1, sock;     
-
-	if((hp = gethostbyname(host)) == NULL){
-		herror("gethostbyname");
-		exit(1);
-	}
-	bcopy(hp->h_addr, &addr.sin_addr, hp->h_length);
-	addr.sin_port = htons(port);
-	addr.sin_family = AF_INET;
-	sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char *)&on, sizeof(int));
-
-	if(sock == -1){
-		perror("setsockopt");
-		exit(1);
-	}
-	
-	if(connect(sock, (struct sockaddr *)&addr, sizeof(struct sockaddr_in)) == -1){
-		perror("connect");
-		exit(1);
-	}
-	return sock;
-}
-
 int_T main(int_T argc, const char *argv[])
 {
     // Unused arguments
@@ -250,10 +223,12 @@ int_T main(int_T argc, const char *argv[])
                 parse_payload_packet(g_rx_bb_out, &pyld);
                 // tx_payload_wifimodule(&pyld, &fd);
                 // tx_payload_wifimodule(&pyld, fds);
-                tx_payload_wifimodule(&pyld);
+                // tx_payload_wifimodule(&pyld);
+                tx_payload_wifimodule2(&pyld);
             }
         }
     }
+
 #else
     // Event variables
     struct event ev;
