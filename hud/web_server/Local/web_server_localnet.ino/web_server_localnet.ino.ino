@@ -18,8 +18,10 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Replace with your network credentials
-const char* ssid     = "NETGEAR66";
-const char* password = "shinyvase603";
+//const char* ssid     = "NETGEAR66";
+//const char* password = "shinyvase603";
+const char* ssid     = "OnePlus8Pro";
+const char* password = "70a8d2c12d5e";
 
 // Set up the server object
 //ESP8266WebServer server;
