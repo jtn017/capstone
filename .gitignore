@@ -6,3 +6,4 @@ obj
 models/main/v2x_tx_main
 .ipynb_checkpoints
 models/audio_gen/v2x_captured_audio.wav
+models/src/*/tlc/
