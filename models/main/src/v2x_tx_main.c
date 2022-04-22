@@ -195,7 +195,6 @@ int_T main(int_T argc, const char *argv[])
 
     struct payload_struct pyld;
 
-
     // Initialize generated code
     tx_bb_init();
     tx_mod_init();
@@ -224,7 +223,9 @@ int_T main(int_T argc, const char *argv[])
                 // tx_payload_wifimodule(&pyld, &fd);
                 // tx_payload_wifimodule(&pyld, fds);
                 // tx_payload_wifimodule(&pyld);
+#ifdef HTTP_SOCKET
                 tx_payload_wifimodule2(&pyld);
+#endif
             }
         }
     }

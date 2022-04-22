@@ -2,8 +2,9 @@
 
 #include "rtwtypes.h"
 
-#define HTTP_SOCKET
-#define N_SOCKETS 6
+// #define HTTP_SOCKET
+#define PAYLOAD_VALUES 6
+#define PAYLOAD_STR_MAX 100
 
 struct payload_struct {
     char name[4];
