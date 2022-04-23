@@ -52,7 +52,10 @@ static void get_info_packet(struct payload_struct * pyld)
 
     // Exit program if file doesn't exist
     if (fp == NULL)
+    {
+        printf("Error, data/Config.txt not found, exiting!\n");
         exit(EXIT_FAILURE);
+    }
 
     // Keep a 'tally' of how many lines we have read.
     // Make sure we read up to 6 lines
@@ -165,10 +168,8 @@ static void v2x_tx_bb_one_step(RT_MODEL *const rtM)
 // ---------------------- External functions ----------------------
 void tx_bb_init(void)
 {
-
     struct payload_struct pyld;
     memset(&pyld, 0, sizeof(pyld));
-
     get_info_packet(&pyld);
 
     rtMPtr->dwork = &rtDW;

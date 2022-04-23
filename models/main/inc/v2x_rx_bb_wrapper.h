@@ -1,4 +1,4 @@
-     #ifndef V2X_RX_BASE_WRAPPER_H
+#ifndef V2X_RX_BASE_WRAPPER_H
 #define V2X_RX_BASE_WRAPPER_H
 
 // Includes

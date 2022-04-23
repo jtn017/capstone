@@ -2,7 +2,7 @@
 #define V2X_CONSTANTS_H
 
 // Debug
-#define DEBUG_BUILD 1
+#define DEBUG_BUILD 0
 #define ERROR_TOL 0.0001
 #define NUM_FRAMES 4
 

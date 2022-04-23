@@ -12,7 +12,7 @@ ODIR = obj
 INC = -I $(IDIR) -I $(GEN_SDIR)
 
 # Library flags
-LDFLAGS = -lm -lpthread
+LDFLAGS = -lm -lpthread -lcurl
 
 # Generated files
 # NOTE: Additional auto-generated files require some massaging of extern vars...

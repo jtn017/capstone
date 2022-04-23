@@ -233,56 +233,7 @@ bool config_ad9361_rx_local(struct stream_cfg *cfg, struct iio_context *ctx)
 }
 
 // --------- TX modulator functions ----------
-#define TX_MOD_FILE_SIZE (TX_MOD_OUT_SYMS * NUM_FRAMES)
-#define TX_MOD_FILE_SIZE_FULL (TX_MOD_FILE_SIZE * 2)
-
-int16_t g_tx_mod_out[TX_MOD_FILE_SIZE_FULL];
-
-static int16_t float_to_fixed_txmod(float x)
-{
-    return (int16_t) (round(x * (1 << MOD_FRACT_BITS)));
-}
-
-static size_t read_float_from_bin(const char* filename, float* data, unsigned int filesize)
-{
-    // Reading float from file
-    float buffer[TX_MOD_FILE_SIZE];
-    FILE * bin_file = fopen(filename, "rb");
-    size_t ret_val = fread(buffer, sizeof(buffer), 1, bin_file);
-
-    // Copy to passed array
-    memcpy(data, buffer, filesize * sizeof(float));
-
-    // Close file
-    fclose(bin_file);
-
-    // Return
-    return ret_val;
-}
-
-static void load_global_txmod(void)
-{
-    // TX Modulator expected output
-    float tx_mod_real[TX_MOD_FILE_SIZE];
-    float tx_mod_imag[TX_MOD_FILE_SIZE];
-    read_float_from_bin("data/v2x_tx_mod_out_real.bin", tx_mod_real, TX_MOD_FILE_SIZE);
-    read_float_from_bin("data/v2x_tx_mod_out_imag.bin", tx_mod_imag, TX_MOD_FILE_SIZE);
-
-    // Convert to fixed point
-    for (unsigned int i = 0; i < TX_MOD_FILE_SIZE_FULL; i+=2)
-    {
-        g_tx_mod_out[i]   = float_to_fixed_txmod(tx_mod_real[i/2]);
-        g_tx_mod_out[i+1] = float_to_fixed_txmod(tx_mod_imag[i/2]);
-    }
-}
-
-static void load_frame_txmod(int frame_num, int16_t *tx_mod_out)
-{
-    memcpy(tx_mod_out, g_tx_mod_out + TX_MOD_OUT_SYMS * 2 * frame_num, 
-           TX_MOD_OUT_SYMS * 2 * sizeof(tx_mod_out[0]));
-}
-
-static void load_frame_txmod_v2(int16_t *input)
+static void load_frame_txmod(int16_t *input)
 {
     boolean_T tx_bb_out[TX_BB_OUT_BITS];
     cint16_T tx_mod_out[TX_MOD_OUT_SYMS];
@@ -554,14 +505,11 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
     //------------------------- Debug settings -------------------------
     int16_t tx_mod_out[TX_MOD_OUT_SYMS * 2];
     numbuf = NUM_FRAMES;
-#if DEBUG_BUILD
-    load_global_txmod();
-#else
+
     // Initialize generated code
     tx_bb_init();
     tx_mod_init();
     rx_bb_init();
-#endif
 
     //------------------------- Data acquisition variables -------------------------
     pthread_t monitor_thread; // Thread to monitor overflows/underflows
@@ -613,11 +561,7 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
 
             // WRITE: Get pointers to TX buf and write IQ to TX buf port 0
             p_start = iio_buffer_first(txbuf, tx0_i);
-#if DEBUG_BUILD
-            load_frame_txmod(i, tx_mod_out);
-#else
-            load_frame_txmod_v2(tx_mod_out);
-#endif
+            load_frame_txmod(tx_mod_out);
             memmove(p_start, tx_mod_out, TX_MOD_OUT_SYMS * 2);
 
             // Schecule TX Buffer
