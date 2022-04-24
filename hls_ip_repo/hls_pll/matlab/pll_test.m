@@ -7,7 +7,9 @@ rx_tec = pll_input.rx_tec;
 
 % Run
 [rx_pll, phs_err] = pll(rx_tec);
-% save('pll_output.mat', 'rx_pll')
+
+% Save IO into VITIS testbench format
+pll_test_vec(rx_tec, rx_pll);
 
 % Plot
 pll_plot(phs_err, rx_tec, rx_pll)
@@ -79,4 +81,31 @@ function [] = pll_plot(phs_err, rx_tec, rx_pll)
     axis([-1.5 1.5 -1.5 1.5])
     title('Constellation Diagram')
     legend('Before PLL', 'After PLL')
+end
+
+% VITIS testbench file gen
+% Output file format:
+% $(real) $(imag)
+% $(real) $(imag)
+% ...
+% $(real) $(imag)
+function [] = pll_test_vec(rx_tec, rx_pll)
+    % Setup
+    formatSpec = '% 8.6f % 8.6f\n';
+
+    % Input file
+    fileID = fopen('../input.gold.dat', 'w');
+    temp_vec = zeros(1, 2*length(rx_tec));
+    temp_vec(1:2:end) = real(rx_tec);
+    temp_vec(2:2:end) = imag(rx_tec);
+    fprintf(fileID, formatSpec, temp_vec);
+    fclose(fileID);
+
+    % Output file
+    fileID = fopen('../output.gold.dat', 'w');
+    temp_vec = zeros(1, 2*length(rx_pll));
+    temp_vec(1:2:end) = real(rx_pll);
+    temp_vec(2:2:end) = imag(rx_pll);
+    fprintf(fileID, formatSpec, temp_vec);
+    fclose(fileID);
 end
