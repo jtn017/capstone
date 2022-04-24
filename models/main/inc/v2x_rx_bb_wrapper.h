@@ -26,6 +26,7 @@ void tx_payload_wifimodule(struct payload_struct * pyld);
 #endif
 void send_packet_esp8266(char * str);
 void tx_payload_wifimodule2(struct payload_struct * pyld);
+float fix_endianness(float val);
 
 
 #endif // V2X_RX_BASE_WRAPPER_H

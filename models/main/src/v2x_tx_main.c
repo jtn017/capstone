@@ -218,11 +218,9 @@ int_T main(int_T argc, const char *argv[])
         else
         {
             printf("Frame %d matches recorded CSV!\n", i);
-            if (i != 0) {
+            if (i != 0) 
+            {
                 parse_payload_packet(g_rx_bb_out, &pyld);
-                // tx_payload_wifimodule(&pyld, &fd);
-                // tx_payload_wifimodule(&pyld, fds);
-                // tx_payload_wifimodule(&pyld);
 #ifdef HTTP_SOCKET
                 tx_payload_wifimodule2(&pyld);
 #endif
