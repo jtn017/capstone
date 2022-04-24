@@ -34,8 +34,8 @@ function [rx_pll, phs_err] = pll(rx_tec)
     [Ki, Kp] = pll_coeff();
     
     % PLL registers
-    phs_int  = 0;
-    acc_ph = 0;
+    phs_int = 0;
+    phs_acc = 0;
 
     % PLL arrays
     rx_pll  = zeros(size(rx_tec));
@@ -44,12 +44,12 @@ function [rx_pll, phs_err] = pll(rx_tec)
     % PLL
     for n = 1:length(rx_tec)
         % Signal mix
-        prod      = rx_tec(n)*exp(1i*2*pi*acc_ph);
+        prod      = rx_tec(n)*exp(1i*2*pi*phs_acc);
         rx_pll(n) = prod;
         
         % Phase error
-        det_ph     = sign(real(prod))+1i*sign(imag(prod));
-        phs_err(n) = angle(det_ph*conj(prod))/(2*pi);
+        phs_det    = sign(real(prod))+1i*sign(imag(prod));
+        phs_err(n) = angle(phs_det*conj(prod))/(2*pi);
     
         % Loop filter
         phs_prop  = Kp*phs_err(n);
@@ -57,7 +57,7 @@ function [rx_pll, phs_err] = pll(rx_tec)
         loop_filt = phs_prop + phs_int;
     
         % Phase accumulator
-        acc_ph = acc_ph + loop_filt;
+        phs_acc = phs_acc + loop_filt;
     end
 end
 
