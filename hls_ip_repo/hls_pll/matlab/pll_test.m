@@ -25,7 +25,7 @@ function [Ki, Kp] = pll_coeff()
     eta = sqrt(2)/2; 
     Ki = (4*theta_0*theta_0)/(1+2*eta*theta_0+theta_0*theta_0); % integral gain
     Kp = (4*eta*theta_0)/(1+2*eta*theta_0+theta_0*theta_0); % proportional gain
-    fprintf("Ki = %f, Kp = %f\n", Ki, Kp);
+    fprintf("Ki = %0.12f, Kp = %0.12f\n", Ki, Kp);
 end
 
 % PLL
