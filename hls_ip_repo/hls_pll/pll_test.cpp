@@ -46,8 +46,8 @@ int main ()
 		fscanf(fout, "%f %f", &GOLD_R, &GOLD_I);
 
 		// Compare output
-		rmse_R.add_value((float) OUT_R - GOLD_R);
-		rmse_I.add_value((float) OUT_I - GOLD_I);
+		rmse_R.add_value((float) OUT_R - (float) GOLD_R);
+		rmse_I.add_value((float) OUT_I - (float) GOLD_I);
 
 		// Print output comparison
 		printf("Expected: % 8.6f, Actual % 8.6f\n", GOLD_R, OUT_R);
