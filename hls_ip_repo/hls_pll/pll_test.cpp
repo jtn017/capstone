@@ -27,7 +27,9 @@ int main ()
 {
 	Rmse rmse_R, rmse_I;
 	FILE *fin, *fout;
-	DTYPE IN_R, IN_I, OUT_R, OUT_I, GOLD_R, GOLD_I;
+	float IN_R, IN_I;
+	DATA_T OUT_R, OUT_I;
+	float GOLD_R, GOLD_I;
 
 	// Open files
 	fin  = fopen("input.gold.dat",  "r");
@@ -40,7 +42,7 @@ int main ()
 		fscanf(fin, "%f %f", &IN_R, &IN_I);
 
 		// Run PLL
-		pll(IN_R, IN_I, &OUT_R, &OUT_I);
+		pll((DATA_T) IN_R, (DATA_T) IN_I, &OUT_R, &OUT_I);
 
 		// Read output
 		fscanf(fout, "%f %f", &GOLD_R, &GOLD_I);
@@ -50,7 +52,7 @@ int main ()
 		rmse_I.add_value((float) OUT_I - (float) GOLD_I);
 
 		// Print output comparison
-		printf("Expected: % 8.6f, Actual % 8.6f\n", GOLD_R, OUT_R);
+		printf("(REAL) Expected: % 8.6f, Actual % 8.6f\n", GOLD_R, (float) OUT_R);
 	}
 
 	// Close files
