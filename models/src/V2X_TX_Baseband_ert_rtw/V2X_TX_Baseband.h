@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.156
+ * Model version                  : 1.159
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Apr  3 20:26:26 2022
+ * C/C++ source code generated on : Mon Apr 25 21:20:15 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -33,13 +33,6 @@
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM RT_MODEL;
-
-/* Block signals and states (default storage) for system '<Root>' */
-typedef struct {
-  uint32_T RSEncoder[5600];            /* '<S6>/RS Encoder' */
-  int8_T IntegertoBitConverter[16800]; /* '<S6>/Integer to Bit Converter' */
-  boolean_T Transpose[7200];           /* '<S5>/Transpose' */
-} DW;
 
 /* Constant parameters (default storage) */
 typedef struct {
@@ -66,7 +59,7 @@ typedef struct {
 
 /* Real-time Model Data Structure */
 struct tag_RTM {
-  DW *dwork;
+  char_T rt_unused;
 };
 
 /* Constant parameters (default storage) */
@@ -74,11 +67,11 @@ extern const ConstP rtConstP;
 
 /* Model entry point functions */
 extern void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, uint8_T
-  rtU_v2x_tx_bb_in[900], boolean_T rtY_tx_frame[16928], boolean_T
-  rtY_scramb_out[7200], boolean_T rtY_enc_out[16800]);
+  rtU_v2x_tx_bb_in[98], boolean_T rtY_tx_frame[1976], boolean_T rtY_bits_in[784],
+  boolean_T rtY_scramb_out[784], boolean_T rtY_enc_out[1848]);
 extern void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in
-  [900], boolean_T rtY_tx_frame[16928], boolean_T rtY_scramb_out[7200],
-  boolean_T rtY_enc_out[16800]);
+  [98], boolean_T rtY_tx_frame[1976], boolean_T rtY_bits_in[784], boolean_T
+  rtY_scramb_out[784], boolean_T rtY_enc_out[1848]);
 
 /*-
  * These blocks were eliminated from the model due to optimizations:

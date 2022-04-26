@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.156
+ * Model version                  : 1.159
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Apr  3 20:26:26 2022
+ * C/C++ source code generated on : Mon Apr 25 21:20:15 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -25,19 +25,21 @@
 
 static RT_MODEL rtM_;
 static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
-static DW rtDW;                        /* Observable states */
 
 /* '<Root>/data_frame' */
-static uint8_T rtU_v2x_tx_bb_in[900];
+static uint8_T rtU_v2x_tx_bb_in[98];
 
 /* '<Root>/tx_frame' */
-static boolean_T rtY_tx_frame[16928];
+static boolean_T rtY_tx_frame[1976];
+
+/* '<Root>/bits_in' */
+static boolean_T rtY_bits_in[784];
 
 /* '<Root>/scramb_out' */
-static boolean_T rtY_scramb_out[7200];
+static boolean_T rtY_scramb_out[784];
 
 /* '<Root>/enc_out' */
-static boolean_T rtY_enc_out[16800];
+static boolean_T rtY_enc_out[1848];
 
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
@@ -69,8 +71,8 @@ void rt_OneStep(RT_MODEL *const rtM)
   /* Set model inputs here */
 
   /* Step the model */
-  V2X_TX_Baseband_step(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_scramb_out,
-                       rtY_enc_out);
+  V2X_TX_Baseband_step(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_bits_in,
+                       rtY_scramb_out, rtY_enc_out);
 
   /* Get model outputs here */
 
@@ -97,11 +99,10 @@ int_T main(int_T argc, const char *argv[])
   (void)(argv);
 
   /* Pack model data into RTM */
-  rtM->dwork = &rtDW;
 
   /* Initialize model */
-  V2X_TX_Baseband_initialize(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_scramb_out,
-    rtY_enc_out);
+  V2X_TX_Baseband_initialize(rtM, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_bits_in,
+    rtY_scramb_out, rtY_enc_out);
 
   /* Attach rt_OneStep to a timer or interrupt service routine with
    * period 0.01 seconds (the model's base sample time) here.  The

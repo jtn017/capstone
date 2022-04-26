@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Modulator'.
  *
- * Model version                  : 1.156
+ * Model version                  : 1.159
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Apr  3 20:26:38 2022
+ * C/C++ source code generated on : Mon Apr 25 21:20:28 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -28,16 +28,16 @@ static RT_MODEL *const rtMPtr = &rtM_; /* Real-time model */
 static DW rtDW;                        /* Observable states */
 
 /* '<Root>/ tx_frame' */
-static boolean_T rtU_v2x_tx_bb_out[16928];
+static boolean_T rtU_v2x_tx_bb_out[1976];
 
 /* '<Root>/mod_frame' */
-static cint16_T rtY_mod_frame[67712];
+static cint16_T rtY_mod_frame[7904];
 
 /* '<Root>/map_out' */
-static creal_T rtY_map_out[8464];
+static creal_T rtY_map_out[988];
 
 /* '<Root>/ps_out' */
-static creal_T rtY_ps_out[67712];
+static creal_T rtY_ps_out[7904];
 
 /*
  * Associating rt_OneStep with a real-time clock or interrupt service routine
