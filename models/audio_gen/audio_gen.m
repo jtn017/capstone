@@ -7,7 +7,7 @@
 
 %% Choose desired file
 % Created files using: https://convertio.co/mp3-wav/
-orig_wav_file = 'latinnova_44100.wav';
+orig_wav_file = 'latinnova_4000.wav';
 orig_wav_info = audioinfo(orig_wav_file);
 
 %% Read audio from desired file
