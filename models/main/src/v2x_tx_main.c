@@ -60,7 +60,6 @@ void load_bin(int frame_num)
     read_float_from_bin("data/v2x_tx_mod_out_imag.bin", tx_mod_out_imag, TX_MOD_OUT_SYMS * NUM_FRAMES);
     for(unsigned int i = 0; i < TX_MOD_OUT_SYMS; i++)
     {
-        
         test_tx_mod_out[i].re = (real_T) tx_mod_out_real[TX_MOD_OUT_SYMS * frame_num + i];
         test_tx_mod_out[i].im = (real_T) tx_mod_out_imag[TX_MOD_OUT_SYMS * frame_num + i];
     }
@@ -98,8 +97,8 @@ int compare_actual_vs_exp(boolean_T* tx_bb_out, cint16_T* tx_mod_out, uint8_T* r
     for (unsigned int n = 0; n < TX_MOD_OUT_SYMS; n++)
     {
         // Convert fixed point to float
-        double temp_real = fixed_to_double_txmod(tx_mod_out[n].re);
-        double temp_imag = fixed_to_double_txmod(tx_mod_out[n].im);
+        float temp_real = fixed_to_double_txmod(tx_mod_out[n].re);
+        float temp_imag = fixed_to_double_txmod(tx_mod_out[n].im);
 
         // Compare real and imag
         if (abs(temp_real - test_tx_mod_out[n].re) > ERROR_TOL)
@@ -109,6 +108,7 @@ int compare_actual_vs_exp(boolean_T* tx_bb_out, cint16_T* tx_mod_out, uint8_T* r
             ret_val = -3;
             break;
         }
+
         if (abs(temp_imag - test_tx_mod_out[n].im) > ERROR_TOL)
         {
             printf("TX MOD ERROR: actual[%d].re: %f, expected[%d].re: %f\n",
@@ -193,8 +193,6 @@ int_T main(int_T argc, const char *argv[])
     (void)(argc);
     (void)(argv);
 
-    struct payload_struct pyld;
-
     // Initialize generated code
     tx_bb_init();
     tx_mod_init();
@@ -202,6 +200,9 @@ int_T main(int_T argc, const char *argv[])
 
     // Get TX baseband output
 #if DEBUG_BUILD
+    // Payload
+    struct payload_struct pyld;
+
     // Set mumber of frames to compare
     for (int i = 0; i < NUM_FRAMES; i++)
     {
