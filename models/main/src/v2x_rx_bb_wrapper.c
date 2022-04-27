@@ -151,8 +151,8 @@ int parse_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
     return 0;
 }
 
-float fix_endianness(float val){
-    
+float fix_endianness(float val)
+{    
     // Bit masking with floating point is not supported by compiler...
     // Need to copy floating value to a uint32_t for masking
     unsigned int temp_val = 0;
