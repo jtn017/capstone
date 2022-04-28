@@ -73,7 +73,20 @@ void setup() {
     for(;;); // Don't proceed, loop forever
   }
 
-  handleReset();
+//  handleReset();
+
+  display.clearDisplay();
+  display.setTextSize(1);      // Normal 1:1 pixel scale
+  display.setRotation(0);
+  //display.flip();
+  display.setTextColor(WHITE); // Draw white text
+  display.setCursor(0, 0);     // Start at top-left corner
+  display.cp437(true);         // Use full 256 char 'Code Page 437' font
+  
+  String ip_addr = ip.toString();
+  display.print(ip_addr);
+  display.println();
+  display.display();
   
 }
 
