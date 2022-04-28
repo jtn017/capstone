@@ -21,7 +21,7 @@ mod_ini = v2x_modem_init();
 mod_dt = mod_ini.intfc_dt;
 
 %% Frame params
-num_frames = 10;
+num_frames = 4;
 audio_pkts = get_audio_pkts();
 audio_pkts = audio_pkts(:, 1:num_frames);
 info_pkts = get_info_pkts();
@@ -57,14 +57,14 @@ if save_to_bin
     fclose(v2x_tx_bb_out_fileID);
 
     % Enable this data saving only for small data sets
-%     % TX Modulator
-%     v2x_tx_mod_out_real_fileID = fopen('main/data/v2x_tx_mod_out_real.bin', 'w');
-%     v2x_tx_mod_out_imag_fileID = fopen('main/data/v2x_tx_mod_out_imag.bin', 'w');
-%     v2x_tx_mod_out = squeeze(sim_out.logsout.getElement('v2x_tx_mod_out').Values.Data);
-%     fwrite(v2x_tx_mod_out_real_fileID, real(single(v2x_tx_mod_out)), 'single');
-%     fwrite(v2x_tx_mod_out_imag_fileID, imag(single(v2x_tx_mod_out)), 'single');
-%     fclose(v2x_tx_mod_out_real_fileID);
-%     fclose(v2x_tx_mod_out_imag_fileID);
+    % TX Modulator
+    v2x_tx_mod_out_real_fileID = fopen('main/data/v2x_tx_mod_out_real.bin', 'w');
+    v2x_tx_mod_out_imag_fileID = fopen('main/data/v2x_tx_mod_out_imag.bin', 'w');
+    v2x_tx_mod_out = squeeze(sim_out.logsout.getElement('v2x_tx_mod_out').Values.Data);
+    fwrite(v2x_tx_mod_out_real_fileID, real(single(v2x_tx_mod_out)), 'single');
+    fwrite(v2x_tx_mod_out_imag_fileID, imag(single(v2x_tx_mod_out)), 'single');
+    fclose(v2x_tx_mod_out_real_fileID);
+    fclose(v2x_tx_mod_out_imag_fileID);
 
     % RX Baseband
     v2x_rx_bb_in_fileID = fopen('main/data/v2x_rx_bb_in.bin', 'w');

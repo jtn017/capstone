@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Modulator'.
  *
- * Model version                  : 1.156
+ * Model version                  : 1.159
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Apr  3 20:26:38 2022
+ * C/C++ source code generated on : Mon Apr 25 21:20:28 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -60,9 +60,9 @@ preprocessor word size checks.
 /* Skipping ulong/long check: insufficient preprocessor integer range. */
 
 /* Model step function */
-void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out
-  [16928], cint16_T rtY_mod_frame[67712], creal_T rtY_map_out[8464], creal_T
-  rtY_ps_out[67712])
+void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out[1976],
+  cint16_T rtY_mod_frame[7904], creal_T rtY_map_out[988], creal_T rtY_ps_out
+  [7904])
 {
   DW *rtDW = rtM->dwork;
   real_T accumulator_im;
@@ -78,7 +78,7 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out
    */
   inIdx = 0;
   outIdx = 0;
-  for (i = 0; i < 8464; i++) {
+  for (i = 0; i < 988; i++) {
     inIdx_0 = inIdx + 1;
     symbolIndex = rtU_v2x_tx_bb_out[inIdx];
     inIdx += 2;
@@ -129,7 +129,7 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out
     }
 
     /* Consume remaining input samples */
-    for (i = 0; i < 8454; i++) {
+    for (i = 0; i < 978; i++) {
       accumulator_re = 0.0;
       accumulator_im = 0.0;
       for (symbolIndex = 0; symbolIndex < 11; symbolIndex++) {
@@ -147,13 +147,13 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out
 
   /* Update delay line for next frame */
   for (i = 0; i < 10; i++) {
-    rtDW->FIRInterpolation_TapDelayBuff[9 - i] = rtY_map_out[i + 8454];
+    rtDW->FIRInterpolation_TapDelayBuff[9 - i] = rtY_map_out[i + 978];
   }
 
   /* End of S-Function (sdspupfir2): '<S4>/FIR Interpolation' */
 
   /* Outport: '<Root>/mod_frame' */
-  for (i = 0; i < 67712; i++) {
+  for (i = 0; i < 7904; i++) {
     /* DataTypeConversion: '<S1>/convert' incorporates:
      *  S-Function (sdspupfir2): '<S4>/FIR Interpolation'
      */
@@ -185,8 +185,8 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out
 
 /* Model initialize function */
 void V2X_TX_Modulator_initialize(RT_MODEL *const rtM, boolean_T
-  rtU_v2x_tx_bb_out[16928], cint16_T rtY_mod_frame[67712], creal_T rtY_map_out
-  [8464], creal_T rtY_ps_out[67712])
+  rtU_v2x_tx_bb_out[1976], cint16_T rtY_mod_frame[7904], creal_T rtY_map_out[988],
+  creal_T rtY_ps_out[7904])
 {
   DW *rtDW = rtM->dwork;
 
@@ -197,12 +197,12 @@ void V2X_TX_Modulator_initialize(RT_MODEL *const rtM, boolean_T
                 sizeof(DW));
 
   /* external inputs */
-  (void)memset(&rtU_v2x_tx_bb_out[0], 0, 16928U * sizeof(boolean_T));
+  (void)memset(&rtU_v2x_tx_bb_out[0], 0, 1976U * sizeof(boolean_T));
 
   /* external outputs */
-  (void)memset(&rtY_mod_frame[0], 0, 67712U * sizeof(cint16_T));
-  (void)memset(&rtY_map_out[0], 0, 8464U * sizeof(creal_T));
-  (void)memset(&rtY_ps_out[0], 0, 67712U * sizeof(creal_T));
+  (void)memset(&rtY_mod_frame[0], 0, 7904U * sizeof(cint16_T));
+  (void)memset(&rtY_map_out[0], 0, 988U * sizeof(creal_T));
+  (void)memset(&rtY_ps_out[0], 0, 7904U * sizeof(creal_T));
 
   /* InitializeConditions for S-Function (sdspupfir2): '<S4>/FIR Interpolation' */
   memset(&rtDW->FIRInterpolation_TapDelayBuff[0], 0, 10U * sizeof(creal_T));

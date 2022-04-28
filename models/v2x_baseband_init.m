@@ -10,7 +10,8 @@ function ini = v2x_baseband_init()
     ini.scramb = get_scramb_params();
 
     % Encoder params
-    ini.enc = get_enc_params(ini.pkt.data_len);
+    extra_bits = 8;
+    ini.enc = get_enc_params(ini.pkt.data_len, extra_bits);
     
     % Preamble params
     ini.preamble = get_preamble_params();
@@ -46,14 +47,14 @@ function info_len = get_info_len()
     dir_len   = 8;
     dist_len  = 32;
     info_len  = name_len + lat_len + long_len + speed_len + ...
-               dir_len + dist_len;
+                dir_len + dist_len;
 end
 
 function audio_len = get_audio_len()
-    f_audio   = 44.1e3;
+    f_audio   = 4e3; % 4 KHz audio format
     t_audio   = 0.01; % 0.01 second of captured data
-    audio_bits = 16; % 16 bits -> 1 channel, 2 channels for stereo
-    audio_len = f_audio*t_audio*audio_bits;
+    audio_bits = 16; % 1 channel at 16 bits per audio sample
+    audio_len = round(f_audio*t_audio*audio_bits);
 end
 
 function params = get_pkt_params()
@@ -70,11 +71,12 @@ function params = get_scramb_params()
     params.tap = 'z^16 + z^15 + z^13 + z^4 + 1';
 end
 
-function params = get_enc_params(data_len)
+function params = get_enc_params(data_len, extra_bits)
     % Default MATLAB N, K for RS Encoder/Decoder
+    params.extra_bits = 8;
     params.n = 7;
     params.k = 3;
-    params.len = (params.n/params.k) * data_len;
+    params.len = round((params.n/params.k) * (data_len + extra_bits));
 end
 
 function params = get_preamble_params()

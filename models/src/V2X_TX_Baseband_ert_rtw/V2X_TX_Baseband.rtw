@@ -6,8 +6,8 @@ CompiledModel {
   ModelReferenceTargetType "NONE"
   Version		  "9.6 (R2021b) 14-May-2021"
   SimulinkVersion	  "10.4"
-  ModelVersion		  "1.156"
-  GeneratedOn		  "Sun Apr  3 20:26:25 2022"
+  ModelVersion		  "1.159"
+  GeneratedOn		  "Mon Apr 25 21:20:15 2022"
   HasSimStructVars	  0
   HasVariants		  0
   PreserveExternInFcnDecls 1
@@ -889,11 +889,11 @@ CompiledModel {
     tlcTargetType	    "RT"
     RelativeBuildDir	    "V2X_TX_Baseband_ert_rtw"
   }
-  RTWContext		  [367275136, 517]
+  RTWContext		  [803691840, 624]
   RTWCGIR		  1
   TLCBlkFcnInCGIR	  1
   SLCI			  off
-  SubsystemHdlForRightClickBuild 82.0001220703125
+  SubsystemHdlForRightClickBuild 206.001708984375
   SubsystemPathForRightClickBuild "v2x_modem_tb"
   SubsystemNameForRightClickBuild "V2X_TX_Baseband"
   LocalSharedCodeManagerFile "C:\\Users\\jacob\\Documents\\Important\\UCSD\\2021-2022 Year\\WES Capstone\\capstone\\mo"
@@ -911,9 +911,9 @@ CompiledModel {
     FinalStateName	    ""
     CompiledLoggingSaveFormat "Dataset"
   }
-  NumModelInputs	  900
-  NumModelOutputs	  40928
-  NumNonVirtBlocksInModel 30
+  NumModelInputs	  98
+  NumModelOutputs	  5392
+  NumNonVirtBlocksInModel 34
   DirectFeedthrough	  yes
   NumContStates		  0
   NumPeriodicContStates	  0
@@ -925,8 +925,8 @@ CompiledModel {
   NumNonsampledZCs	  0
   NumZCEvents		  0
   ZCVectorlength	  0
-  NumBlockSignals	  73829
-  NumBlockParams	  165
+  NumBlockSignals	  9011
+  NumBlockParams	  173
   NumAlgebraicLoops	  0
   NumDataTransfers	  0
   HasRootTriggerPort	  no
@@ -1392,11 +1392,11 @@ CompiledModel {
   NumBlockTypeCounts	  7
   BlockTypeCount {
     Type		    "Concatenate"
-    Count		    2
+    Count		    3
   }
   BlockTypeCount {
     Type		    "Outport"
-    Count		    3
+    Count		    4
   }
   BlockTypeCount {
     Type		    "S-Function"
@@ -1404,11 +1404,11 @@ CompiledModel {
   }
   BlockTypeCount {
     Type		    "SignalConversion"
-    Count		    1
+    Count		    2
   }
   BlockTypeCount {
     Type		    "Constant"
-    Count		    2
+    Count		    3
   }
   BlockTypeCount {
     Type		    "Math"
@@ -1538,37 +1538,43 @@ CompiledModel {
       Type		      root
       SubsystemBlockIndex     [-1, -1]
       NVOwnerSysIdx	      0
-      NumBlocks		      5
+      NumBlocks		      6
       NumInportBlocks	      1
       InportBlocks	      [0]
-      NumOutportBlocks	      3
-      OutportBlocks	      [1:3]
+      NumOutportBlocks	      4
+      OutportBlocks	      [1:4]
       NumSubsystemBlocks      1
-      SubsystemBlocks	      [4]
+      SubsystemBlocks	      [5]
       NumChildSubsystems      1
       ChildSubsystems	      [1]
       Block {
 	Name			"<Root>/data_frame"
 	SLName			"data_frame"
-	SID			"641"
+	SID			"664"
 	Type			Inport
       }
       Block {
 	Name			"<Root>/tx_frame"
 	SLName			"tx_frame"
-	SID			"642"
+	SID			"665"
+	Type			Outport
+      }
+      Block {
+	Name			"<Root>/bits_in"
+	SLName			"bits_in"
+	SID			"667"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/scramb_out"
 	SLName			"scramb_out"
-	SID			"644"
+	SID			"668"
 	Type			Outport
       }
       Block {
 	Name			"<Root>/enc_out"
 	SLName			"enc_out"
-	SID			"645"
+	SID			"669"
 	Type			Outport
       }
       Block {
@@ -1581,7 +1587,7 @@ CompiledModel {
     Subsystem {
       Name		      "<Root>/V2X_TX_Baseband"
       SLName		      "V2X_TX_Baseband"
-      SubsystemBlockIndex     [0, 4]
+      SubsystemBlockIndex     [0, 5]
       NVOwnerSysIdx	      0
       NumBlocks		      4
       NumSubsystemBlocks      4
@@ -1618,7 +1624,7 @@ CompiledModel {
       SLName		      "Encoder"
       SubsystemBlockIndex     [1, 0]
       NVOwnerSysIdx	      0
-      NumBlocks		      1
+      NumBlocks		      3
       NumSubsystemBlocks      1
       SubsystemBlocks	      [0]
       NumChildSubsystems      1
@@ -1628,6 +1634,18 @@ CompiledModel {
 	SLName			"Binary-Input\nRS Encoder"
 	SID			"330:5"
 	Type			SubSystem
+      }
+      Block {
+	Name			"<S2>/Matrix Concatenate"
+	SLName			"Matrix\nConcatenate"
+	SID			"330:75"
+	Type			Concatenate
+      }
+      Block {
+	Name			"<S2>/append_zeros"
+	SLName			"append_zeros"
+	SID			"330:76"
+	Type			Constant
       }
     }
     Subsystem {
@@ -2037,7 +2055,7 @@ CompiledModel {
       Identifier	      "v2x_tx_bb_in"
       TID		      0
       CGTypeIdx		      27
-      ContainerCGTypeIdx      50
+      ContainerCGTypeIdx      52
       UnitIdx		      0
       Interpolation	      0
       RequiresGlobalAccess    no
@@ -2074,18 +2092,18 @@ CompiledModel {
       isActiveDuringCodegen   1
       IsSpecifiedAsNewStorageClass 0
     }
-    NumExternalOutputs	    3
+    NumExternalOutputs	    4
     StructAlignment	    -1
     ExternalOutput {
       ExternalOutputIdx	      0
       ArgSrc		      Y0
-      Block		      [0,3]
+      Block		      [0,4]
       BlockName		      "<Root>/tx_frame"
       GrSrc		      [0, 1]
       Identifier	      ""
       CGTypeIdx		      28
       UnitIdx		      0
-      ContainerCGTypeIdx      51
+      ContainerCGTypeIdx      53
       VarGroupIdx	      [1,0]
       RequiresGlobalAccess    no
       OriginalPortIndex	      0
@@ -2094,14 +2112,14 @@ CompiledModel {
     ExternalOutput {
       ExternalOutputIdx	      1
       ArgSrc		      Y1
-      Block		      [0,2]
-      BlockName		      "<Root>/scramb_out"
+      Block		      [0,3]
+      BlockName		      "<Root>/bits_in"
       GrSrc		      [0, 2]
       Identifier	      ""
-      SigLabel		      "<scramb_out>"
+      SigLabel		      "<bits_in>"
       CGTypeIdx		      30
       UnitIdx		      0
-      ContainerCGTypeIdx      52
+      ContainerCGTypeIdx      54
       VarGroupIdx	      [1,1]
       RequiresGlobalAccess    no
       OriginalPortIndex	      1
@@ -2110,17 +2128,33 @@ CompiledModel {
     ExternalOutput {
       ExternalOutputIdx	      2
       ArgSrc		      Y2
+      Block		      [0,2]
+      BlockName		      "<Root>/scramb_out"
+      GrSrc		      [0, 3]
+      Identifier	      ""
+      SigLabel		      "<scramb_out>"
+      CGTypeIdx		      30
+      UnitIdx		      0
+      ContainerCGTypeIdx      54
+      VarGroupIdx	      [1,2]
+      RequiresGlobalAccess    no
+      OriginalPortIndex	      2
+      IsMessage		      0
+    }
+    ExternalOutput {
+      ExternalOutputIdx	      3
+      ArgSrc		      Y3
       Block		      [0,1]
       BlockName		      "<Root>/enc_out"
-      GrSrc		      [0, 3]
+      GrSrc		      [0, 4]
       Identifier	      ""
       SigLabel		      "<enc_out>"
       CGTypeIdx		      31
       UnitIdx		      0
-      ContainerCGTypeIdx      53
-      VarGroupIdx	      [1,2]
+      ContainerCGTypeIdx      55
+      VarGroupIdx	      [1,3]
       RequiresGlobalAccess    no
-      OriginalPortIndex	      2
+      OriginalPortIndex	      3
       IsMessage		      0
     }
   }
@@ -2377,100 +2411,111 @@ CompiledModel {
       IsSpecifiedAsNewStorageClass 0
     }
     NumGlobalBlockOutputs   0
-    NumLocalBlockOutputs    8
+    NumLocalBlockOutputs    9
     NumExternalBlockOutputs 0
     NumConstBlockOutputs    0
     NumConstOutputExpr	    1
     LocalBlockOutput {
       Identifier	      "rtb_BittoIntegerConverter"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      32
-      ContainerCGTypeIdx      56
+      CGTypeIdx		      33
+      ContainerCGTypeIdx      58
       LogicalSrc	      B0
       SigDeclSysIdx	      0
       GrSrc		      [6, 1, 0, -1]
-      SigSrc		      [0, -1, 4, -1]
+      SigSrc		      [0, -1, 5, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_RSEncoder"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      34
-      ContainerCGTypeIdx      57
+      CGTypeIdx		      35
+      ContainerCGTypeIdx      59
       LogicalSrc	      B1
       SigDeclSysIdx	      0
       GrSrc		      [6, 3, 0, -1]
-      SigSrc		      [0, -1, 4, -1]
+      SigSrc		      [0, -1, 5, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_IntegertoBitConverter"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      33
-      ContainerCGTypeIdx      58
+      CGTypeIdx		      34
+      ContainerCGTypeIdx      60
       LogicalSrc	      B2
       SigDeclSysIdx	      0
       GrSrc		      [6, 2, 0, -1]
-      SigSrc		      [0, -1, 4, -1]
+      SigSrc		      [0, -1, 5, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_ExtractDesiredBits"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      39
-      ContainerCGTypeIdx      50
+      CGTypeIdx		      41
+      ContainerCGTypeIdx      52
       LogicalSrc	      B3
       SigDeclSysIdx	      0
       GrSrc		      [7, 0, 0, -1]
-      SigSrc		      [0, -1, 4, -1]
+      SigSrc		      [0, -1, 5, -1]
       NumReusedBlockOutputs   8
     }
     LocalBlockOutput {
       Identifier	      "rtb_Transpose"
       SysCsIdx		      [0, -1]
-      CGTypeIdx		      49
-      ContainerCGTypeIdx      52
+      CGTypeIdx		      51
+      ContainerCGTypeIdx      54
       LogicalSrc	      B4
+      DrivesRootOutport	      yes
       SigDeclSysIdx	      0
       GrSrc		      [5, 17, 0, -1]
-      SigSrc		      [0, -1, 4, -1]
+      SigSrc		      [0, -1, 5, -1]
+    }
+    LocalBlockOutput {
+      Identifier	      "rtb_MatrixConcatenate"
+      SysCsIdx		      [0, -1]
+      CGTypeIdx		      32
+      ContainerCGTypeIdx      61
+      LogicalSrc	      B5
+      SigDeclSysIdx	      0
+      GrSrc		      [2, 1, 0, -1]
+      SigSrc		      [0, -1, 5, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_Conversion"
       SysCsIdx		      [0, -1]
       CGTypeIdx		      31
-      ContainerCGTypeIdx      53
-      LogicalSrc	      B5
-      DrivesRootOutport	      yes
-      SigDeclSysIdx	      0
-      GrSrc		      [15, 0, 0, -1]
-      SigSrc		      [0, -1, 4, -1]
-    }
-    LocalBlockOutput {
-      Identifier	      "rtb_MatrixConcatenate"
-      SysCsIdx		      [0, -1]
-      CGTypeIdx		      28
-      ContainerCGTypeIdx      51
+      ContainerCGTypeIdx      55
       LogicalSrc	      B6
       DrivesRootOutport	      yes
       SigDeclSysIdx	      0
+      GrSrc		      [15, 0, 0, -1]
+      SigSrc		      [0, -1, 5, -1]
+    }
+    LocalBlockOutput {
+      Identifier	      "rtb_MatrixConcatenate_a"
+      SysCsIdx		      [0, -1]
+      CGTypeIdx		      28
+      ContainerCGTypeIdx      53
+      LogicalSrc	      B7
+      DrivesRootOutport	      yes
+      SigDeclSysIdx	      0
       GrSrc		      [3, 0, 0, -1]
-      SigSrc		      [0, -1, 4, -1]
+      SigSrc		      [0, -1, 5, -1]
     }
     LocalBlockOutput {
       Identifier	      "rtb_Scrambler"
       SysCsIdx		      [0, -1]
       CGTypeIdx		      30
-      ContainerCGTypeIdx      52
-      LogicalSrc	      B7
+      ContainerCGTypeIdx      54
+      LogicalSrc	      B8
       DrivesRootOutport	      yes
       SigDeclSysIdx	      0
       GrSrc		      [4, 1, 0, -1]
-      SigSrc		      [0, -1, 4, -1]
+      SigSrc		      [0, -1, 5, -1]
       NumReusedBlockOutputs   2
     }
     ConstOutputExpr {
       Identifier	      "rst_on_frame_start"
       SysCsIdx		      [0, -1]
       CGTypeIdx		      8
-      LogicalSrc	      B8
+      LogicalSrc	      B9
       ConstExpr		      1
       GrSrc		      [4, 0, 0, -1]
       SigSrc		      [0, -1, 0, 0]
@@ -2671,7 +2716,7 @@ CompiledModel {
     ArgDefIdx		    -1
     MemoryMapIdx	    [-1, -1, -1]
     OriginalDataTypeIdx	    0
-    CGTypeIdx		    70
+    CGTypeIdx		    72
     Tunable		    off
     OrigIdentifier	    ""
     StorageClass	    Auto
@@ -2822,10 +2867,10 @@ CompiledModel {
     Alignment		    -1
   }
   ModelParameters {
-    NumParameters	    7
+    NumParameters	    8
     NumInrtP		    0
     NumConstPrmsWithInit    0
-    NumConstPrms	    7
+    NumConstPrms	    8
     NumExportedGlobal	    0
     NumImportedExtern	    0
     NumImportedExternPointer 0
@@ -2841,7 +2886,7 @@ CompiledModel {
       MemoryMapIdx	      [-1, -1, -1]
       HasObject		      0
       OriginalDataTypeIdx     0
-      CGTypeIdx		      70
+      CGTypeIdx		      72
       WorkspaceVarName	      ""
       IsPseudoWorkspaceVar    no
       Tunable		      no
@@ -2884,15 +2929,15 @@ CompiledModel {
       Protected		      no
       Value		      SLData(0)
       OriginalDataTypeIdx     6
-      CGTypeIdx		      71
-      ContainerCGTypeIdx      72
+      CGTypeIdx		      73
+      ContainerCGTypeIdx      74
       ReferencedBy	      Matrix(1,4)
-[[0, -1, 4, 2];]
+[[0, -1, 5, 2];]
       GraphicalRef	      Matrix(1,2)
 [[4, 1];]
       GraphicalSource	      [4, 1]
       OwnerSysIdx	      [0, -1]
-      VarGroupIdx	      [3, 0]
+      VarGroupIdx	      [2, 0]
       InConstSection	      1
     }
     Parameter {
@@ -2901,15 +2946,15 @@ CompiledModel {
       Protected		      no
       Value		      SLData(1)
       OriginalDataTypeIdx     6
-      CGTypeIdx		      60
-      ContainerCGTypeIdx      59
+      CGTypeIdx		      63
+      ContainerCGTypeIdx      62
       ReferencedBy	      Matrix(1,4)
-[[0, -1, 4, 3];]
+[[0, -1, 5, 4];]
       GraphicalRef	      Matrix(1,2)
 [[6, 3];]
       GraphicalSource	      [6, 3]
       OwnerSysIdx	      [0, -1]
-      VarGroupIdx	      [3, 1]
+      VarGroupIdx	      [2, 1]
       InConstSection	      1
       WasAccessedAsVariable   1
     }
@@ -2919,15 +2964,15 @@ CompiledModel {
       Protected		      no
       Value		      SLData(2)
       OriginalDataTypeIdx     6
-      CGTypeIdx		      60
-      ContainerCGTypeIdx      59
+      CGTypeIdx		      63
+      ContainerCGTypeIdx      62
       ReferencedBy	      Matrix(1,4)
-[[0, -1, 4, 4];]
+[[0, -1, 5, 5];]
       GraphicalRef	      Matrix(1,2)
 [[6, 3];]
       GraphicalSource	      [6, 3]
       OwnerSysIdx	      [0, -1]
-      VarGroupIdx	      [3, 2]
+      VarGroupIdx	      [2, 2]
       InConstSection	      1
       WasAccessedAsVariable   1
     }
@@ -2937,15 +2982,15 @@ CompiledModel {
       Protected		      no
       Value		      SLData(3)
       OriginalDataTypeIdx     6
-      CGTypeIdx		      61
-      ContainerCGTypeIdx      35
+      CGTypeIdx		      64
+      ContainerCGTypeIdx      36
       ReferencedBy	      Matrix(1,4)
-[[0, -1, 4, 5];]
+[[0, -1, 5, 6];]
       GraphicalRef	      Matrix(1,2)
 [[6, 3];]
       GraphicalSource	      [6, 3]
       OwnerSysIdx	      [0, -1]
-      VarGroupIdx	      [3, 3]
+      VarGroupIdx	      [2, 3]
       InConstSection	      1
     }
     Parameter {
@@ -2954,50 +2999,67 @@ CompiledModel {
       Protected		      no
       Value		      SLData(4)
       OriginalDataTypeIdx     8
-      CGTypeIdx		      54
-      ContainerCGTypeIdx      55
+      CGTypeIdx		      56
+      ContainerCGTypeIdx      57
       ReferencedBy	      Matrix(1,4)
 [[0, -1, 0, 0];]
       GraphicalRef	      Matrix(1,2)
 [[4, 0];]
       GraphicalSource	      [4, 0]
       OwnerSysIdx	      [0, -1]
-      VarGroupIdx	      [3, 4]
+      VarGroupIdx	      [2, 4]
       InConstSection	      1
     }
     Parameter {
-      Identifier	      "preamble_Value"
+      Identifier	      "append_zeros_Value"
       LogicalSrc	      P5
       Protected		      no
       Value		      SLData(5)
       OriginalDataTypeIdx     8
-      CGTypeIdx		      37
-      ContainerCGTypeIdx      62
+      CGTypeIdx		      38
+      ContainerCGTypeIdx      65
       ReferencedBy	      Matrix(1,4)
-[[0, -1, 4, 6];]
+[[0, -1, 5, 3];]
+      GraphicalRef	      Matrix(1,2)
+[[2, 2];]
+      GraphicalSource	      [2, 2]
+      OwnerSysIdx	      [0, -1]
+      VarGroupIdx	      [2, 5]
+      InConstSection	      1
+    }
+    Parameter {
+      Identifier	      "preamble_Value"
+      LogicalSrc	      P6
+      Protected		      no
+      Value		      SLData(6)
+      OriginalDataTypeIdx     8
+      CGTypeIdx		      39
+      ContainerCGTypeIdx      66
+      ReferencedBy	      Matrix(1,4)
+[[0, -1, 5, 7];]
       GraphicalRef	      Matrix(1,2)
 [[3, 1];]
       GraphicalSource	      [3, 1]
       OwnerSysIdx	      [0, -1]
-      VarGroupIdx	      [3, 5]
+      VarGroupIdx	      [2, 6]
       InConstSection	      1
       WasAccessedAsVariable   1
     }
     Parameter {
       Identifier	      "Scrambler_Polynomial"
-      LogicalSrc	      P6
+      LogicalSrc	      P7
       Protected		      no
-      Value		      SLData(6)
+      Value		      SLData(7)
       OriginalDataTypeIdx     3
-      CGTypeIdx		      64
-      ContainerCGTypeIdx      63
+      CGTypeIdx		      68
+      ContainerCGTypeIdx      67
       ReferencedBy	      Matrix(1,4)
-[[0, -1, 4, 1];]
+[[0, -1, 5, 1];]
       GraphicalRef	      Matrix(1,2)
 [[4, 1];]
       GraphicalSource	      [4, 1]
       OwnerSysIdx	      [0, -1]
-      VarGroupIdx	      [3, 6]
+      VarGroupIdx	      [2, 7]
       InConstSection	      1
       WasAccessedAsVariable   1
     }
@@ -3889,7 +3951,7 @@ CompiledModel {
   }
   CanonicalPrmArgDefDefaults {
     OriginalDataTypeIdx	    0
-    CGTypeIdx		    70
+    CGTypeIdx		    72
     IsUsed		    yes
     DeclareAsPointer	    no
   }
@@ -3917,8 +3979,7 @@ CompiledModel {
     SL_SystemIdx	    0
     ExternalInputVarGroupIndex [0]
     ExternalOutputVarGroupIndex	[1]
-    DWorkVarGroupIndex	    [2]
-    ConstParameterVarGroupIndex	[3]
+    ConstParameterVarGroupIndex	[2]
     HStructDeclSystemIdx    0
     ReusedParentSystemIdx   0
     NonInlinedParentSystemIdx 0
@@ -3981,7 +4042,7 @@ CompiledModel {
     }
     Variables {
       LocalBlockIODef {
-	NumFlatFields		8
+	NumFlatFields		9
       }
       ExternBlockIODef {
       }
@@ -4001,7 +4062,7 @@ CompiledModel {
     NumIncludedModelReference 0
     SystemSourceFileName    "V2X_TX_Baseband"
     SystemHeaderFileName    "V2X_TX_Baseband"
-    NumBlocks		    5
+    NumBlocks		    6
     NumVirtualOutportBlocks 0
     Block {
       Type		      Constant
@@ -4034,8 +4095,8 @@ CompiledModel {
 	}
 	Value			[1]
 	OriginalDataTypeIdx	8
-	CGTypeIdx		54
-	ContainerCGTypeIdx	55
+	CGTypeIdx		56
+	ContainerCGTypeIdx	57
 	String			"true"
 	StringType		"Expression"
       }
@@ -4046,8 +4107,8 @@ CompiledModel {
     Block {
       Type		      Outport
       BlockIdx		      [0, 0, 1]
-      SL_BlockIdx	      25
-      GrSrc		      [0, 3]
+      SL_BlockIdx	      28
+      GrSrc		      [0, 4]
       ExprCommentInfo {
       }
       ExprCommentSrcIdx {
@@ -4057,19 +4118,19 @@ CompiledModel {
       TID		      0
       PID		      -1
       firstEntryOfTsMapIsGCD  yes
-      RollRegions	      [0:16799]
+      RollRegions	      [0:1847]
       NumDataInputPorts	      1
       DataInputPort {
-	SignalSrc		[L5@16800]
-	SignalOffset		[0:16799]
-	SignalRegion		[0@16800]
+	SignalSrc		[L6@1848]
+	SignalOffset		[0:1847]
+	SignalRegion		[0@1848]
 	CGTypeIdx		31
-	ContainerCGTypeIdx	53
+	ContainerCGTypeIdx	55
       }
       NumDataOutputPorts      0
       OutportParamSettings {
-	PortNumber		3
-	OutputLocation		Y24128
+	PortNumber		4
+	OutputLocation		Y3544
       }
       VariantCondition	      ""
       SystemInlineVariantPreprocessorCondition ""
@@ -4077,8 +4138,8 @@ CompiledModel {
     Block {
       Type		      Outport
       BlockIdx		      [0, 0, 2]
-      SL_BlockIdx	      26
-      GrSrc		      [0, 2]
+      SL_BlockIdx	      29
+      GrSrc		      [0, 3]
       ExprCommentInfo {
       }
       ExprCommentSrcIdx {
@@ -4088,19 +4149,19 @@ CompiledModel {
       TID		      0
       PID		      -1
       firstEntryOfTsMapIsGCD  yes
-      RollRegions	      [0:7199]
+      RollRegions	      [0:783]
       NumDataInputPorts	      1
       DataInputPort {
-	SignalSrc		[L7@7200]
-	SignalOffset		[0:7199]
-	SignalRegion		[0@7200]
+	SignalSrc		[L8@784]
+	SignalOffset		[0:783]
+	SignalRegion		[0@784]
 	CGTypeIdx		30
-	ContainerCGTypeIdx	52
+	ContainerCGTypeIdx	54
       }
       NumDataOutputPorts      0
       OutportParamSettings {
-	PortNumber		2
-	OutputLocation		Y16928
+	PortNumber		3
+	OutputLocation		Y2760
       }
       VariantCondition	      ""
       SystemInlineVariantPreprocessorCondition ""
@@ -4108,7 +4169,38 @@ CompiledModel {
     Block {
       Type		      Outport
       BlockIdx		      [0, 0, 3]
-      SL_BlockIdx	      29
+      SL_BlockIdx	      30
+      GrSrc		      [0, 2]
+      ExprCommentInfo {
+      }
+      ExprCommentSrcIdx {
+      }
+      Name		      "<Root>/bits_in"
+      Identifier	      "bits_in"
+      TID		      0
+      PID		      -1
+      firstEntryOfTsMapIsGCD  yes
+      RollRegions	      [0:783]
+      NumDataInputPorts	      1
+      DataInputPort {
+	SignalSrc		[L4@784]
+	SignalOffset		[0:783]
+	SignalRegion		[0@784]
+	CGTypeIdx		30
+	ContainerCGTypeIdx	54
+      }
+      NumDataOutputPorts      0
+      OutportParamSettings {
+	PortNumber		2
+	OutputLocation		Y1976
+      }
+      VariantCondition	      ""
+      SystemInlineVariantPreprocessorCondition ""
+    }
+    Block {
+      Type		      Outport
+      BlockIdx		      [0, 0, 4]
+      SL_BlockIdx	      33
       GrSrc		      [0, 1]
       ExprCommentInfo {
       }
@@ -4119,14 +4211,14 @@ CompiledModel {
       TID		      0
       PID		      -1
       firstEntryOfTsMapIsGCD  yes
-      RollRegions	      [0:16927]
+      RollRegions	      [0:1975]
       NumDataInputPorts	      1
       DataInputPort {
-	SignalSrc		[L6@16928]
-	SignalOffset		[0:16927]
-	SignalRegion		[0@16928]
+	SignalSrc		[L7@1976]
+	SignalOffset		[0:1975]
+	SignalRegion		[0@1976]
 	CGTypeIdx		28
-	ContainerCGTypeIdx	51
+	ContainerCGTypeIdx	53
       }
       NumDataOutputPorts      0
       OutportParamSettings {
@@ -4138,8 +4230,8 @@ CompiledModel {
     }
     Block {
       Type		      Opaque
-      BlockIdx		      [0, 0, 4]
-      SL_BlockIdx	      4
+      BlockIdx		      [0, 0, 5]
+      SL_BlockIdx	      5
       ExprCommentInfo {
       }
       ExprCommentSrcIdx {
@@ -4150,33 +4242,33 @@ CompiledModel {
       PID		      -1
       firstEntryOfTsMapIsGCD  yes
       NumDataOutputPorts      0
-      TLCFileName	      "s0_b0_be81e"
+      TLCFileName	      "s0_b0_0j16f"
       OpaqueBlockMethode {
 	HasOutputs		1
 	HasModelInitialize	1
 	HasModelExternalOutputInit 1
 	HasModelExternalInputInit 1
       }
-      Parameters	      [7, 165]
+      Parameters	      [8, 173]
       Parameter {
 	BlockParamIdx		0
 	Name			"Value"
 	MdlPrmIdx		4
 	Value			[1]
 	OriginalDataTypeIdx	8
-	CGTypeIdx		54
-	ContainerCGTypeIdx	55
+	CGTypeIdx		56
+	ContainerCGTypeIdx	57
 	String			"true"
 	StringType		"Expression"
       }
       Parameter {
 	BlockParamIdx		1
 	Name			"Polynomial"
-	MdlPrmIdx		6
-	Value			SLData(6)
+	MdlPrmIdx		7
+	Value			SLData(7)
 	OriginalDataTypeIdx	3
-	CGTypeIdx		64
-	ContainerCGTypeIdx	63
+	CGTypeIdx		68
+	ContainerCGTypeIdx	67
 	String			""
 	StringTransformed	"poly"
 	StringType		"Computed"
@@ -4188,57 +4280,70 @@ CompiledModel {
 	MdlPrmIdx		0
 	Value			[0]
 	OriginalDataTypeIdx	6
-	CGTypeIdx		71
-	ContainerCGTypeIdx	72
+	CGTypeIdx		73
+	ContainerCGTypeIdx	74
 	String			""
 	StringTransformed	"ini_sta"
 	StringType		"Computed"
       }
       Parameter {
 	BlockParamIdx		3
-	Name			"table1"
-	MdlPrmIdx		1
-	Value			[2, 4, 3, 6, 7, 5, 1]
-	OriginalDataTypeIdx	6
-	CGTypeIdx		60
-	ContainerCGTypeIdx	59
+	Name			"Value"
+	MdlPrmIdx		5
+	Value			[0, 0, 0, 0, 0, 0, 0, 0]
+	OriginalDataTypeIdx	8
+	CGTypeIdx		38
+	ContainerCGTypeIdx	65
 	String			""
+	StringTransformed	"zeros(8, 1)"
 	StringType		"Computed"
 	NeedParenthesis		1
       }
       Parameter {
 	BlockParamIdx		4
-	Name			"table2"
-	MdlPrmIdx		2
-	Value			[0, 1, 3, 2, 6, 4, 5]
+	Name			"table1"
+	MdlPrmIdx		1
+	Value			[2, 4, 3, 6, 7, 5, 1]
 	OriginalDataTypeIdx	6
-	CGTypeIdx		60
-	ContainerCGTypeIdx	59
+	CGTypeIdx		63
+	ContainerCGTypeIdx	62
 	String			""
 	StringType		"Computed"
 	NeedParenthesis		1
       }
       Parameter {
 	BlockParamIdx		5
+	Name			"table2"
+	MdlPrmIdx		2
+	Value			[0, 1, 3, 2, 6, 4, 5]
+	OriginalDataTypeIdx	6
+	CGTypeIdx		63
+	ContainerCGTypeIdx	62
+	String			""
+	StringType		"Computed"
+	NeedParenthesis		1
+      }
+      Parameter {
+	BlockParamIdx		6
 	Name			"Polynomial"
 	MdlPrmIdx		3
 	Value			[3, 1, 2, 3]
 	OriginalDataTypeIdx	6
-	CGTypeIdx		61
-	ContainerCGTypeIdx	35
+	CGTypeIdx		64
+	ContainerCGTypeIdx	36
 	String			""
 	StringTransformed	"params.genPoly"
 	StringType		"Computed"
 	NeedParenthesis		1
       }
       Parameter {
-	BlockParamIdx		6
+	BlockParamIdx		7
 	Name			"Value"
-	MdlPrmIdx		5
-	Value			SLData(5)
+	MdlPrmIdx		6
+	Value			SLData(6)
 	OriginalDataTypeIdx	8
-	CGTypeIdx		37
-	ContainerCGTypeIdx	62
+	CGTypeIdx		39
+	ContainerCGTypeIdx	66
 	String			""
 	StringTransformed	"ini.preamble.bit.seq"
 	StringType		"Computed"
@@ -4251,8 +4356,8 @@ CompiledModel {
       NumRTWdatas	      0
     }
   }
-  BlockParamChecksum	  ["2249264818U", "242417685U", "2788248901U", "2331796961U"]
-  ModelChecksum		  ["3712985976U", "1969968459U", "2267655417U", "3681087074U"]
+  BlockParamChecksum	  ["3123808744U", "2379130885U", "3295885441U", "3054849183U"]
+  ModelChecksum		  ["3039126901U", "984933766U", "2128803720U", "1320272218U"]
   IncludeCodeGenSettings  1
   CGTypes {
     CGTypeDefaults {
@@ -4262,7 +4367,7 @@ CompiledModel {
       TypeName		      "-1"
       SymbolicVectorDims      "-1"
     }
-    NumCGTypes		    73
+    NumCGTypes		    75
     DeclareUsedMultiWordBits 0
     IndexType		    6
     CGType {
@@ -4371,29 +4476,32 @@ CompiledModel {
       Name		      "ZCSigState"
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [16928, 1]
+      Dimensions	      [1976, 1]
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [24000]
+      Dimensions	      [3416]
     }
     CGType {
-      Dimensions	      [7200, 1]
+      Dimensions	      [784, 1]
     }
     CGType {
-      Dimensions	      [16800, 1]
+      Dimensions	      [1848, 1]
     }
     CGType {
-      Dimensions	      [2400, 1]
+      Dimensions	      [792, 1]
     }
     CGType {
-      Dimensions	      [16800, 1]
+      Dimensions	      [264, 1]
     }
     CGType {
-      Dimensions	      [5600, 1]
+      Dimensions	      [1848, 1]
+    }
+    CGType {
+      Dimensions	      [616, 1]
     }
     CGType {
       NumDimensions	      1
@@ -4404,6 +4512,9 @@ CompiledModel {
       Dimensions	      [3]
     }
     CGType {
+      Dimensions	      [8, 1]
+    }
+    CGType {
       Dimensions	      [128, 1]
     }
     CGType {
@@ -4411,53 +4522,53 @@ CompiledModel {
       Dimensions	      [16]
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [900, 1]
+      Dimensions	      [98, 1]
     }
     CGType {
-      Dimensions	      [900, 8]
+      Dimensions	      [98, 8]
     }
     CGType {
-      Dimensions	      [8, 900]
-    }
-    CGType {
-      NumDimensions	      1
-      Dimensions	      [900]
+      Dimensions	      [8, 98]
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [16928]
+      Dimensions	      [98]
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [7200]
+      Dimensions	      [1976]
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [16800]
+      Dimensions	      [784]
+    }
+    CGType {
+      NumDimensions	      1
+      Dimensions	      [1848]
     }
     CGType {
     }
@@ -4467,15 +4578,19 @@ CompiledModel {
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [2400]
+      Dimensions	      [264]
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [5600]
+      Dimensions	      [616]
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [16800]
+      Dimensions	      [1848]
+    }
+    CGType {
+      NumDimensions	      1
+      Dimensions	      [792]
     }
     CGType {
       NumDimensions	      1
@@ -4486,6 +4601,10 @@ CompiledModel {
     }
     CGType {
       Dimensions	      [1, 4]
+    }
+    CGType {
+      NumDimensions	      1
+      Dimensions	      [8]
     }
     CGType {
       NumDimensions	      1
@@ -4503,13 +4622,6 @@ CompiledModel {
     }
     CGType {
       Name		      "ExtY"
-    }
-    CGType {
-      NumDimensions	      1
-      Dimensions	      [16800]
-    }
-    CGType {
-      Name		      "DW"
     }
     CGType {
       Name		      "ConstP"
@@ -4588,32 +4700,32 @@ CompiledModel {
     RTWCGModule {
       RateGrouping	      0
       PeriodicRateGrouping    0
-      TLCFileName	      "s0_b0_be81e"
+      TLCFileName	      "s0_b0_0j16f"
       RTWFcnConst {
 	HasInstanceSetup	"no"
 	baseTidOfTasks		"[0]"
 	Outputs_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_be81e_Outputs"
-	  StackSize		  2507
+	  TLCFileName		  "s0_b0_0j16f_Outputs"
+	  StackSize		  5475
 	}
 	ModelInitialize_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_be81e_ModelInitialize"
+	  TLCFileName		  "s0_b0_0j16f_ModelInitialize"
 	  StackSize		  0
 	}
 	ModelExternalOutputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_be81e_ModelExternalOutputInit"
+	  TLCFileName		  "s0_b0_0j16f_ModelExternalOutputInit"
 	  StackSize		  4
 	}
 	ModelExternalInputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_be81e_ModelExternalInputInit"
+	  TLCFileName		  "s0_b0_0j16f_ModelExternalInputInit"
 	  StackSize		  4
 	}
       }
@@ -4671,7 +4783,7 @@ CompiledModel {
   }
   RTWCGStrings		  ["<string.h>"]
   VarGroups {
-    NumVarGroups	    4
+    NumVarGroups	    3
     VarGroupDefaults {
       IndexOfLastNonEmptyMember	-1
       IsPointer		      0
@@ -4696,7 +4808,7 @@ CompiledModel {
       HasElement	      "EXTU_VARIANT_EXISTS"
       InstanceIdx	      -1
       IsPointer		      1
-      CGTypeIdx		      65
+      CGTypeIdx		      69
       NumVarGroupElements     1
       VarGroupContains	      "SignalElementOnly"
       VarGroupElements	      [U0]
@@ -4710,27 +4822,12 @@ CompiledModel {
       HasElement	      "EXTY_VARIANT_EXISTS"
       InstanceIdx	      -1
       IsPointer		      1
-      CGTypeIdx		      66
-      NumVarGroupElements     3
+      CGTypeIdx		      70
+      NumVarGroupElements     4
       VarGroupContains	      "SignalElementOnly"
-      VarGroupElements	      [Y0, Y1, Y2]
-      NumVariantConditions    3
-      VariantConditions	      ["", "", ""]
-    }
-    VarGroup {
-      Name		      "rtDW"
-      Category		      "DWork"
-      LocalName		      "localDW"
-      SysIdx		      0
-      HasElement	      "DW_VARIANT_EXISTS"
-      InstanceIdx	      -1
-      IsPointer		      1
-      CGTypeIdx		      68
-      NumVarGroupElements     3
-      VarGroupContains	      "SignalElementOnly"
-      VarGroupElements	      [L1, L2, L4]
-      NumVariantConditions    3
-      VariantConditions	      ["", "", ""]
+      VarGroupElements	      [Y0, Y1, Y2, Y3]
+      NumVariantConditions    4
+      VariantConditions	      ["", "", "", ""]
     }
     VarGroup {
       Name		      "rtConstP"
@@ -4738,15 +4835,14 @@ CompiledModel {
       SysIdx		      0
       HasElement	      "CONSTP_VARIANT_EXISTS"
       InstanceIdx	      -1
-      CGTypeIdx		      69
-      NumVarGroupElements     7
+      CGTypeIdx		      71
+      NumVarGroupElements     8
       VarGroupContains	      "SignalElementOnly"
-      VarGroupElements	      [CP0, CP1, CP2, CP3, CP4, CP5, CP6]
-      NumVariantConditions    7
-      VariantConditions	      ["", "", "", "", "", "", ""]
+      VarGroupElements	      [CP0, CP1, CP2, CP3, CP4, CP5, CP6, CP7]
+      NumVariantConditions    8
+      VariantConditions	      ["", "", "", "", "", "", "", ""]
     }
-    VarGroupVarIdx	    Matrix(3,2)
-[[2, 2]; [2, 1]; [2, 0];]
+    VarGroupVarIdx	    []
   }
   SharedFunctions {
   }

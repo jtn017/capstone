@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.156
+ * Model version                  : 1.159
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Apr  3 20:26:47 2022
+ * C/C++ source code generated on : Mon Apr 25 21:20:37 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -22,9 +22,9 @@
 #include "V2X_RX_Baseband.h"
 
 /* Model step function */
-void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928],
-  uint8_T rtY_data_frame[900], boolean_T rtY_dec_in[16800], boolean_T
-  rtY_descr_in[7200])
+void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
+  uint8_T rtY_data_frame[98], boolean_T rtY_dec_in[1848], boolean_T
+  rtY_descr_in[784], boolean_T rtY_bits_out[784])
 {
   DW *rtDW = rtM->dwork;
   int32_T shiftReg[16];
@@ -40,21 +40,25 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
   int32_T intVal;
   int32_T inv;
   int32_T j;
+  uint32_T rtb_RSDecoder[264];
+  int8_T rtb_IntegertoBitConverter[792];
+  int8_T rtb_BittoIntegerConverter[616];
   int8_T y[8];
+  boolean_T rtb_Conversion[792];
 
   /* S-Function (scominttobit): '<S6>/Bit to Integer Converter' incorporates:
    *  Inport: '<Root>/rx_frame'
    */
   /* Bit to Integer Conversion */
   ForEach_itr = 128;
-  for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 5600;
+  for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 616;
        RSDecoder_OmegaZActual_idx_0++) {
     /* Input bit order is MSB first */
     intVal = (int32_T)(((uint32_T)rtU_v2x_rx_bb_in[ForEach_itr] << 1U |
                         rtU_v2x_rx_bb_in[ForEach_itr + 1]) << 1U |
                        rtU_v2x_rx_bb_in[ForEach_itr + 2]);
     ForEach_itr += 3;
-    rtDW->BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0] = (int8_T)intVal;
+    rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0] = (int8_T)intVal;
   }
 
   /* End of S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
@@ -73,7 +77,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
   rtDW->RSDecoder_GammaZ[3] = 0;
   rtDW->RSDecoder_GammaZ[4] = 0;
   rtDW->RSDecoder_GammaZTemp[0U] = 1;
-  for (ForEach_itr = 0; ForEach_itr < 800; ForEach_itr++) {
+  for (ForEach_itr = 0; ForEach_itr < 88; ForEach_itr++) {
     int32_T Temp3;
     int32_T noErrorStatus;
     int32_T temp;
@@ -83,25 +87,25 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
     /* Assign message symbols. */
     /* If there are erasures, insert zeros in the erased positions. */
     RSDecoder_OmegaZActual_idx_0 = ForEach_itr * 7;
-    rtDW->RSDecoder_CCode[0] = rtDW->
-      BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0];
-    rtDW->RSDecoder_CCode[1] = rtDW->
-      BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 1];
-    rtDW->RSDecoder_CCode[2] = rtDW->
-      BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 2];
+    rtDW->RSDecoder_CCode[0] =
+      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0];
+    rtDW->RSDecoder_CCode[1] =
+      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 1];
+    rtDW->RSDecoder_CCode[2] =
+      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 2];
 
     /* Assign parity symbols, again accounting for erasures */
     /* no puncturing */
     /*  end of assignInputs()  */
     /* Initialize Gamma(Z) = 1 : ASCENDING ORDER.  length = 2t+1 */
-    rtDW->RSDecoder_CCode[3] = rtDW->
-      BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 3];
-    rtDW->RSDecoder_CCode[4] = rtDW->
-      BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 4];
-    rtDW->RSDecoder_CCode[5] = rtDW->
-      BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 5];
-    rtDW->RSDecoder_CCode[6] = rtDW->
-      BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 6];
+    rtDW->RSDecoder_CCode[3] =
+      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 3];
+    rtDW->RSDecoder_CCode[4] =
+      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 4];
+    rtDW->RSDecoder_CCode[5] =
+      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 5];
+    rtDW->RSDecoder_CCode[6] =
+      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 6];
 
     /* Calculate the erasure polynomial GammaZ.GammaZ is the set of coefficients */
     /* of the erasure polynomial in ASCENDING order, because the syndrome is */
@@ -155,9 +159,9 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
     if (noErrorStatus == 1) {
       /*  start of assignOutputs():Populate output vectors with proper data */
       /* Corrected message.  If there is a decoding failure, return the input message. */
-      rtDW->RSDecoder[ForEach_itr * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
-      rtDW->RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)rtDW->RSDecoder_CCode[1];
-      rtDW->RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)rtDW->RSDecoder_CCode[2];
+      rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
+      rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)rtDW->RSDecoder_CCode[1];
+      rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)rtDW->RSDecoder_CCode[2];
 
       /* Optional output for # of errors corrected */
       /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -384,12 +388,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
       if ((Temp3 != RSDecoder_OmegaZActual_idx_1) || (Temp3 < 1)) {
         /*  start of assignOutputs():Populate output vectors with proper data */
         /* Corrected message.  If there is a decoding failure, return the input message. */
-        rtDW->RSDecoder[ForEach_itr * 3] = (uint32_T)rtDW->
-          BittoIntegerConverter[ForEach_itr * 7];
-        rtDW->RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
-          rtDW->BittoIntegerConverter[ForEach_itr * 7 + 1];
-        rtDW->RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
-          rtDW->BittoIntegerConverter[ForEach_itr * 7 + 2];
+        rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)
+          rtb_BittoIntegerConverter[ForEach_itr * 7];
+        rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
+          rtb_BittoIntegerConverter[ForEach_itr * 7 + 1];
+        rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
+          rtb_BittoIntegerConverter[ForEach_itr * 7 + 2];
 
         /* Optional output for # of errors corrected */
         /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -612,12 +616,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
         if (noErrorStatus != Temp3) {
           /*  start of assignOutputs():Populate output vectors with proper data */
           /* Corrected message.  If there is a decoding failure, return the input message. */
-          rtDW->RSDecoder[ForEach_itr * 3] = (uint32_T)
-            rtDW->BittoIntegerConverter[ForEach_itr * 7];
-          rtDW->RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
-            rtDW->BittoIntegerConverter[ForEach_itr * 7 + 1];
-          rtDW->RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
-            rtDW->BittoIntegerConverter[ForEach_itr * 7 + 2];
+          rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)
+            rtb_BittoIntegerConverter[ForEach_itr * 7];
+          rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
+            rtb_BittoIntegerConverter[ForEach_itr * 7 + 1];
+          rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
+            rtb_BittoIntegerConverter[ForEach_itr * 7 + 2];
 
           /* Optional output for # of errors corrected */
           /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -643,12 +647,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
           if (!loopflag) {
             /*  start of assignOutputs():Populate output vectors with proper data */
             /* Corrected message.  If there is a decoding failure, return the input message. */
-            rtDW->RSDecoder[ForEach_itr * 3] = (uint32_T)
-              rtDW->BittoIntegerConverter[ForEach_itr * 7];
-            rtDW->RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
-              rtDW->BittoIntegerConverter[ForEach_itr * 7 + 1];
-            rtDW->RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
-              rtDW->BittoIntegerConverter[ForEach_itr * 7 + 2];
+            rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)
+              rtb_BittoIntegerConverter[ForEach_itr * 7];
+            rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
+              rtb_BittoIntegerConverter[ForEach_itr * 7 + 1];
+            rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
+              rtb_BittoIntegerConverter[ForEach_itr * 7 + 2];
 
             /* Optional output for # of errors corrected */
             /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -1144,11 +1148,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
             /* Assign outputs.  Reduce cnumerr by the number of punctures and erasures. */
             /*  start of assignOutputs():Populate output vectors with proper data */
             /* Corrected message.  If there is a decoding failure, return the input message. */
-            rtDW->RSDecoder[ForEach_itr * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
-            rtDW->RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
-              rtDW->RSDecoder_CCode[1];
-            rtDW->RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
-              rtDW->RSDecoder_CCode[2];
+            rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
+            rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)rtDW->
+              RSDecoder_CCode[1];
+            rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)rtDW->
+              RSDecoder_CCode[2];
 
             /* Optional output for # of errors corrected */
             /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -1167,15 +1171,15 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
    */
   /*  end of COMM_DoBerlekamp()  */
   /* Integer to Bit Conversion */
-  for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 2400;
+  for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 264;
        RSDecoder_OmegaZActual_idx_0++) {
     uint32_T u;
     ForEach_itr = (RSDecoder_OmegaZActual_idx_0 + 1) * 3;
-    u = rtDW->RSDecoder[RSDecoder_OmegaZActual_idx_0];
-    rtDW->IntegertoBitConverter[ForEach_itr - 1] = (int8_T)(u & 1U);
+    u = rtb_RSDecoder[RSDecoder_OmegaZActual_idx_0];
+    rtb_IntegertoBitConverter[ForEach_itr - 1] = (int8_T)(u & 1U);
     u >>= 1U;
-    rtDW->IntegertoBitConverter[ForEach_itr - 2] = (int8_T)(u & 1U);
-    rtDW->IntegertoBitConverter[ForEach_itr - 3] = (int8_T)(u >> 1U & 1U);
+    rtb_IntegertoBitConverter[ForEach_itr - 2] = (int8_T)(u & 1U);
+    rtb_IntegertoBitConverter[ForEach_itr - 3] = (int8_T)(u >> 1U & 1U);
   }
 
   /* End of S-Function (scominttobit): '<S6>/Integer to Bit Converter' */
@@ -1183,18 +1187,21 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
   /* DataTypeConversion: '<S7>/Conversion' incorporates:
    *  S-Function (scominttobit): '<S6>/Integer to Bit Converter'
    */
-  for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 7200;
+  for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 792;
        RSDecoder_OmegaZActual_idx_0++) {
-    rtY_descr_in[RSDecoder_OmegaZActual_idx_0] = ((uint8_T)
-      rtDW->IntegertoBitConverter[RSDecoder_OmegaZActual_idx_0] != 0);
+    rtb_Conversion[RSDecoder_OmegaZActual_idx_0] = ((uint8_T)
+      rtb_IntegertoBitConverter[RSDecoder_OmegaZActual_idx_0] != 0);
   }
 
-  /* S-Function (scomscram2): '<S3>/Descrambler' incorporates:
-   *  DataTypeConversion: '<S7>/Conversion'
-   */
+  /* End of DataTypeConversion: '<S7>/Conversion' */
+
+  /* Outport: '<Root>/descr_in' */
+  memcpy(&rtY_descr_in[0], &rtb_Conversion[0], 784U * sizeof(boolean_T));
+
+  /* S-Function (scomscram2): '<S3>/Descrambler' */
   memset(&shiftReg[0], 0, sizeof(int32_T) << 4U);
-  for (j = 0; j < 7200; j++) {
-    inv = rtY_descr_in[j];
+  for (j = 0; j < 784; j++) {
+    inv = rtb_Conversion[j];
     ForEach_itr = inv;
     for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 16;
          RSDecoder_OmegaZActual_idx_0++) {
@@ -1207,7 +1214,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
       ForEach_itr += 2;
     }
 
-    rtDW->Descrambler[j] = (ForEach_itr % 2 != 0);
+    rtY_bits_out[j] = (ForEach_itr % 2 != 0);
     for (RSDecoder_OmegaZActual_idx_0 = 14; RSDecoder_OmegaZActual_idx_0 >= 0;
          RSDecoder_OmegaZActual_idx_0--) {
       shiftReg[RSDecoder_OmegaZActual_idx_0 + 1] =
@@ -1217,19 +1224,17 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
     shiftReg[0U] = inv;
   }
 
-  /* End of S-Function (scomscram2): '<S3>/Descrambler' */
-
   /* Outputs for Iterator SubSystem: '<S5>/bit_concat_per_col' incorporates:
    *  ForEach: '<S8>/For Each'
    */
-  for (ForEach_itr = 0; ForEach_itr < 900; ForEach_itr++) {
+  for (ForEach_itr = 0; ForEach_itr < 98; ForEach_itr++) {
     /* Outputs for Atomic SubSystem: '<S9>/bc4' */
     /* MATLAB Function: '<S10>/bit_concat_unary' incorporates:
      *  ForEachSliceSelector generated from: '<S8>/bits'
      *  S-Function (scomscram2): '<S3>/Descrambler'
      */
     for (inv = 0; inv < 8; inv++) {
-      y[inv] = (int8_T)rtDW->Descrambler[(ForEach_itr << 3) + inv];
+      y[inv] = (int8_T)rtY_bits_out[(ForEach_itr << 3) + inv];
     }
 
     /* ForEachSliceAssignment generated from: '<S8>/bytes' incorporates:
@@ -1247,13 +1252,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[16928]
   /* Outport: '<Root>/dec_in' incorporates:
    *  Inport: '<Root>/rx_frame'
    */
-  memcpy(&rtY_dec_in[0], &rtU_v2x_rx_bb_in[128], 16800U * sizeof(boolean_T));
+  memcpy(&rtY_dec_in[0], &rtU_v2x_rx_bb_in[128], 1848U * sizeof(boolean_T));
 }
 
 /* Model initialize function */
 void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in
-  [16928], uint8_T rtY_data_frame[900], boolean_T rtY_dec_in[16800], boolean_T
-  rtY_descr_in[7200])
+  [1976], uint8_T rtY_data_frame[98], boolean_T rtY_dec_in[1848], boolean_T
+  rtY_descr_in[784], boolean_T rtY_bits_out[784])
 {
   DW *rtDW = rtM->dwork;
 
@@ -1264,12 +1269,13 @@ void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in
                 sizeof(DW));
 
   /* external inputs */
-  (void)memset(&rtU_v2x_rx_bb_in[0], 0, 16928U * sizeof(boolean_T));
+  (void)memset(&rtU_v2x_rx_bb_in[0], 0, 1976U * sizeof(boolean_T));
 
   /* external outputs */
-  (void)memset(&rtY_data_frame[0], 0, 900U * sizeof(uint8_T));
-  (void)memset(&rtY_dec_in[0], 0, 16800U * sizeof(boolean_T));
-  (void)memset(&rtY_descr_in[0], 0, 7200U * sizeof(boolean_T));
+  (void)memset(&rtY_data_frame[0], 0, 98U * sizeof(uint8_T));
+  (void)memset(&rtY_dec_in[0], 0, 1848U * sizeof(boolean_T));
+  (void)memset(&rtY_descr_in[0], 0, 784U * sizeof(boolean_T));
+  (void)memset(&rtY_bits_out[0], 0, 784U * sizeof(boolean_T));
 }
 
 /*

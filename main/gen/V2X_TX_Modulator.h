@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Modulator'.
  *
- * Model version                  : 1.156
+ * Model version                  : 1.159
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Apr  3 20:26:38 2022
+ * C/C++ source code generated on : Mon Apr 25 21:20:28 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -63,11 +63,11 @@ extern const ConstP rtConstP_tx_mod;
 
 /* Model entry point functions */
 extern void V2X_TX_Modulator_initialize(RT_MODEL *const rtM, boolean_T
-  rtU_v2x_tx_bb_out[16928], cint16_T rtY_mod_frame[67712], creal_T rtY_map_out
-  [8464], creal_T rtY_ps_out[67712]);
+  rtU_v2x_tx_bb_out[1976], cint16_T rtY_mod_frame[7904], creal_T rtY_map_out[988],
+  creal_T rtY_ps_out[7904]);
 extern void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T
-  rtU_v2x_tx_bb_out[16928], cint16_T rtY_mod_frame[67712], creal_T rtY_map_out
-  [8464], creal_T rtY_ps_out[67712]);
+  rtU_v2x_tx_bb_out[1976], cint16_T rtY_mod_frame[7904], creal_T rtY_map_out[988],
+  creal_T rtY_ps_out[7904]);
 
 /*-
  * These blocks were eliminated from the model due to optimizations:

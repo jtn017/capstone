@@ -6,7 +6,8 @@
 % 16 bits per sample
 
 %% Choose desired file
-orig_wav_file = 'latinnova.wav';
+% Created files using: https://convertio.co/mp3-wav/
+orig_wav_file = 'latinnova_4000.wav';
 orig_wav_info = audioinfo(orig_wav_file);
 
 %% Read audio from desired file
@@ -42,9 +43,9 @@ fclose(new_bin_fileID);
 
 % Read audio file
 new_wav_info = audioinfo(new_wav_file);
-[new_y, new_Fs] = audioread(new_wav_file, 'native');
+[new_y, new_Fs] = audioread(new_wav_file);
 
 % Play audio
-if 0
-    sound(new_y, new_Fs);
+if 1
+    sound(new_y, new_Fs, 16);
 end

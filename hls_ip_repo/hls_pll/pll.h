@@ -1,12 +1,18 @@
 #ifndef PLL_H_
 #define PLL_H_
 
-typedef float DTYPE;
+#include <ap_int.h>
+#include <hls_math.h>
 
-const DTYPE KI = 0.000621;
-const DTYPE KP = 0.034917;
-const DTYPE PI = 3.141592653589;
+typedef ap_fixed<16,2> COS_T;
+typedef ap_fixed<16,3> PHASE_T;
+typedef ap_fixed<16,2> DATA_T;
+typedef ap_fixed<22,8> REG_T;
 
-void pll(DTYPE IN_R, DTYPE IN_I, DTYPE *OUT_R, DTYPE *OUT_I);
+const DATA_T KI = 0.000620528942;
+const DATA_T KP = 0.034917020688;
+const REG_T PI = 3.141592653589;
+
+void pll(DATA_T IN_R, DATA_T IN_I, DATA_T *OUT_R, DATA_T *OUT_I);
 
 #endif

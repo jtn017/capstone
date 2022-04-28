@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.156
+ * Model version                  : 1.159
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Apr  3 20:26:26 2022
+ * C/C++ source code generated on : Mon Apr 25 21:20:15 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -90,19 +90,21 @@ preprocessor word size checks.
 #endif
 
 /* Model step function */
-void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[900],
-  boolean_T rtY_tx_frame[16928], boolean_T rtY_scramb_out[7200], boolean_T
-  rtY_enc_out[16800])
+void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[98],
+  boolean_T rtY_tx_frame[1976], boolean_T rtY_bits_in[784], boolean_T
+  rtY_scramb_out[784], boolean_T rtY_enc_out[1848])
 {
-  DW *rtDW = rtM->dwork;
   int32_T shiftReg[16];
   int32_T B_n_idx_0;
   int32_T colIdx;
   int32_T i;
   int32_T tmp;
-  int8_T rtb_BittoIntegerConverter[2400];
+  uint32_T rtb_RSEncoder[616];
+  int8_T rtb_IntegertoBitConverter[1848];
+  int8_T rtb_BittoIntegerConverter[264];
   int8_T MessagePAD[3];
-  for (i = 0; i < 900; i++) {
+  boolean_T rtb_MatrixConcatenate[792];
+  for (i = 0; i < 98; i++) {
     /* DataTypeConversion: '<S5>/convert7' incorporates:
      *  DataTypeConversion: '<S15>/Extract Desired Bits'
      *  Inport: '<Root>/data_frame'
@@ -114,49 +116,49 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[900],
      *  DataTypeConversion: '<S5>/convert7'
      *  Inport: '<Root>/data_frame'
      */
-    rtY_scramb_out[i + 900] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 6 & 1U) != 0U);
+    rtY_scramb_out[i + 98] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 6 & 1U) != 0U);
 
     /* DataTypeConversion: '<S5>/convert5' incorporates:
      *  DataTypeConversion: '<S13>/Extract Desired Bits'
      *  DataTypeConversion: '<S5>/convert7'
      *  Inport: '<Root>/data_frame'
      */
-    rtY_scramb_out[i + 1800] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 5 & 1U) != 0U);
+    rtY_scramb_out[i + 196] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 5 & 1U) != 0U);
 
     /* DataTypeConversion: '<S5>/convert4' incorporates:
      *  DataTypeConversion: '<S12>/Extract Desired Bits'
      *  DataTypeConversion: '<S5>/convert7'
      *  Inport: '<Root>/data_frame'
      */
-    rtY_scramb_out[i + 2700] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 4 & 1U) != 0U);
+    rtY_scramb_out[i + 294] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 4 & 1U) != 0U);
 
     /* DataTypeConversion: '<S5>/convert3' incorporates:
      *  DataTypeConversion: '<S11>/Extract Desired Bits'
      *  DataTypeConversion: '<S5>/convert7'
      *  Inport: '<Root>/data_frame'
      */
-    rtY_scramb_out[i + 3600] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 3 & 1U) != 0U);
+    rtY_scramb_out[i + 392] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 3 & 1U) != 0U);
 
     /* DataTypeConversion: '<S5>/convert2' incorporates:
      *  DataTypeConversion: '<S10>/Extract Desired Bits'
      *  DataTypeConversion: '<S5>/convert7'
      *  Inport: '<Root>/data_frame'
      */
-    rtY_scramb_out[i + 4500] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 2 & 1U) != 0U);
+    rtY_scramb_out[i + 490] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 2 & 1U) != 0U);
 
     /* DataTypeConversion: '<S5>/convert1' incorporates:
      *  DataTypeConversion: '<S5>/convert7'
      *  DataTypeConversion: '<S9>/Extract Desired Bits'
      *  Inport: '<Root>/data_frame'
      */
-    rtY_scramb_out[i + 5400] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 1 & 1U) != 0U);
+    rtY_scramb_out[i + 588] = (((uint32_T)rtU_v2x_tx_bb_in[i] >> 1 & 1U) != 0U);
 
     /* DataTypeConversion: '<S5>/convert' incorporates:
      *  DataTypeConversion: '<S5>/convert7'
      *  DataTypeConversion: '<S8>/Extract Desired Bits'
      *  Inport: '<Root>/data_frame'
      */
-    rtY_scramb_out[i + 6300] = ((rtU_v2x_tx_bb_in[i] & 1U) != 0U);
+    rtY_scramb_out[i + 686] = ((rtU_v2x_tx_bb_in[i] & 1U) != 0U);
   }
 
   /* Math: '<S5>/Transpose' incorporates:
@@ -164,20 +166,18 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[900],
    *  S-Function (scomscram2): '<S4>/Scrambler'
    */
   for (tmp = 0; tmp < 8; tmp++) {
-    for (i = 0; i < 900; i++) {
-      rtDW->Transpose[tmp + (i << 3)] = rtY_scramb_out[900 * tmp + i];
+    for (i = 0; i < 98; i++) {
+      rtY_bits_in[tmp + (i << 3)] = rtY_scramb_out[98 * tmp + i];
     }
   }
-
-  /* End of Math: '<S5>/Transpose' */
 
   /* S-Function (scomscram2): '<S4>/Scrambler' incorporates:
    *  DataTypeConversion: '<S5>/convert7'
    *  Math: '<S5>/Transpose'
    */
   memset(&shiftReg[0], 0, sizeof(int32_T) << 4U);
-  for (B_n_idx_0 = 0; B_n_idx_0 < 7200; B_n_idx_0++) {
-    tmp = rtDW->Transpose[B_n_idx_0];
+  for (B_n_idx_0 = 0; B_n_idx_0 < 784; B_n_idx_0++) {
+    tmp = rtY_bits_in[B_n_idx_0];
     for (i = 0; i < 16; i++) {
       tmp += (uint8_T)(rtConstP.Scrambler_Polynomial[i + 1] * shiftReg[i]);
     }
@@ -189,20 +189,33 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[900],
     }
 
     shiftReg[0U] = tmp;
+
+    /* SignalConversion generated from: '<S2>/Matrix Concatenate' incorporates:
+     *  DataTypeConversion: '<S5>/convert7'
+     *  Math: '<S5>/Transpose'
+     *  S-Function (scomscram2): '<S4>/Scrambler'
+     */
+    rtb_MatrixConcatenate[B_n_idx_0] = rtY_scramb_out[B_n_idx_0];
   }
 
   /* End of S-Function (scomscram2): '<S4>/Scrambler' */
 
+  /* Constant: '<S2>/append_zeros' */
+  for (i = 0; i < 8; i++) {
+    rtb_MatrixConcatenate[i + 784] = false;
+  }
+
+  /* End of Constant: '<S2>/append_zeros' */
+
   /* S-Function (scominttobit): '<S6>/Bit to Integer Converter' incorporates:
-   *  DataTypeConversion: '<S5>/convert7'
-   *  S-Function (scomscram2): '<S4>/Scrambler'
+   *  Concatenate: '<S2>/Matrix Concatenate'
    */
   /* Bit to Integer Conversion */
   tmp = 0;
-  for (i = 0; i < 2400; i++) {
+  for (i = 0; i < 264; i++) {
     /* Input bit order is MSB first */
-    B_n_idx_0 = (int32_T)(((uint32_T)rtY_scramb_out[tmp] << 1U |
-      rtY_scramb_out[tmp + 1]) << 1U | rtY_scramb_out[tmp + 2]);
+    B_n_idx_0 = (int32_T)(((uint32_T)rtb_MatrixConcatenate[tmp] << 1U |
+      rtb_MatrixConcatenate[tmp + 1]) << 1U | rtb_MatrixConcatenate[tmp + 2]);
     tmp += 3;
     rtb_BittoIntegerConverter[i] = (int8_T)B_n_idx_0;
   }
@@ -212,7 +225,7 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[900],
   /* S-Function (scombchrsencoder): '<S6>/RS Encoder' incorporates:
    *  S-Function (scominttobit): '<S6>/Bit to Integer Converter'
    */
-  for (i = 0; i < 800; i++) {
+  for (i = 0; i < 88; i++) {
     int32_T B_n_idx_1;
     int32_T B_n_idx_2;
     int32_T B_n_idx_3;
@@ -292,13 +305,13 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[900],
       }
     }
 
-    rtDW->RSEncoder[i * 7] = (uint32_T)MessagePAD_tmp;
-    rtDW->RSEncoder[i * 7 + 1] = (uint32_T)MessagePAD_tmp_0;
-    rtDW->RSEncoder[i * 7 + 2] = (uint32_T)MessagePAD_tmp_1;
-    rtDW->RSEncoder[i * 7 + 3] = (uint32_T)B_n_idx_0;
-    rtDW->RSEncoder[i * 7 + 4] = (uint32_T)B_n_idx_1;
-    rtDW->RSEncoder[i * 7 + 5] = (uint32_T)B_n_idx_2;
-    rtDW->RSEncoder[i * 7 + 6] = (uint32_T)B_n_idx_3;
+    rtb_RSEncoder[i * 7] = (uint32_T)MessagePAD_tmp;
+    rtb_RSEncoder[i * 7 + 1] = (uint32_T)MessagePAD_tmp_0;
+    rtb_RSEncoder[i * 7 + 2] = (uint32_T)MessagePAD_tmp_1;
+    rtb_RSEncoder[i * 7 + 3] = (uint32_T)B_n_idx_0;
+    rtb_RSEncoder[i * 7 + 4] = (uint32_T)B_n_idx_1;
+    rtb_RSEncoder[i * 7 + 5] = (uint32_T)B_n_idx_2;
+    rtb_RSEncoder[i * 7 + 6] = (uint32_T)B_n_idx_3;
   }
 
   /* End of S-Function (scombchrsencoder): '<S6>/RS Encoder' */
@@ -307,22 +320,22 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[900],
    *  S-Function (scombchrsencoder): '<S6>/RS Encoder'
    */
   /* Integer to Bit Conversion */
-  for (i = 0; i < 5600; i++) {
+  for (i = 0; i < 616; i++) {
     uint32_T u;
     tmp = (i + 1) * 3;
-    u = rtDW->RSEncoder[i];
-    rtDW->IntegertoBitConverter[tmp - 1] = (int8_T)(u & 1U);
+    u = rtb_RSEncoder[i];
+    rtb_IntegertoBitConverter[tmp - 1] = (int8_T)(u & 1U);
     u >>= 1U;
-    rtDW->IntegertoBitConverter[tmp - 2] = (int8_T)(u & 1U);
-    rtDW->IntegertoBitConverter[tmp - 3] = (int8_T)(u >> 1U & 1U);
+    rtb_IntegertoBitConverter[tmp - 2] = (int8_T)(u & 1U);
+    rtb_IntegertoBitConverter[tmp - 3] = (int8_T)(u >> 1U & 1U);
   }
 
   /* End of S-Function (scominttobit): '<S6>/Integer to Bit Converter' */
-  for (i = 0; i < 16800; i++) {
+  for (i = 0; i < 1848; i++) {
     /* DataTypeConversion: '<S7>/Conversion' incorporates:
      *  S-Function (scominttobit): '<S6>/Integer to Bit Converter'
      */
-    rtY_enc_out[i] = ((uint8_T)rtDW->IntegertoBitConverter[i] != 0);
+    rtY_enc_out[i] = ((uint8_T)rtb_IntegertoBitConverter[i] != 0);
 
     /* SignalConversion generated from: '<S3>/Matrix Concatenate' incorporates:
      *  DataTypeConversion: '<S7>/Conversion'
@@ -335,22 +348,24 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[900],
    *  Outport: '<Root>/tx_frame'
    */
   memcpy(&rtY_tx_frame[0], &rtConstP.preamble_Value[0], sizeof(boolean_T) << 7U);
+  UNUSED_PARAMETER(rtM);
 }
 
 /* Model initialize function */
-void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in
-  [900], boolean_T rtY_tx_frame[16928], boolean_T rtY_scramb_out[7200],
-  boolean_T rtY_enc_out[16800])
+void V2X_TX_Baseband_initialize(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[98],
+  boolean_T rtY_tx_frame[1976], boolean_T rtY_bits_in[784], boolean_T
+  rtY_scramb_out[784], boolean_T rtY_enc_out[1848])
 {
   /* Registration code */
 
   /* external inputs */
-  (void)memset(&rtU_v2x_tx_bb_in[0], 0, 900U * sizeof(uint8_T));
+  (void)memset(&rtU_v2x_tx_bb_in[0], 0, 98U * sizeof(uint8_T));
 
   /* external outputs */
-  (void)memset(&rtY_tx_frame[0], 0, 16928U * sizeof(boolean_T));
-  (void)memset(&rtY_scramb_out[0], 0, 7200U * sizeof(boolean_T));
-  (void)memset(&rtY_enc_out[0], 0, 16800U * sizeof(boolean_T));
+  (void)memset(&rtY_tx_frame[0], 0, 1976U * sizeof(boolean_T));
+  (void)memset(&rtY_bits_in[0], 0, 784U * sizeof(boolean_T));
+  (void)memset(&rtY_scramb_out[0], 0, 784U * sizeof(boolean_T));
+  (void)memset(&rtY_enc_out[0], 0, 1848U * sizeof(boolean_T));
   UNUSED_PARAMETER(rtM);
 }
 

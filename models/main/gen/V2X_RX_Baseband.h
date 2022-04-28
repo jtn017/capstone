@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.156
+ * Model version                  : 1.159
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Sun Apr  3 20:26:47 2022
+ * C/C++ source code generated on : Mon Apr 25 21:20:37 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -43,14 +43,10 @@ typedef struct {
   int32_T RSDecoder_PsiZDeriv[4];      /* '<S6>/RS Decoder' */
   int32_T RSDecoder_d[5];              /* '<S6>/RS Decoder' */
   int32_T RSDecoder_tmpQuotient[5];    /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_input[5600];       /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_outMsg[2400];      /* '<S6>/RS Decoder' */
-  int32_T RSDecoder_outCNumErr[800];   /* '<S6>/RS Decoder' */
-  uint32_T RSDecoder[2400];            /* '<S6>/RS Decoder' */
-  int8_T BittoIntegerConverter[5600];  /* '<S6>/Bit to Integer Converter' */
-  int8_T IntegertoBitConverter[7200];  /* '<S6>/Integer to Bit Converter' */
-  boolean_T RSDecoder_erasures[5600];  /* '<S6>/RS Decoder' */
-  boolean_T Descrambler[7200];         /* '<S3>/Descrambler' */
+  int32_T RSDecoder_input[616];        /* '<S6>/RS Decoder' */
+  int32_T RSDecoder_outMsg[264];       /* '<S6>/RS Decoder' */
+  int32_T RSDecoder_outCNumErr[88];    /* '<S6>/RS Decoder' */
+  boolean_T RSDecoder_erasures[616];   /* '<S6>/RS Decoder' */
 } DW;
 
 /* Constant parameters (default storage) */
@@ -81,11 +77,11 @@ extern const ConstP rtConstP_rx_bb;
 
 /* Model entry point functions */
 extern void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, boolean_T
-  rtU_v2x_rx_bb_in[16928], uint8_T rtY_data_frame[900], boolean_T rtY_dec_in
-  [16800], boolean_T rtY_descr_in[7200]);
+  rtU_v2x_rx_bb_in[1976], uint8_T rtY_data_frame[98], boolean_T rtY_dec_in[1848],
+  boolean_T rtY_descr_in[784], boolean_T rtY_bits_out[784]);
 extern void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T
-  rtU_v2x_rx_bb_in[16928], uint8_T rtY_data_frame[900], boolean_T rtY_dec_in
-  [16800], boolean_T rtY_descr_in[7200]);
+  rtU_v2x_rx_bb_in[1976], uint8_T rtY_data_frame[98], boolean_T rtY_dec_in[1848],
+  boolean_T rtY_descr_in[784], boolean_T rtY_bits_out[784]);
 
 /*-
  * These blocks were eliminated from the model due to optimizations:

@@ -24,7 +24,8 @@ static DW rtDW;                        /* Observable states */
 static boolean_T rtU_v2x_rx_bb_in[RX_BB_IN_BITS];
 static uint8_T rtY_data_frame[RX_BB_OUT_BYTES];
 static boolean_T rtY_dec_in[RX_BB_DEC_BITS];
-static boolean_T rtY_descr_in[RX_BB_IN_BITS];
+static boolean_T rtY_descr_in[TX_BB_IN_BITS];
+static boolean_T rtY_bits_out[TX_BB_IN_BITS];
 
 // ---------------------- Function prototype ----------------------
 static void v2x_rx_bb_one_step(RT_MODEL *const rtM);
@@ -77,7 +78,7 @@ static void v2x_rx_bb_one_step(RT_MODEL *const rtM)
     /* Set model inputs here */
 
     /* Step the model */
-    V2X_RX_Baseband_step(rtM, rtU_v2x_rx_bb_in, rtY_data_frame, rtY_dec_in, rtY_descr_in);
+    V2X_RX_Baseband_step(rtM, rtU_v2x_rx_bb_in, rtY_data_frame, rtY_dec_in, rtY_descr_in, rtY_bits_out);
 
     /* Get model outputs here */
 
@@ -93,7 +94,7 @@ static void v2x_rx_bb_one_step(RT_MODEL *const rtM)
 void rx_bb_init(void)
 {
     rtMPtr->dwork = &rtDW;
-    V2X_RX_Baseband_initialize(rtMPtr, rtU_v2x_rx_bb_in, rtY_data_frame, rtY_dec_in, rtY_descr_in);
+    V2X_RX_Baseband_initialize(rtMPtr, rtU_v2x_rx_bb_in, rtY_data_frame, rtY_dec_in, rtY_descr_in, rtY_bits_out);
 }
 
 void get_rx_bb_out(uint8_T* output, int frame_num)
@@ -150,8 +151,8 @@ int parse_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
     return 0;
 }
 
-float fix_endianness(float val){
-    
+float fix_endianness(float val)
+{    
     // Bit masking with floating point is not supported by compiler...
     // Need to copy floating value to a uint32_t for masking
     unsigned int temp_val = 0;
