@@ -1,7 +1,7 @@
 % Script description:
 %
 % Generate an audio file for OTA transmission, with the requirements:
-% Fs = 44.1 kHz
+% Fs = 4 kHz
 % Single channel
 % 16 bits per sample
 
