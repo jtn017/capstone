@@ -17,21 +17,23 @@
 #define LOG2_SPS 3
 
 
-//#define BIT_ACCURATE
+#define BIT_ACCURATE
 
 #ifdef BIT_ACCURATE
-	typedef ap_fixed<1,18> coef_t;
-	typedef ap_int<16> data_t;
-	typedef ap_int<32> dout_t;
+	typedef ap_fixed<18,1> coef_t;
+	typedef ap_fixed<16,2> data_t;
+	typedef ap_fixed<16,2> dout_t; // log2(64) = 6
+
+	const ap_fixed<18,1> ki = 0.002731550096641;
+	const ap_fixed<18,1> kp = 0.614814780101614;
 #else
 	typedef float coef_t;
 	typedef float data_t;
 	typedef float dout_t;
+
+	const float ki = 0.002731550096641;
+	const float kp = 0.614814780101614;
 #endif
-
-const float ki = 0.002731550096641;
-const float kp = 0.614814780101614;
-
 
 void mf_pfb(data_t real, data_t imag, unsigned int bank_sel, dout_t *out_real, dout_t *out_imag);
 void dmf_pfb(data_t real, data_t imag, unsigned int bank_sel, dout_t *out_real, dout_t *out_imag);

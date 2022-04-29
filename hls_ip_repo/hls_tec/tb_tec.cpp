@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "math.h"
+//#include "math.h"
 #include "tec.h"
 
 #define SIZE 10000
-#define ERROR_TOL 0.05
+#define ERROR_TOL 0.01
 
 
 struct Rmse
@@ -29,7 +29,9 @@ int main ()
 {
 	Rmse rmse_R, rmse_I;
 	FILE *fin, *fout;
-	data_t IN_R, IN_I, OUT_R, OUT_I, GOLD_R, GOLD_I;
+	float IN_R, IN_I;
+	dout_t  OUT_R, OUT_I;
+	float  GOLD_R, GOLD_I;
 	unsigned int bank;
 	bool vld;
 
@@ -44,18 +46,23 @@ int main ()
 		fscanf(fin, "%f %f", &IN_R, &IN_I);
 
 		// Run tec
-		tec(IN_R, IN_I, &OUT_R, &OUT_I, &vld, &bank);
+		tec((data_t)IN_R, (data_t)IN_I, &OUT_R, &OUT_I, &vld, &bank);
 
 		if(vld){
 			// Read output
 			fscanf(fout, "%f %f", &GOLD_R, &GOLD_I);
 
 			// Compare output
-			rmse_R.add_value((float) OUT_R - GOLD_R);
-			rmse_I.add_value((float) OUT_I - GOLD_I);
+#ifdef BIT_ACCURATE
+			rmse_R.add_value( OUT_R.to_float() - GOLD_R);
+			rmse_I.add_value( OUT_I.to_float() - GOLD_I);
+#else
+			rmse_R.add_value( OUT_R - GOLD_R);
+			rmse_I.add_value( OUT_I - GOLD_I);
+#endif
 
 			// Print output comparison
-			printf("Expected: % 8.6f, Actual % 8.6f, BANK %d\n", GOLD_R, OUT_R, bank);
+			printf("Expected: % 8.6f, Actual % 8.6f, BANK %d, %f, %f\n", GOLD_R, (float) OUT_R, bank, IN_R, IN_I );
 		}
 	}
 

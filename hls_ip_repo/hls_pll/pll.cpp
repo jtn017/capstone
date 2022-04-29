@@ -2,8 +2,10 @@
 
 void pll(DATA_T IN_R, DATA_T IN_I, DATA_T *OUT_R, DATA_T *OUT_I)
 {
-//	// Pragmas
-//	#pragma HLS PIPELINE II=50
+#pragma HLS INTERFACE ap_vld port=IN_I
+#pragma HLS INTERFACE ap_vld port=IN_R
+
+	#pragma HLS PIPELINE II=100
 
 	// Statically allocate registers
 	static REG_T phs_int = 0.0; // Phase integral register

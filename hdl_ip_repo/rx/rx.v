@@ -96,6 +96,7 @@ module rx#(
       * Automatic Gain Control 
       *   Log Approximation Approach
     ****************************************/
+    
     wire [15:0] agc_i;
     wire [15:0] agc_q;
     wire agc_v;
@@ -155,6 +156,7 @@ module rx#(
     /****************************************
       * Matched Filter SRRC
     ****************************************/
+    
     wire [15:0] to_cfc_i;
     wire [15:0] to_cfc_q;
     wire to_cfc_v;
@@ -186,6 +188,7 @@ module rx#(
     /****************************************
       * Coarse Frequency Correction
     ****************************************/
+    
     wire [15:0] to_tec_i, to_tec_q;
     wire to_tec_v;
     
@@ -195,43 +198,115 @@ module rx#(
     wire sop;
     
     xcorr_0 spt_cfc (
-      .in_i_ap_vld(to_cfc_v),              // input wire in_i_ap_vld
-      .in_q_ap_vld(to_cfc_v),              // input wire in_q_ap_vld
-      .out_i_ap_vld(to_tec_v),            // output wire out_i_ap_vld
-      .out_q_ap_vld(),            // output wire out_q_ap_vld
-      .corr_ap_vld(),              // output wire corr_ap_vld
-      .to_atan_i_ap_vld(to_atan_vld),    // output wire to_atan_i_ap_vld
-      .to_atan_q_ap_vld(),    // output wire to_atan_q_ap_vld
-      .ap_clk(clk),                        // input wire ap_clk
-      .ap_rst(rst),                        // input wire ap_rst
-      .ap_start(~rst),                    // input wire ap_start
-      .ap_done(),                      // output wire ap_done
-      .ap_idle(),                      // output wire ap_idle
-      .ap_ready(),                    // output wire ap_ready
-      .in_i(to_cfc_i),                            // input wire [15 : 0] in_i
-      .in_q(to_cfc_q),                            // input wire [15 : 0] in_q
-      .out_i(to_tec_i),                          // output wire [15 : 0] out_i
-      .out_q(to_tec_q),                          // output wire [15 : 0] out_q
-      .corr(dbg_corr),                            // output wire [21 : 0] corr
-      .max_vld(sop),                      // output wire max_vld
-      .to_atan_i(to_atan_i),                  // output wire [31 : 0] to_atan_i
-      .to_atan_q(to_atan_q)                  // output wire [31 : 0] to_atan_q
+      .in_i_ap_vld(to_cfc_v),        
+      .in_q_ap_vld(to_cfc_v),     
+      .out_i_ap_vld(to_tec_v),          
+      .out_q_ap_vld(),           
+      .corr_ap_vld(),           
+      .to_atan_i_ap_vld(to_atan_vld),  
+      .to_atan_q_ap_vld(),    
+      .ap_clk(clk),          
+      .ap_rst(rst),         
+      .ap_start(~rst),          
+      .ap_done(),         
+      .ap_idle(),        
+      .ap_ready(),           
+      .in_i(to_cfc_i),            
+      .in_q(to_cfc_q),            
+      .out_i(to_tec_i),            
+      .out_q(to_tec_q),         
+      .corr(dbg_corr),           
+      .max_vld(sop),                
+      .to_atan_i(to_atan_i),         
+      .to_atan_q(to_atan_q)          
     );
+    // Add atan and complex mult for frequency correction (not completely necessary)
     
     /****************************************
       * Timing Error Correction (TEC)
     ****************************************/
+    
+    wire [15:0] to_pll_i, to_pll_q; // <32,2>
+    wire to_pll_v;
+    
+    tec_0 spt_tec (
+      .real_r_ap_vld(to_tec_v),          
+      .imag_ap_vld  (to_tec_v),              
+      .out_real_ap_vld(),
+      .out_imag_ap_vld(),      
+      .out_vld_ap_vld(),        
+      .bank_ap_vld(),              
+      .ap_clk(clk),                   
+      .ap_rst(rst),                    
+      .ap_start(~rst),       
+      .ap_done(),                   
+      .ap_idle(),                    
+      .ap_ready(),                 
+      .real_r(to_tec_i),                 
+      .imag  (to_tec_q),                
+      .out_real(to_pll_i),         
+      .out_imag(to_pll_q),                  
+      .out_vld (to_pll_v),                 
+      .bank()                           
+    );
 
     /****************************************
       * PLL
     ****************************************/
-
+    
+    wire [15:0] to_hard_decision_i, to_hard_decision_q;
+    wire to_hard_decision_v;
+    
+    pll_0 spt_pll (
+      .IN_R_ap_vld(to_pll_v),       
+      .IN_I_ap_vld(to_pll_v),          
+      .OUT_R_ap_vld(to_hard_decision_v),    
+      .OUT_I_ap_vld(),      
+      .ap_clk(clk),          
+      .ap_rst(rst),            
+      .ap_start(~rst),    
+      .ap_done(),         
+      .ap_idle(),          
+      .ap_ready(),           
+      .IN_R(to_pll_i),        
+      .IN_I(to_pll_q),                   
+      .OUT_R(to_hard_decision_i),                  
+      .OUT_I(to_hard_decision_q)                   
+    );
+    
     /****************************************
       * Hard Decision
+      * Need to add valid logic for know start
+      * of packet
     ****************************************/
-
+    reg [7:0] data_byte;
+    reg [1:0] sym;
+    reg err;
+    
+    always @(posedge clk)begin
+        data_byte <= {data_byte[5:2],sym};// shift register to accumulate byte
+        if(to_hard_decision_v)begin
+            if( $signed(to_hard_decision_i) > 16'd0 && $signed(to_hard_decision_q) > 16'd0) begin //(1,1) (I,Q)
+                sym <= 2'b11;
+                err <= 1'b0;
+            end else if ( $signed(to_hard_decision_i) > 16'd0 && $signed(to_hard_decision_q) < 16'd0) begin //(1,-1) 
+                sym <= 2'b10;
+                err <= 1'b0;
+            end else if ( $signed(to_hard_decision_i) < 16'd0 && $signed(to_hard_decision_q) > 16'd0) begin //(-1,1)
+                sym <= 2'b01;
+                err <= 1'b0;
+            end else if ( $signed(to_hard_decision_i) < 16'd0 && $signed(to_hard_decision_q) > 16'd0) begin //(-1,-1)
+                sym <= 2'b00;
+                err <= 1'b0;
+            end else begin // can't decide
+                sym <= 2'b00;
+                err <= 1'b1;
+            end
+        end
+    end
+    
     /****************************************
-      * Data Packet Storage for DMA
+      * Data Packet Storage for DMA (or Axilite)
     ****************************************/
     
 /****************************************
