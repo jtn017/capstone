@@ -9,27 +9,32 @@
  */
 #include "agc.h"
 
-void agc(ref_t pref, short in_i, short in_q, short *out_i, short *out_q, gain_t *dbg)
+void agc(ref_t pref, din_t in_i, din_t in_q, dout_t *out_i, dout_t *out_q, gain_t *dbg)
 {
+#pragma HLS INTERFACE ap_vld port=in_i
+#pragma HLS INTERFACE ap_vld port=in_q
+#pragma HLS INTERFACE ap_vld port=out_i
+#pragma HLS INTERFACE ap_vld port=out_q
+
+//#pragma HLS PIPELINE II=50
+
 	static gain_t log2_gain = 1;
 	agc_t abs_i, abs_q;
 	agc_t abs_max, abs_min;
-	agc_t out_i_r, out_q_r;
+	dout_t out_i_r, out_q_r;
 
 	// Do exp2(log2_gain)
 	slice_t gain_slice = (uint16_t) log2_gain.range(14,3);
 	gain_t gain;
 	slice_t lut_address = gain_slice + MIDDLE; // Look up table stores [-,+]
 	gain = EXP2_LUT[lut_address];
-
 	// Apply Gain
 	out_i_r = in_i * gain;
 	out_q_r = in_q * gain;
 
 	// Calculate Magintude (via approximation)
-	abs_i = myAbs<agc_t>(out_i_r);
-	abs_q = myAbs<agc_t>(out_q_r);
-
+	abs_i = hls::abs(out_i_r);
+	abs_q = hls::abs(out_q_r);
 	if(abs_i >= abs_q){
 		abs_min = abs_i;
 		abs_max = abs_q;
@@ -43,12 +48,11 @@ void agc(ref_t pref, short in_i, short in_q, short *out_i, short *out_q, gain_t 
 	agc_t mag = mag_step2 >> 4;
 
 	// Calculate LOG2(mag) (use hls function)
-	agc_t hlslog = hls::log2(mag);
+	ref_t hlslog = hls::log2((ref_t) mag);
 	agc_t err = pref - hlslog; // using log(a/b) = log(a) - log(b)
 
 	// Accumulator
-	//gain_t accum = log2_gain + alpha*err; // could remove extra mult by doing .125 instead of .1
-	gain_t accum = log2_gain + alpha>>3; // could remove extra mult by doing .125 instead of .1
+	gain_t accum = log2_gain + alpha*err; // could remove extra mult by doing .125 instead of .1
 
 	// Limit
 	if(accum > 7.9961)
@@ -61,6 +65,6 @@ void agc(ref_t pref, short in_i, short in_q, short *out_i, short *out_q, gain_t 
 	// Assign Outputs
 	*out_i = out_i_r;
 	*out_q = out_q_r;
-	*dbg = log2_gain;
+	*dbg = gain;
 
 }
