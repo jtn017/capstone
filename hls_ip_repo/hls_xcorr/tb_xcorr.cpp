@@ -31,8 +31,8 @@ void readfile(char *filename, short *I, short *Q, unsigned int len)
 int main(){
 	FILE *fp;
 	unsigned int size = 2000;
-	din_t x_re[size];
-	din_t x_im[size];
+	short x_re[size];
+	short x_im[size];
 	dout_t y_re[size];
 	dout_t y_im[size];
 	corr_t corr[size];
@@ -46,8 +46,8 @@ int main(){
 	readfile(in_filename,x_re,x_im,size);
 
 	for(int i=0; i<size; i++){
-		xcorr(x_re[i], x_im[i], &y_re[i], &y_im[i], &corr[i], &max_vld, &to_atan[0], &to_atan[1]);
-		fprintf(fp,"%d, %d, %d, %d, %f, %d, %d, %d\n", x_re[i],  x_im[i], y_re[i], y_im[i], (float) corr[i], max_vld, to_atan[0], to_atan[1]);
+		xcorr((din_t)x_re[i], (din_t)x_im[i], &y_re[i], &y_im[i], &corr[i], &max_vld, &to_atan[0], &to_atan[1]);
+		fprintf(fp,"%d, %d, %d, %d, %d, %d, %f, %f\n", x_re[i],  x_im[i], y_re[i].to_int(), y_im[i].to_int(), corr[i].to_int(), max_vld, to_atan[0].to_float(), to_atan[1].to_float());
 
 	}
 	printf("DONE WITH TEST XCORR BENCH!\n");

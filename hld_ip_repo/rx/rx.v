@@ -8,13 +8,14 @@
  *
  * @param    
  *
- * @notes    
+ * @notes    Currently Using Vivado 2019.2
  *
  ********************************************************************************/
 
 module rx#(
-    parameter CC_GEN = 0,
-    parameter SRRC_GEN = 0
+    parameter CC_GEN = 1'b1,
+    parameter SRRC_GEN = 1'b0,
+    parameter NORM_GEN = 1'b0
 )
 (
     // Inputs
@@ -35,20 +36,22 @@ module rx#(
     /*******************************************
          * Internal Registers and Wires
     *******************************************/
-    reg [1:0] bypass = 2'b00; // Bit 0 (agc), 1 (srrc)
     wire rst, rstn;
     assign rst = i_rst;
     assign rstn = ~rst;
     
     // control if needed
-    wire [1:0] mode = i_ctrl[1:0]; // Test Case 1 (mode = 0)
+    wire [31:0] bypass;
+    
+    assign bypass = i_ctrl[31:0]; // Bit 0 (agc), 1 (srrc)
     
     wire clk;
 
     /****************************************
       * Clock Crossing: Slow->Fast (easy case)
     ****************************************/
-    wire [15:0] to_agc_i, to_agc_q;
+    wire [15:0] to_agc_i;
+    wire [15:0] to_agc_q;
     wire to_agc_v;
     
     generate
@@ -102,29 +105,52 @@ module rx#(
     wire [15:0] agc2srrc_q;
     wire agc2srrc_v;
     
-    agc_0 spt_agc(
-      .in_i_ap_vld(to_agc_v),    // input wire in_i_ap_vld
-      .in_q_ap_vld(to_agc_v),    // input wire in_q_ap_vld
-      .out_i_ap_vld(agc_v),  // output wire out_i_ap_vld
-      .out_q_ap_vld(),  // output wire out_q_ap_vld
-      .dbg_V_ap_vld(),  // output wire dbg_V_ap_vld
-      .ap_clk(clk),              // input wire ap_clk
-      .ap_rst(rst),              // input wire ap_rst
-      .ap_start(1'b1),          // input wire ap_start
-      .ap_done(),            // output wire ap_done
-      .ap_idle(),            // output wire ap_idle
-      .ap_ready(),          // output wire ap_ready
-      .pref_V({16'h000C,16'h0000}),              // input wire [31 : 0] pref_V
-      .in_i(to_agc_i),                  // input wire [15 : 0] in_i
-      .in_q(to_agc_q),                  // input wire [15 : 0] in_q
-      .out_i(agc_i),                // output wire [15 : 0] out_i
-      .out_q(agc_q),                // output wire [15 : 0] out_q
-      .dbg_V(dbg_gain)                // output wire [23 : 0] dbg_V
-    );
+    generate 
+        if(NORM_GEN)begin
+            normalizer_0 spt_norm (
+              .ap_local_block(),        // output wire ap_local_block
+              .ap_local_deadlock(),  // output wire ap_local_deadlock
+              .in_i_ap_vld(to_agc_v),              // input wire in_i_ap_vld
+              .in_q_ap_vld(to_agc_v),              // input wire in_q_ap_vld
+              .out_i_ap_vld(agc_v),            // output wire out_i_ap_vld
+              .out_q_ap_vld(),            // output wire out_q_ap_vld
+              .ap_clk(clk),                        // input wire ap_clk
+              .ap_rst(rst),                        // input wire ap_rst
+              .ap_start(1'b1),                    // input wire ap_start
+              .ap_done(),                      // output wire ap_done
+              .ap_idle(),                      // output wire ap_idle
+              .ap_ready(),                    // output wire ap_ready
+              .in_i(to_agc_i),                            // input wire [15 : 0] in_i
+              .in_q(to_agc_q),                            // input wire [15 : 0] in_q
+              .out_i(agc_i),                          // output wire [15 : 0] out_i
+              .out_q(agc_q)                          // output wire [15 : 0] out_q
+            );
+        end else begin
+            agc_0 spt_agc (
+              .in_i_ap_vld(to_agc_v),    // input wire in_i_ap_vld
+              .in_q_ap_vld(to_agc_v),    // input wire in_q_ap_vld
+              .out_i_ap_vld(),  // output wire out_i_ap_vld
+              .out_q_ap_vld(),  // output wire out_q_ap_vld
+              .dbg_ap_vld(),  // output wire dbg_V_ap_vld
+              .ap_clk(clk),              // input wire ap_clk
+              .ap_rst(rst),              // input wire ap_rst
+              .ap_start(1'b1),          // input wire ap_start
+              .ap_done(),            // output wire ap_done
+              .ap_idle(),            // output wire ap_idle
+              .ap_ready(),          // output wire ap_ready
+              .pref(26'b1100_00_0000_0000),              // input wire [31 : 0] pref_V
+              .in_i(to_agc_i),                  // input wire [15 : 0] in_i
+              .in_q(to_agc_q),                  // input wire [15 : 0] in_q
+              .out_i(),                // output wire [15 : 0] out_i
+              .out_q(),                // output wire [15 : 0] out_q
+              .dbg()                // output wire [23 : 0] dbg_V
+            );
+        end
+    endgenerate
 
-    assign agc2srrc_i = bypass[0] ? i_fromADC_i : agc_i;
-    assign agc2srrc_q = bypass[0] ? i_fromADC_q : agc_q;
-    assign agc2srrc_v = bypass[0] ? i_fromADC_vld : agc_v;
+    assign agc2srrc_i = bypass[0] ? to_agc_i : agc_i;
+    assign agc2srrc_q = bypass[0] ? to_agc_q : agc_q;
+    assign agc2srrc_v = bypass[0] ? to_agc_v : agc_v;
     
     /****************************************
       * Matched Filter SRRC
@@ -140,9 +166,9 @@ module rx#(
             
             fir_srrc spt_srrc(
                 .aclk(i_clk),                             
-                .s_axis_data_tvalid(agc2rx_vld),  // could just use one valid
+                .s_axis_data_tvalid(agc2srrc_v),  // could just use one valid
                 .s_axis_data_tready(), 
-                .s_axis_data_tdata({agc2rx_q,agc2rx_i}),   
+                .s_axis_data_tdata({agc2srrc_q,agc2srrc_i}),   
                 .m_axis_data_tvalid(rx_srrc_vld),  
                 .m_axis_data_tdata(rx_srrc_out)   
             );
@@ -163,18 +189,22 @@ module rx#(
     wire [15:0] to_tec_i, to_tec_q;
     wire to_tec_v;
     
+    wire [31:0] to_atan_i, to_atan_q;
+    wire to_atan_vld;
+    wire [21:0] dbg_corr;
+    wire sop;
+    
     xcorr_0 spt_cfc (
       .in_i_ap_vld(to_cfc_v),              // input wire in_i_ap_vld
       .in_q_ap_vld(to_cfc_v),              // input wire in_q_ap_vld
       .out_i_ap_vld(to_tec_v),            // output wire out_i_ap_vld
       .out_q_ap_vld(),            // output wire out_q_ap_vld
       .corr_ap_vld(),              // output wire corr_ap_vld
-      .max_vld_ap_vld(),        // output wire max_vld_ap_vld
-      .to_atan_i_ap_vld(),    // output wire to_atan_i_ap_vld
+      .to_atan_i_ap_vld(to_atan_vld),    // output wire to_atan_i_ap_vld
       .to_atan_q_ap_vld(),    // output wire to_atan_q_ap_vld
       .ap_clk(clk),                        // input wire ap_clk
       .ap_rst(rst),                        // input wire ap_rst
-      .ap_start(),                    // input wire ap_start
+      .ap_start(~rst),                    // input wire ap_start
       .ap_done(),                      // output wire ap_done
       .ap_idle(),                      // output wire ap_idle
       .ap_ready(),                    // output wire ap_ready
@@ -182,10 +212,10 @@ module rx#(
       .in_q(to_cfc_q),                            // input wire [15 : 0] in_q
       .out_i(to_tec_i),                          // output wire [15 : 0] out_i
       .out_q(to_tec_q),                          // output wire [15 : 0] out_q
-      .corr(),                            // output wire [21 : 0] corr
-      .max_vld(),                      // output wire max_vld
-      .to_atan_i(),                  // output wire [31 : 0] to_atan_i
-      .to_atan_q()                  // output wire [31 : 0] to_atan_q
+      .corr(dbg_corr),                            // output wire [21 : 0] corr
+      .max_vld(sop),                      // output wire max_vld
+      .to_atan_i(to_atan_i),                  // output wire [31 : 0] to_atan_i
+      .to_atan_q(to_atan_q)                  // output wire [31 : 0] to_atan_q
     );
     
     /****************************************

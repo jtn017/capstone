@@ -25,8 +25,8 @@ reg sys_clk;
 
 reg rst;
 
-reg [11:0] input_i;
-reg [11:0] input_q;
+reg [15:0] input_i;
+reg [15:0] input_q;
 reg input_vld;
 
 wire [15:0] output_i;
@@ -36,8 +36,8 @@ wire output_vld;
 /****************************************
  * UUT
 ****************************************/
-sigproc_top#(
-    .CC_GEN('d0),
+rx#(
+    .CC_GEN('d1),
     .SRRC_GEN('d0)
 )
 uut(
@@ -46,11 +46,11 @@ uut(
     .i_clk(clk),      
     .i_rst(rst),
     // Control Signals
-    .i_ctrl(),
+    .i_ctrl(32'd1),
     // ADC Data Input (RX)
-    .i_fromADC_i(),
-    .i_fromADC_q(),
-    .i_fromADC_vld(),
+    .i_fromADC_i(input_i),
+    .i_fromADC_q(input_q),
+    .i_fromADC_vld(input_vld),
     // Receiver Data
     .o_datarx_i(),
     .o_datarx_q(),
@@ -58,22 +58,22 @@ uut(
 ); 
 
 /****************************************
- * 56MHz ADC
+ * 4MHz ADC
 ****************************************/
 initial begin
     clk = 1'b0;
     forever begin
-	    #8.92857 clk = ~clk;
+	    #125 clk = ~clk;
 	end
 end
 
 /****************************************
- * 224MHz ADC
+ * 200MHz Sys Clock
 ****************************************/
 initial begin
     sys_clk = 1'b0;
     forever begin
-	   #2.23214 sys_clk = ~sys_clk;
+	   #2.5 sys_clk = ~sys_clk;
 	end
 end
 
@@ -120,8 +120,9 @@ initial begin
             temp_input_q = {payload[idx+1]};
             input_i = $signed(temp_input_i[11:0]);
             input_q = $signed(temp_input_q[11:0]);
-           input_vld = 1'b1;
+            input_vld = 1'b1;
         end
+        @(posedge clk)input_vld = 1'b0;
     end
 
     // Pause signal input for a while
@@ -148,7 +149,7 @@ assign output_i = $signed('d0);
 assign output_q = $signed('d0);
 
 always begin
-    @(posedge clk)  begin 
+    @(posedge sys_clk)  begin 
         if(output_vld)begin
                 $fwrite(outfile, "%b,",output_vld); 
                 $fwrite(outfile, "%d, ",$signed(output_i)); 
