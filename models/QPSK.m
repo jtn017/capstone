@@ -20,8 +20,8 @@ AGC = 0; % 1 - AGC on, 0 - AGC off
 NO_DOPP = 0; % 1 - Don't Add Doppler, 0 - Add Doppler
 LARGE_DOPPLER = 0; % set this to select amount of doppler
 phase_offset = pi/16;
-SNRdB = 40;
-adc_sps = 4; % Down Sample at Receiver?
+SNRdB = 20;
+adc_sps = 8; % Down Sample at Receiver?
 
 % Waveform Settings
 NSAMP= 10000;
@@ -76,6 +76,7 @@ noise_voltage = sqrt(noise_power/2);
 noise = noise_voltage*[1 j]*randn(2,length(tx_doppler));
 tx_doppler_noise = tx_doppler+noise;
 
+h_chan = figure('Name','Channel Effects');
 
 subplot(221)
 plot(real(symbols),imag(symbols),'bx','LineWidth',2)
@@ -85,27 +86,39 @@ axis([-1.5 1.5 -1.5 1.5])
 grid on;
 legend('Symbols','Upsampled')
 title('Name','QAM 8-SPS')
+ylabel('Q','FontSize',14)
+xlabel('I','FontSize',14)
+axis('square')
 
 
 subplot(222)
 plot(real(tx_doppler_noise),imag(tx_doppler_noise),'bx','LineWidth',2)
-axis([-3 3 -3 3])
 grid on;
+
 title('After Channel')
+title('Name','QAM 8-SPS')
+ylabel('Q','FontSize',14)
+xlabel('I','FontSize',14)
+axis('square')
 
 subplot(2,2,[3,4])
 NFFT = 16384;
 plot((-0.5:1/NFFT:0.5-1/NFFT)*sps,20*log10(abs(fftshift(fft(tx_qpsk,NFFT)))),'LineWidth',2);
 hold on
 plot((-0.5:1/NFFT:0.5-1/NFFT)*sps,20*log10(abs(fftshift(fft(tx_doppler_noise,NFFT)))),'LineWidth',2);
+xlabel('Frequency')
+ylabel('Amplitude')
 legend('tx sent','tx after channel')
+title('Frequency Spectrum')
 
+saveplot(h_chan,'Chan', 1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% ADC ( Down sample at receiver )
 if(adc_sps ~= sps)
     tx_doppler_noise = downsample(tx_doppler_noise,sps/adc_sps);
     sps = adc_sps;
 end
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Save Signal for HDL Test Bench (verilog)
 
@@ -140,7 +153,7 @@ rx_len = length(rx_signal);
 
 figure('Name','AGC')
 plot(real(rx_signal),imag(rx_signal),'bx','LineWidth',2)
-%axis([-1.5 1.5 -1.5 1.5])
+axis([-1.5 1.5 -1.5 1.5])
 grid on;
 legend('Symbols','Upsampled')
 
@@ -281,7 +294,9 @@ while idx < (length(rx_f_corrected))-sps
     odx = odx + 1; % increment symbol clock
 end
 
-figure('Name','Timing Error Correction')
+offset = 256;
+
+h_tec = figure('Name','Timing Error Correction');
 subplot(211)
 plot(accum_t_sv)
 hold on
@@ -290,17 +305,23 @@ hold off
 grid on
 %axis([0 2000 0 32])
 title('Timing Loop Phase Accumulator and Pointer')
+ylabel('Accumulator Output')
+xlabel('Samples')
 
 subplot(223)
-hist(real(rx_tec))
+hist(real(rx_tec(offset:end)),100)
 
 subplot(224)
-offset = 32;
 plot(real(rx_tec(offset:end)),imag(rx_tec(offset:end)),'bo')
 hold off
 grid on
+axis([-1.5 1.5 -1.5 1.5])
+ylabel('Q','FontSize',14)
+xlabel('I','FontSize',14)
 axis('square')
-title('Constellation Diagram')
+title('Constellation Diagram','FontSize',14)
+
+saveplot(h_tec,'TEC', 1)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Phase Lock Loop
 
@@ -324,7 +345,7 @@ for idx=1:length(rx_tec)
         % Calculate error
         det_ph=sign(real(prod))+j*sign(imag(prod));
         phs_err=angle(det_ph*conj(prod))/(2*pi);
-        phs_err_sv(odx)=phs_err;
+        phs_err_sv(odx)=phs_err; 
     
         %Loop filter
         int_ph=int_ph+k_i_ph*phs_err;
@@ -335,27 +356,74 @@ for idx=1:length(rx_tec)
     accum_ph=accum_ph+lp_flt;
 end
 
-figure('Name','Phase Lock Loop')
+h_pll = figure('Name','Phase Lock Loop');
 subplot(211)
 plot(phs_err_sv(1:500))
 grid on
 title('Phase Lock Loop Phase Error')
-   
+ylabel('Amplitude')
+xlabel('Samples')
+
 subplot(223)
-hist(real(rx_pll))
+hist(real(rx_pll),100)
 
 subplot(224)
 plot(real(rx_tec(22:end)),imag(rx_tec(22:end)),'bo')
 hold on
-plot(real(rx_pll(1:sps:end)),imag(rx_pll(1:sps:end)),'ro')
+plot(real(rx_pll),imag(rx_pll),'ro')
 grid on
 axis([-1.5 1.5 -1.5 1.5])
-title('Constellation Diagram')
 legend('Before PLL','After PLL')
+ylabel('Q','FontSize',14)
+xlabel('I','FontSize',14)
+axis('square')
+title('Constellation Diagram','FontSize',14)
+saveplot(h_pll,'PLL', 1)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Decode Data
+nubits = 200;
+allign = 5; % should be able to get this from CFC corr
+bits = hardDecode(rx_pll(1+allign:nubits+allign));
+orig_bits = hardDecode(symbols(1:nubits));
+
+h_hard = figure('Name','Decode Data Compare');
+plot(bits,'rx-')
+hold on
+plot(orig_bits,'bo')
+ylim([-0.5 3.5])
+title('Hard Decision')
+ylabel('Decoded Symbol','FontSize',14)
+xlabel('Samples','FontSize',14)
+legend('Received', 'Expected')
+saveplot(h_hard,'hard_decision', 1)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Calculate Number of Errors
+error_cnt = sum(orig_bits ~= bits)
 
 %% Cleanup
 set(0,'DefaultFigureWindowStyle','normal')
-%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Misc Functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Hard Decision Function
+function [bits] = hardDecode(sig)
+    bits = zeros(1,length(sig));
+    for odx=1:length(sig)
+        if(real(sig(odx)) > 0 & imag(sig(odx)) > 0) % (1,1) (I,Q)
+            bits(odx) = 3;
+        elseif(real(sig(odx)) > 0 & imag(sig(odx)) < 0) % (1,-1) 
+            bits(odx) = 2;
+        elseif(real(sig(odx)) < 0 & imag(sig(odx)) > 0) % (-1,1)
+            bits(odx) = 1;
+        elseif(real(sig(odx)) < 0 & imag(sig(odx)) < 0) % (-1,-1)
+            bits(odx) = 0;
+        else % dont know
+    end
+end
+end
+
