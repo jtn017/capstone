@@ -11,6 +11,7 @@
 #define INFO_PKT_BYTES (INFO_PKT_BITS/8)
 #define AUDIO_PKT_BITS 640
 #define AUDIO_PKT_BYTES (AUDIO_PKT_BITS/8)
+#define AUDIO_PKTS 6000 // 60 seconds of 0.01s audio captures
 
 // TX Baseband
 #define TX_BB_IN_BITS 784

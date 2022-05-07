@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 // Auto-generated files
 #include "V2X_TX_Baseband.h"
@@ -27,14 +28,20 @@ static boolean_T rtY_bits_in[TX_BB_IN_BITS];
 static boolean_T rtY_scramb_out[TX_BB_IN_BITS];
 static boolean_T rtY_enc_out[TX_BB_OUT_BITS];
 
+// ---------------------- Global variables ----------------------
+struct payload_struct g_info_pkt;
+static uint8_t g_audio_pkt[AUDIO_PKTS][AUDIO_PKT_BYTES];
+static uint16_t g_audio_pkt_num = 0;
+
 // ---------------------- Function prototype ----------------------
 static void v2x_tx_bb_one_step(RT_MODEL *const rtM);
+static void update_info_packet(void);
+static void init_audio_buffer(void);
+static void advance_audio_buffer(void);
 static void get_tx_input_frame(int frame_num);
-static void get_info_packet(struct payload_struct * pyld);
-static void get_audio_packet(char audio_packet[AUDIO_PKT_BYTES]);
 
-// ---------------------- Temporary functions ----------------------
-static void get_info_packet(struct payload_struct * pyld)
+// ---------------------- Data retrieval functions ----------------------
+static void update_info_packet(void)
 {
     // struct char_strings strs;
     unsigned int payload_values = PAYLOAD_VALUES;
@@ -89,19 +96,37 @@ static void get_info_packet(struct payload_struct * pyld)
     }
 
     // Grab all string values and generate first payload
-    memcpy(pyld->name, strs[0], 4); // clip name to only the first 4 characters
-    pyld->lat            = atof(strs[1]);
-    pyld->lon            = atof(strs[2]);
-    pyld->speed          = atoi(strs[3]);
-    pyld->dir            = atoi(strs[4]);
-    pyld->dist_next_step = atof(strs[5]);
+    memcpy(g_info_pkt.name, strs[0], 4); // clip name to only the first 4 characters
+    g_info_pkt.lat            = atof(strs[1]);
+    g_info_pkt.lon            = atof(strs[2]);
+    g_info_pkt.speed          = atoi(strs[3]);
+    g_info_pkt.dir            = atoi(strs[4]);
+    g_info_pkt.dist_next_step = atof(strs[5]);
 
     return;
 }
 
-static void get_audio_packet(char audio_packet[AUDIO_PKT_BYTES])
+static void init_audio_buffer(void)
 {
-    return;
+    // Grab data from file
+    uint8_t buffer[AUDIO_PKTS * AUDIO_PKT_BYTES];
+    FILE * bin_file = fopen("data/sample_audio.bin", "rb");
+    fread(buffer, sizeof(buffer), 1, bin_file);
+    fclose(bin_file);
+
+    // Copy into audio buffer
+    for (int i = 0; i < AUDIO_PKTS; i++)
+    {
+        for (int j = 0; j < AUDIO_PKT_BYTES; j++)
+        {
+            g_audio_pkt[i][j] = buffer[i*AUDIO_PKT_BYTES + j];
+        }
+    }
+}
+
+static void advance_audio_buffer(void)
+{
+    g_audio_pkt_num = (g_audio_pkt_num + 1) % AUDIO_PKTS;
 }
 
 // ---------------------- Internal functions ----------------------
@@ -120,18 +145,16 @@ static void get_tx_input_frame(int frame_num)
         rtU_v2x_tx_bb_in[i] = buffer[TX_BB_IN_BYTES * frame_num + i];
     }
 #else
-    // Variable declarations
-    struct payload_struct info_packet;
-    char audio_packet[AUDIO_PKT_BYTES];
-
-    // Get data
-    get_info_packet(&info_packet);
-    get_audio_packet(audio_packet);
+    // Update info packet
+    update_info_packet();
 
     // Set data
-    memcpy(rtU_v2x_tx_bb_in, (char*) &info_packet, INFO_PKT_BYTES*sizeof(rtU_v2x_tx_bb_in[0]));
-    memcpy(rtU_v2x_tx_bb_in + INFO_PKT_BYTES, audio_packet,
+    memcpy(rtU_v2x_tx_bb_in, (char*) &g_info_pkt, INFO_PKT_BYTES*sizeof(rtU_v2x_tx_bb_in[0]));
+    memcpy(rtU_v2x_tx_bb_in + INFO_PKT_BYTES, g_audio_pkt[g_audio_pkt_num],
            AUDIO_PKT_BYTES*sizeof(rtU_v2x_tx_bb_in[0]));
+
+    // Advance audio packet number
+    advance_audio_buffer();
 #endif
 }
 
@@ -168,10 +191,11 @@ static void v2x_tx_bb_one_step(RT_MODEL *const rtM)
 // ---------------------- External functions ----------------------
 void tx_bb_init(void)
 {
-    struct payload_struct pyld;
-    memset(&pyld, 0, sizeof(pyld));
-    get_info_packet(&pyld);
+    // Initialize info and audio
+    update_info_packet();
+    init_audio_buffer();
 
+    // Initialized baseband code
     V2X_TX_Baseband_initialize(rtMPtr, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_bits_in, rtY_scramb_out, rtY_enc_out);
 }
 
