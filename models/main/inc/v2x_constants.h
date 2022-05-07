@@ -4,7 +4,7 @@
 // Debug
 #define DEBUG_BUILD 1
 #define ERROR_TOL 0.0001
-#define NUM_FRAMES 4
+#define NUM_FRAMES 20
 
 // Constants
 #define INFO_PKT_BITS 144

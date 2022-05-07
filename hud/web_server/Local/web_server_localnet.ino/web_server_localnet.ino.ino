@@ -18,8 +18,6 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Replace with your network credentials
-//const char* ssid     = "NETGEAR66";
-//const char* password = "shinyvase603";
 const char* ssid     = "OnePlus8Pro";
 const char* password = "70a8d2c12d5e";
 
@@ -112,13 +110,13 @@ void handleUpdate() {
   // The value will be passed as a URL argument
   sensor_value = server.arg("value").toFloat();
   Serial.println(sensor_value);
-  server.send(200,"text/plain","Updated");
+  server.send(200,"text/plain","Updated\n");
 }
 
 void handleName(){
   n_name = server.arg("value");
   Serial.println("Updating Name with " + String(n_name));
-  server.send(200, "text/plain", "Name Updated");
+  server.send(200, "text/plain", "Name Updated\n");
   displayall();
   Serial.println("Updated Name!");
 }
@@ -126,7 +124,7 @@ void handleName(){
 void handleLat(){
   lat = server.arg("value").toFloat();
   Serial.println("Updating Latitude with " + String(lat));
-  server.send(200, "text/plain", "Latitude Updated");
+  server.send(200, "text/plain", "Latitude Updated\n");
   displayall();
   Serial.println("Updated Latitude!");
 }
@@ -134,7 +132,7 @@ void handleLat(){
 void handleLon(){
   lon = server.arg("value").toFloat();
   Serial.println("Updating Longitude with " + String(lon));
-  server.send(200, "text/plain", "Longitude Updated");
+  server.send(200, "text/plain", "Longitude Updated\n");
   displayall();
   Serial.println("Updated Longitude!");
 }
@@ -142,7 +140,7 @@ void handleLon(){
 void handleSpeed(){
   n_speed = server.arg("value").toFloat();
   Serial.println("Updating Speed with " + String(n_speed));
-  server.send(200, "text/plain", "Speed Updated");
+  server.send(200, "text/plain", "Speed Updated\n");
   displayall();
   Serial.println("Updated Speed!");
 }
@@ -150,7 +148,7 @@ void handleSpeed(){
 void handleDir(){
   dir = server.arg("value").toFloat();
   Serial.println("Updating directions with " + String(dir));
-  server.send(200, "text/plain", "Directions Updated");
+  server.send(200, "text/plain", "Directions Updated\n");
   displayall();
   Serial.println("Updated Directions!");
 }
@@ -158,7 +156,7 @@ void handleDir(){
 void handleDistToNext(){
   dist_next_step = server.arg("value").toFloat();
   Serial.println("Updating dist to next step with " + String(dist_next_step));
-  server.send(200, "text/plain", "Dist. to Next Step Updated");
+  server.send(200, "text/plain", "Dist. to Next Step Updated\n");
   displayall();
   Serial.println("Updated Dist. to Next Step!");
 }
@@ -184,7 +182,7 @@ void handleReset(){
 void displayall(void){
 
   display.clearDisplay();
-  display.setTextSize(2);      // Normal 1:1 pixel scale
+  display.setTextSize(1);      // Normal 1:1 pixel scale
   display.setRotation(0);
   //display.flip();
   display.setTextColor(WHITE); // Draw white text

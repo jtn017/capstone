@@ -184,7 +184,7 @@ float fix_endianness(float val)
 
 void tx_payload_wifimodule2(struct payload_struct * pyld){
   
-    char ip_addr[] = "192.168.1.16";
+    const char ip_addr[] = IP_ADDR;
 
     char str1[200];
     char str2[200];
