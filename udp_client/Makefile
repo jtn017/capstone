@@ -1,39 +1,35 @@
 # variables
 CXX=gcc 			# compiler
-CXXFLAGS=-O3 	# compiler flags go here
+#CXXFLAGS=-O3 	# compiler flags go here
+#CXXFLAGS=-Wall -g 
+CXXFLAGS=-O0 -g 
 EXEC=client  	# output file name
 
 # include, source, and object directories
-INCLUDEDIR=include
+INC=include gen
+INCLUDEDIR=$(foreach d, $(INC), -I$d)
 SRCDIR=src
 OBJDIR=objs
 
-# getting opencv include path from pkg-config
-#OPENCV_INCLUDE_PATH = `pkg-config --cflags opencv`
-# getting opencv libs path from pkg-config
-#OPENCV_LIBS = `pkg-config --libs opencv`
-
-# libraries + opencv libs
-#LIBS=-lc $(OPENCV_LIBS)
-
-# libraries + opencv libs
-#LIBS=-lc
+# libraries
+LIBS=-lm -levent -lcurl
 
 # wildcard adds all the *.c files in source directory to SRCS
 SRCS=$(wildcard $(SRCDIR)/*.c)
 # patsubst finds $(SRCDIR)/%.c in $(SRCS) and replaces them with $(OBJDIR)/%.o
 OBJS=$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 # includes + opencv include path
-#INCLUDES=-I$(INCLUDEDIR) $(OPENCV_INCLUDE_PATH)
-INCLUDES=-I$(INCLUDEDIR)
+INCLUDES=$(INCLUDEDIR) 
 
 all: $(EXEC)
 
 $(EXEC): $(OBJDIR) $(OBJS)
+	@echo "in exec dependency"
 	$(CXX) $(CXXFLAGS) $(INCLUDES) $(OBJS) -o $(EXEC) $(LIBS)
 
 # compiles object files from source files
 $(OBJS): $(OBJDIR)/%.o: $(SRCDIR)/%.c
+	@echo "in obj dependency"
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(INCLUDES)
 
 $(OBJDIR):

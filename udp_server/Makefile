@@ -1,6 +1,8 @@
 # variables
 CXX=gcc 			# compiler
-CXXFLAGS=-O3 	# compiler flags go here
+#CXXFLAGS=-O3 	# compiler flags go here
+#CXXFLAGS=-Wall -g 
+CXXFLAGS=-O0 -g
 EXEC=server  	# output file name
 
 # include, source, and object directories
