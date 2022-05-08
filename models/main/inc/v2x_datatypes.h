@@ -3,6 +3,7 @@
 #include "rtwtypes.h"
 
 // #define HTTP_SOCKET
+#define IP_ADDR "192.168.1.17";
 #define PAYLOAD_VALUES 6
 #define PAYLOAD_STR_MAX 100
 

@@ -21,10 +21,11 @@ mod_ini = v2x_modem_init();
 mod_dt = mod_ini.intfc_dt;
 
 %% Frame params
-num_frames = 4;
+num_frames = 20;
 audio_pkts = get_audio_pkts();
 audio_pkts = audio_pkts(:, 1:num_frames);
 info_pkts = get_info_pkts();
+%info_pkts = get_info_pkt_v3();
 info_pkts = info_pkts(:, 1:num_frames);
 % info_pkt_v1 = get_info_pkt_v1();
 % info_pkt_v2 = get_info_pkt_v2();
@@ -213,6 +214,45 @@ function info_pkt = get_info_pkt_v2()
     % Concatenate array
     info_pkt = [name_bin; pos.lat_bin; pos.lon_bin; speed_bin; ...
                 nav.dir_bin; nav.dtns_bin];
+end
+
+function info_pkts = get_info_pkt_v3()
+    info_pkts = [];
+    sigma = 3;
+    n_noise_values = 5;
+    for n = 1:6000
+
+        noise = sigma*(randsrc(1,n_noise_values).*rand(1,n_noise_values));
+
+        % Name: V2X!
+        name = 'V2X!';
+        name_bin_mat = dec2bin(name, 8) - '0';
+        name_bin_mat2 = name_bin_mat.';
+        name_bin = name_bin_mat2(:);
+    
+        % Location: UCSD, changing 0.6 over duration
+        pos.lat = single(32.880100 - noise(1));
+        pos.lon = single(-117.234000 + noise(2));
+
+        pos.lat_bin = (matlab_f2b(pos.lat) - '0')';
+        pos.lon_bin = (matlab_f2b(pos.lon) - '0')';
+    
+        % Speed: 60, changing 10 over duration
+        speed = uint8(60 + noise(3));
+        speed_bin = (dec2bin(speed, 8) - '0')';
+    
+        % Navigation: Directions = 3, Distance to next step = 5.3
+        % Dir changes 1 over duration, Dist changes 3 over duration
+        nav.dir = uint8(3 + noise(4));
+        nav.dtns = single(5.3 + noise(5));
+        nav.dir_bin = (dec2bin(nav.dir, 8) - '0')';
+        nav.dtns_bin = (matlab_f2b(nav.dtns) - '0')';
+
+        % Concatenate array
+        info_pkt = [name_bin; pos.lat_bin; pos.lon_bin; speed_bin; ...
+                    nav.dir_bin; nav.dtns_bin];
+        info_pkts = [info_pkts, info_pkt];
+    end
 end
 
 % Stores float into binary (technically correct, but gets saved in wrong

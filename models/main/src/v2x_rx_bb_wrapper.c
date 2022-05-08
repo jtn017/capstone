@@ -32,7 +32,7 @@ static void v2x_rx_bb_one_step(RT_MODEL *const rtM);
 static void get_rx_input(int frame_num);
 static void get_adc_packet(bool adc_packet[RX_BB_IN_BITS]);
 
-// ---------------------- Temporary functions ----------------------
+// ---------------------- Data retrieval functions ----------------------
 static void get_adc_packet(bool adc_packet[RX_BB_IN_BITS])
 {
     return;
@@ -184,7 +184,7 @@ float fix_endianness(float val)
 
 void tx_payload_wifimodule2(struct payload_struct * pyld){
   
-    char ip_addr[] = "192.168.1.16";
+    const char ip_addr[] = IP_ADDR;
 
     char str1[200];
     char str2[200];

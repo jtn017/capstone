@@ -27,14 +27,14 @@ uint8_T g_rx_bb_out[RX_BB_OUT_BYTES];
 unsigned int g_num_tx_frames;
 
 // ---------------------- Function prototypes ----------------------
-void read_char_from_bin(const char* filename, char* data, unsigned int filesize);
-void read_float_from_bin(const char* filename, float* data, unsigned int filesize);
+void read_char_from_bin(const char* filename, char* data, unsigned int num_elem);
+void read_float_from_bin(const char* filename, float* data, unsigned int num_elem);
 
 double fixed_to_double_txmod(int16_T x);
 int16_T double_to_fixed_txmod(double x);
 #if DEBUG_BUILD
 static boolean_T test_tx_bb_out[TX_BB_OUT_BITS];
-static creal_T test_tx_mod_out[TX_MOD_OUT_SYMS];
+static creal32_T test_tx_mod_out[TX_MOD_OUT_SYMS];
 static boolean_T test_rx_bb_out[RX_BB_OUT_BYTES];
 
 void load_bin(int frame_num);
@@ -60,8 +60,8 @@ void load_bin(int frame_num)
     read_float_from_bin("data/v2x_tx_mod_out_imag.bin", tx_mod_out_imag, TX_MOD_OUT_SYMS * NUM_FRAMES);
     for(unsigned int i = 0; i < TX_MOD_OUT_SYMS; i++)
     {
-        test_tx_mod_out[i].re = (real_T) tx_mod_out_real[TX_MOD_OUT_SYMS * frame_num + i];
-        test_tx_mod_out[i].im = (real_T) tx_mod_out_imag[TX_MOD_OUT_SYMS * frame_num + i];
+        test_tx_mod_out[i].re = tx_mod_out_real[TX_MOD_OUT_SYMS * frame_num + i];
+        test_tx_mod_out[i].im = tx_mod_out_imag[TX_MOD_OUT_SYMS * frame_num + i];
     }
 
     // RX Modulator expected output
@@ -97,8 +97,8 @@ int compare_actual_vs_exp(boolean_T* tx_bb_out, cint16_T* tx_mod_out, uint8_T* r
     for (unsigned int n = 0; n < TX_MOD_OUT_SYMS; n++)
     {
         // Convert fixed point to float
-        float temp_real = fixed_to_double_txmod(tx_mod_out[n].re);
-        float temp_imag = fixed_to_double_txmod(tx_mod_out[n].im);
+        double temp_real = fixed_to_double_txmod(tx_mod_out[n].re);
+        double temp_imag = fixed_to_double_txmod(tx_mod_out[n].im);
 
         // Compare real and imag
         if (abs(temp_real - test_tx_mod_out[n].re) > ERROR_TOL)
@@ -111,7 +111,7 @@ int compare_actual_vs_exp(boolean_T* tx_bb_out, cint16_T* tx_mod_out, uint8_T* r
 
         if (abs(temp_imag - test_tx_mod_out[n].im) > ERROR_TOL)
         {
-            printf("TX MOD ERROR: actual[%d].re: %f, expected[%d].re: %f\n",
+            printf("TX MOD ERROR: actual[%d].im: %f, expected[%d].im: %lf\n",
                   n, temp_imag, n, test_tx_mod_out[n].im);
             ret_val = -4;
             break;
@@ -136,7 +136,7 @@ int compare_actual_vs_exp(boolean_T* tx_bb_out, cint16_T* tx_mod_out, uint8_T* r
 #endif
 
 // ---------------------- Read from binary file ----------------------
-void read_char_from_bin(const char* filename, char* data, unsigned int filesize)
+void read_char_from_bin(const char* filename, char* data, unsigned int num_elem)
 {
     // Reading char from file
     char buffer[BIN_FILE_MAX];
@@ -144,21 +144,21 @@ void read_char_from_bin(const char* filename, char* data, unsigned int filesize)
     fread(buffer, sizeof(buffer), 1, bin_file);
 
     // Copy to passed array
-    memcpy(data, buffer, filesize);
+    memcpy(data, buffer, num_elem * sizeof(*buffer));
 
     // Close file
     fclose(bin_file);
 }
 
-void read_float_from_bin(const char* filename, float* data, unsigned int filesize)
+void read_float_from_bin(const char* filename, float* data, unsigned int num_elem)
 {
-    // Reading boolean_T (1 char size) from file
+    // Reading float (4 char size) from file
     float buffer[BIN_FILE_MAX];
     FILE * bin_file = fopen(filename, "rb");
     fread(buffer, sizeof(buffer), 1, bin_file);
 
     // Copy to passed array
-    memcpy(data, buffer, filesize);
+    memcpy(data, buffer, num_elem * sizeof(*buffer));
 
     // Close file
     fclose(bin_file);
@@ -168,7 +168,9 @@ void read_float_from_bin(const char* filename, float* data, unsigned int filesiz
 // https://embeddedartistry.com/blog/2018/07/12/simple-fixed-point-conversion-in-c/
 double fixed_to_double_txmod(int16_T x)
 {
-    return ((double) x / (double) (1 << MOD_FRACT_BITS));
+    double numerator = x * 1.0;
+    double denominator = (1 << MOD_FRACT_BITS);
+    return (numerator/denominator);
 }
 
 int16_T double_to_fixed_txmod(double x)
