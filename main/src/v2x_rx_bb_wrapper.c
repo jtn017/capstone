@@ -29,35 +29,27 @@ static boolean_T rtY_bits_out[TX_BB_IN_BITS];
 
 // ---------------------- Function prototype ----------------------
 static void v2x_rx_bb_one_step(RT_MODEL *const rtM);
-static void get_rx_input(int frame_num);
-static void get_adc_packet(bool adc_packet[RX_BB_IN_BITS]);
-
-// ---------------------- Data retrieval functions ----------------------
-static void get_adc_packet(bool adc_packet[RX_BB_IN_BITS])
-{
-    return;
-}
+static void get_rx_input(uint32_t* uio_pkt);
 
 // ---------------------- Internal functions ----------------------
-static void get_rx_input(int frame_num)
+static void get_rx_input(uint32_t* uio_pkt)
 {
-#if DEBUG_BUILD
-    // Grab data from file
-    boolean_T buffer[RX_BB_IN_BITS * NUM_FRAMES];
-    FILE * bin_file = fopen("data/v2x_rx_bb_in.bin", "rb");
-    fread(buffer, sizeof(buffer), 1, bin_file);
-    fclose(bin_file);
-
-    // Save to global
-    for(unsigned int i = 0; i < RX_BB_IN_BITS; i++)
+    uint32_t idx = 0;
+    for (uint32_t i = 0; i < RX_BB_IN_DWORD; i++)
     {
-        rtU_v2x_rx_bb_in[i] = buffer[RX_BB_IN_BITS * frame_num + i];
+        for (uint32_t j = 31; j >= 0; j--)
+        {
+            if (idx < RX_BB_IN_BITS)
+            {
+                rtU_v2x_rx_bb_in[idx] = ((uio_pkt[i] >> j) & 1);
+            }
+            else
+            {
+                break;
+            }
+            idx++;
+        }
     }
-#else
-    bool adc_packet[RX_BB_IN_BITS];
-    get_adc_packet(adc_packet);
-    memcpy(rtU_v2x_rx_bb_in, adc_packet, RX_BB_IN_BITS*sizeof(rtU_v2x_rx_bb_in[0]));
-#endif
 }
 
 static void v2x_rx_bb_one_step(RT_MODEL *const rtM)
@@ -97,11 +89,11 @@ void rx_bb_init(void)
     V2X_RX_Baseband_initialize(rtMPtr, rtU_v2x_rx_bb_in, rtY_data_frame, rtY_dec_in, rtY_descr_in, rtY_bits_out);
 }
 
-void get_rx_bb_out(uint8_T* output, int frame_num)
+void get_rx_bb_out(uint32_t* uio_pkt, uint8_T* output_frame)
 {
-    get_rx_input(frame_num);
+    get_rx_input(uio_pkt);
     v2x_rx_bb_one_step(rtMPtr);
-    memcpy(output, rtY_data_frame, RX_BB_OUT_BYTES*sizeof(rtY_data_frame[0]));
+    memcpy(output_frame, rtY_data_frame, RX_BB_OUT_BYTES*sizeof(rtY_data_frame[0]));
 }
 
 #define MAX 20

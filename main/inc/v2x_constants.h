@@ -28,6 +28,7 @@
 #define RX_BB_IN_BITS (TX_BB_OUT_BITS)
 #define RX_BB_OUT_BYTES (TX_BB_IN_BYTES)
 #define RX_BB_DEC_BITS (TX_BB_ENC_BITS)
+#define RX_BB_IN_DWORD 64
 
 // Binary file
 #define BIN_FILE_MAX (TX_MOD_OUT_SYMS * NUM_FRAMES)

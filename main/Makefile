@@ -21,6 +21,7 @@ GEN_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(GEN_SRC)))
 
 # Main files
 MAIN_SRC = $(wildcard $(MAIN_SDIR)/*.c)
+MAIN_SRC += $(wildcard $(MAIN_SDIR)/*.cpp)
 MAIN_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(MAIN_SRC)))
 
 # Addiotnal stuff
@@ -46,6 +47,9 @@ $(ODIR)/%.o: $(GEN_SDIR)/%.c
 	$(CC) $(CFLAGS) $(INC) $(LDFLAGS) -c $< -o $@
 
 $(ODIR)/%.o: $(MAIN_SDIR)/%.c
+	$(CC) $(CFLAGS) $(INC) $(LDFLAGS) -c $< -o $@
+
+$(ODIR)/%.o: $(MAIN_SDIR)/%.cpp
 	$(CC) $(CFLAGS) $(INC) $(LDFLAGS) -c $< -o $@
 
 # Clean
