@@ -9,45 +9,14 @@
 #include <unistd.h>
 
 #define IP_PROTOCOL 0
+// #define IP_ADDRESS "10.0.0.1" // IP of pynq_z2
 #define IP_ADDRESS "127.0.0.1" // localhost
 #define PORT_NO 15050
-#define NET_BUF_SIZE 32
-#define cipherKey 'S'
 #define sendrecvflag 0
 
 #define NUM_FRAMES 5
 #define TX_BB_IN_BITS 784
 #define TX_BB_IN_BYTES (TX_BB_IN_BITS/8)
-
-// function to clear buffer
-void clearBuf(char* b)
-{
-	int i;
-	for (i = 0; i < NET_BUF_SIZE; i++)
-		b[i] = '\0';
-}
-
-// function for decryption
-char Cipher(char ch)
-{
-	return ch ^ cipherKey;
-}
-
-// function to receive file
-int recvFile(char* buf, int s)
-{
-	int i;
-	char ch;
-	for (i = 0; i < s; i++) {
-		ch = buf[i];
-		ch = Cipher(ch);
-		if (ch == EOF)
-			return 1;
-		else
-			printf("%c", ch);
-	}
-	return 0;
-}
 
 void read_data_into_buffer(const char* filename, char* data, unsigned int num_frames);
 
@@ -71,7 +40,6 @@ int main()
 	addr_con.sin_family = AF_INET;
 	addr_con.sin_port = htons(PORT_NO);
 	addr_con.sin_addr.s_addr = inet_addr(IP_ADDRESS);
-	char net_buf[NET_BUF_SIZE];
 
 	// socket()
 	sockfd = socket(AF_INET, SOCK_DGRAM,IP_PROTOCOL);
@@ -90,10 +58,6 @@ int main()
 	{
 		memcpy(&cur_frame[0], &buffer[i*frame_size], frame_size);
 
- 		printf("have new frame!\n");
-
-		// printf("\nPlease enter file name to receive:\n");
-		// scanf("%s", net_buf);
 		sendto(sockfd, cur_frame, frame_size, sendrecvflag, (struct sockaddr*)&addr_con, addrlen);
 
 		printf("\n---------Data Sent---------\n");

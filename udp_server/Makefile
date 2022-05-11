@@ -19,7 +19,7 @@ OBJDIR=objs
 #LIBS=-lc $(OPENCV_LIBS)
 
 # libraries + opencv libs
-#LIBS=-lc
+LIBS=-lm -levent -lcurl
 
 # wildcard adds all the *.c files in source directory to SRCS
 SRCS=$(wildcard $(SRCDIR)/*.c)

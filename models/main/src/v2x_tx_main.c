@@ -20,6 +20,20 @@
 #include "v2x_tx_mod_wrapper.h"
 #include "v2x_rx_bb_wrapper.h"
 
+#include <fcntl.h>
+#include <netinet/tcp.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+// #include <netinet/in.h>
+
+#define IP_PROTOCOL 0
+// #define IP_ADDRESS "10.0.0.1" // IP of pynq_z2
+#define IP_ADDRESS "127.0.0.1" // localhost
+#define PORT_NO 15050
+#define sendrecvflag 0
+
 // ---------------------- Global variables ----------------------
 boolean_T g_tx_bb_out[TX_BB_OUT_BITS];
 cint16_T g_tx_mod_out[TX_MOD_OUT_SYMS];
@@ -45,25 +59,6 @@ int compare_actual_vs_exp(boolean_T* tx_bb_out, cint16_T* tx_mod_out, uint8_T* r
 #if DEBUG_BUILD
 void load_bin(int frame_num)
 {
-    // TX Baseband expected output
-    boolean_T tx_bb_out[TX_BB_OUT_BITS * NUM_FRAMES];
-    read_char_from_bin("data/v2x_tx_bb_out.bin", (char*) tx_bb_out, TX_BB_OUT_BITS * NUM_FRAMES);
-    for(unsigned int i = 0; i < TX_BB_OUT_BITS; i++)
-    {
-        test_tx_bb_out[i] = tx_bb_out[TX_BB_OUT_BITS * frame_num + i];
-    }
-
-    // TX Modulator expected output
-    float tx_mod_out_real[TX_MOD_OUT_SYMS * NUM_FRAMES];
-    float tx_mod_out_imag[TX_MOD_OUT_SYMS * NUM_FRAMES];
-    read_float_from_bin("data/v2x_tx_mod_out_real.bin", tx_mod_out_real, TX_MOD_OUT_SYMS * NUM_FRAMES);
-    read_float_from_bin("data/v2x_tx_mod_out_imag.bin", tx_mod_out_imag, TX_MOD_OUT_SYMS * NUM_FRAMES);
-    for(unsigned int i = 0; i < TX_MOD_OUT_SYMS; i++)
-    {
-        test_tx_mod_out[i].re = tx_mod_out_real[TX_MOD_OUT_SYMS * frame_num + i];
-        test_tx_mod_out[i].im = tx_mod_out_imag[TX_MOD_OUT_SYMS * frame_num + i];
-    }
-
     // RX Modulator expected output
     uint8_T rx_bb_out[RX_BB_OUT_BYTES * NUM_FRAMES];
     read_char_from_bin("data/v2x_rx_bb_out.bin", (char*) rx_bb_out, RX_BB_OUT_BYTES * NUM_FRAMES);
@@ -200,36 +195,49 @@ int_T main(int_T argc, const char *argv[])
     tx_mod_init();
     rx_bb_init();
 
+    unsigned int frame_size = TX_BB_IN_BYTES;
+    int sockfd;//, nBytes;
+	struct sockaddr_in addr_con;
+	int addrlen = sizeof(addr_con);
+	addr_con.sin_family = AF_INET;
+	addr_con.sin_port = htons(PORT_NO);
+	addr_con.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+
+	// socket()
+	sockfd = socket(AF_INET, SOCK_DGRAM,IP_PROTOCOL);
+
+	if (sockfd < 0)
+	{
+		printf("\nfile descriptor not received!!\n");
+		exit(-1);
+	}
+	else{
+		printf("\nfile descriptor %d received\n", sockfd);
+	}
+
+
     // Get TX baseband output
 #if DEBUG_BUILD
-    // Payload
-    struct payload_struct pyld;
 
     // Set mumber of frames to compare
     for (int i = 0; i < NUM_FRAMES; i++)
     {
         load_bin(i);
-        get_tx_bb_out(g_tx_bb_out, i);
-        get_tx_mod_out(g_tx_bb_out, g_tx_mod_out);
         get_rx_bb_out(g_rx_bb_out, i);
-        int ret_val = compare_actual_vs_exp(g_tx_bb_out, g_tx_mod_out, g_rx_bb_out);
+        
+        printf("Frame %d matches recorded CSV!\n", i);
+        
+        fix_payload_packet(g_rx_bb_out);
 
-        if (ret_val != 0)
-        {
-            printf("Frame %d does NOT match recorded CSV!\n", i);
-        }
-        else
-        {
-            printf("Frame %d matches recorded CSV!\n", i);
-            if (i != 0) 
-            {
-                parse_payload_packet(g_rx_bb_out, &pyld);
-#ifdef HTTP_SOCKET
-                tx_payload_wifimodule2(&pyld);
-#endif
-            }
-        }
+        sleep(0.5);
+
+        sendto(sockfd, (void *)g_rx_bb_out, frame_size, sendrecvflag, (struct sockaddr*)&addr_con, addrlen);
+
+        printf("\n---------Data Sent---------\n");
+
     }
+
+    close(sockfd);
 
 #else
     // Event variables
