@@ -38,7 +38,7 @@ static void v2x_tx_bb_one_step(RT_MODEL *const rtM);
 static void update_info_packet(void);
 static void init_audio_buffer(void);
 static void advance_audio_buffer(void);
-static void get_tx_input_frame(int frame_num);
+static void get_tx_input_frame();
 
 // ---------------------- Data retrieval functions ----------------------
 static void update_info_packet(void)
@@ -130,21 +130,8 @@ static void advance_audio_buffer(void)
 }
 
 // ---------------------- Internal functions ----------------------
-static void get_tx_input_frame(int frame_num)
+static void get_tx_input_frame()
 {
-#if DEBUG_BUILD
-    // Grab data from file
-    uint8_T buffer[TX_BB_IN_BYTES * NUM_FRAMES];
-    FILE * bin_file = fopen("data/v2x_tx_bb_in.bin", "rb");
-    fread(buffer, sizeof(buffer), 1, bin_file);
-    fclose(bin_file);
-
-    // Save to global
-    for(unsigned int i = 0; i < TX_BB_IN_BYTES; i++)
-    {
-        rtU_v2x_tx_bb_in[i] = buffer[TX_BB_IN_BYTES * frame_num + i];
-    }
-#else
     // Update info packet
     update_info_packet();
 
@@ -155,7 +142,6 @@ static void get_tx_input_frame(int frame_num)
 
     // Advance audio packet number
     advance_audio_buffer();
-#endif
 }
 
 static void v2x_tx_bb_one_step(RT_MODEL *const rtM)
@@ -199,9 +185,9 @@ void tx_bb_init(void)
     V2X_TX_Baseband_initialize(rtMPtr, rtU_v2x_tx_bb_in, rtY_tx_frame, rtY_bits_in, rtY_scramb_out, rtY_enc_out);
 }
 
-void get_tx_bb_out(boolean_T* output_frame, int frame_num)
+void get_tx_bb_out(boolean_T* output_frame)
 {
-    get_tx_input_frame(frame_num);
+    get_tx_input_frame();
     v2x_tx_bb_one_step(rtMPtr);
     memcpy(output_frame, rtY_tx_frame, TX_BB_OUT_BITS*sizeof(rtY_tx_frame[0]));
 }

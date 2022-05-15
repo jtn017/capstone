@@ -10,8 +10,12 @@
 * and Javier Arribas, jarribas(at)cttc.es
 */
 
+// Includes (Standard Libraries)
+#include <unistd.h>
+
 // Includes (SDR)
 #include "v2x_sdr.h"
+#include "v2x_sdr_uio.h"
 
 // Includes (Simulink)
 #include "rtwtypes.h"
@@ -28,10 +32,14 @@
     } \
 }
 
-/* RX is input, TX is output */
-enum iodev { RX, TX };
+// RX is input, TX is output
+enum iodev
+{
+    RX,
+    TX
+};
 
-/* common RX and TX streaming params */
+// Common RX and TX streaming params
 struct stream_cfg {
     long long bw_hz; // Analog banwidth in Hz
     long long fs_hz; // Baseband sample rate in Hz
@@ -46,16 +54,18 @@ struct stream_cfg {
     int rf_dc_offset_tracking_;
     int ref_clock_;
 };
-/* static scratch mem for strings */
+
+// ---------------------- Globals ----------------------
+// Static scratch mem for strings
 static char tmpstr[64];
 
-/* IIO structs required for streaming */
+// IIO structs required for streaming
 static struct iio_context *ctx   = NULL;
 static struct iio_channel *rx0_i = NULL;
 static struct iio_channel *rx0_q = NULL;
 static struct iio_buffer  *rxbuf = NULL;
 
-/* Addifng for TX */
+// Addifng for TX
 static struct iio_device *tx;
 static struct iio_channel *tx0_i = NULL;
 static struct iio_channel *tx0_q = NULL;
@@ -63,14 +73,21 @@ static struct iio_buffer *txbuf = NULL;
 static struct iio_context *ctx_dma = NULL;
 static struct stream_cfg txcfg;
 
-
-static bool stop;
+static bool stop = false;
 static bool app_running = true;
-typedef struct xflow_pthread_data {
+
+typedef struct xflow_pthread_data
+{
     struct iio_device *dev;
 } xflow_pthread_data;
 
-/* cleanup and exit */
+typedef struct sdr_data
+{
+    sdrini_t* ini;
+    sdrstat_t* stat;
+} sdr_data;
+
+// ---------------------- Cleanup and exit ----------------------
 static void program_shutdown()
 {
     printf("* Destroying buffers\n");
@@ -95,7 +112,8 @@ static void handle_sig(int sig)
     stop = true;
 }
 
-/* check return value of attr_write function */
+// ---------------------- IIO functions ----------------------
+// Check return value of attr_write function
 static void errchk(int v, const char* what) {
     if (v < 0)
     {
@@ -105,26 +123,27 @@ static void errchk(int v, const char* what) {
     }
 }
 
-/* write attribute: long long int */
+// Write attribute: long long int
 static void wr_ch_lli(struct iio_channel *chn, const char* what, long long val)
 {
     errchk(iio_channel_attr_write_longlong(chn, what, val), what);
 }
 
-/* write attribute: string */
+// Write attribute: string
 static void wr_ch_str(struct iio_channel *chn, const char* what, const char* str)
 {
     errchk(iio_channel_attr_write(chn, what, str), what);
 }
 
-/* helper function generating channel names */
+// Helper function generating channel names
 static char* get_ch_name(const char* type, int id)
 {
     snprintf(tmpstr, sizeof(tmpstr), "%s%d", type, id);
     return tmpstr;
 }
 
-/* returns ad9361 phy device */
+// ---------------------- AD helper functions ----------------------
+// Returns ad9361 phy device
 static struct iio_device* get_ad9361_phy(struct iio_context *ctx)
 {
     struct iio_device *dev =  iio_context_find_device(ctx, "ad9361-phy");
@@ -132,7 +151,7 @@ static struct iio_device* get_ad9361_phy(struct iio_context *ctx)
     return dev;
 }
 
-/* finds AD9361 streaming IIO devices */
+// Finds AD9361 streaming IIO devices
 static bool get_ad9361_stream_dev(struct iio_context *ctx, enum iodev d, struct iio_device **dev)
 {
     switch (d)
@@ -148,7 +167,7 @@ static bool get_ad9361_stream_dev(struct iio_context *ctx, enum iodev d, struct 
     }
 }
 
-/* finds AD9361 streaming IIO channels */
+// Finds AD9361 streaming IIO channels
 static bool get_ad9361_stream_ch(struct iio_context *ctx, enum iodev d, struct iio_device *dev,
                                  int chid, struct iio_channel **chn)
 {
@@ -158,7 +177,7 @@ static bool get_ad9361_stream_ch(struct iio_context *ctx, enum iodev d, struct i
     return *chn != NULL;
 }
 
-/* finds AD9361 phy IIO configuration channel with id chid */
+// Finds AD9361 phy IIO configuration channel with id chid
 static bool get_phy_chan(struct iio_context *ctx, enum iodev d, int chid, struct iio_channel **chn)
 {
     switch (d)
@@ -176,7 +195,7 @@ static bool get_phy_chan(struct iio_context *ctx, enum iodev d, int chid, struct
     }
 }
 
-/* finds AD9361 local oscillator IIO configuration channels */
+// Finds AD9361 local oscillator IIO configuration channels
 static bool get_lo_chan(struct iio_context *ctx, enum iodev d, struct iio_channel **chn)
 {
     switch (d)
@@ -193,9 +212,9 @@ static bool get_lo_chan(struct iio_context *ctx, enum iodev d, struct iio_channe
     }
 }
 
-/* applies streaming configuration through IIO */
-bool cfg_ad9361_streaming_ch(struct iio_context *ctx, struct stream_cfg *cfg, 
-                             enum iodev type, int chid)
+// Applies streaming configuration through IIO
+static bool cfg_ad9361_streaming_ch(struct iio_context *ctx, struct stream_cfg *cfg, 
+                                    enum iodev type, int chid)
 {
     struct iio_channel *chn = NULL;
 
@@ -215,7 +234,8 @@ bool cfg_ad9361_streaming_ch(struct iio_context *ctx, struct stream_cfg *cfg,
     return true;
 }
 
-bool config_ad9361_rx_local(struct stream_cfg *cfg, struct iio_context *ctx)
+// ---------------------- RX setup functions ----------------------
+static bool config_ad9361_rx_local(struct stream_cfg *cfg, struct iio_context *ctx)
 {
     struct iio_device *ad9361_phy;
     printf("* Hardware gain to be set: %f dB\n", cfg->rf_gain_rx1_);
@@ -232,21 +252,9 @@ bool config_ad9361_rx_local(struct stream_cfg *cfg, struct iio_context *ctx)
     return true;
 }
 
-// --------- TX modulator functions ----------
-static void load_frame_txmod(int16_t *input)
-{
-    boolean_T tx_bb_out[TX_BB_OUT_BITS];
-    cint16_T tx_mod_out[TX_MOD_OUT_SYMS];
-    get_tx_bb_out(tx_bb_out, 0);
-    get_tx_mod_out(tx_bb_out, tx_mod_out);
-    memcpy(input, (int16_t *) tx_mod_out, TX_MOD_OUT_SYMS * 2 * sizeof(input[0]));
-}
-
-//*************************************
-//****** Adding Functions for Tx ******
-//*************************************
-bool config_ad9361_tx_local(uint64_t bandwidth_, uint64_t sample_rate_, uint64_t freq_,
-                            int numbufs,int bytes)
+// ---------------------- TX setup functions ----------------------
+static bool config_ad9361_tx_local(uint64_t bandwidth_, uint64_t sample_rate_, uint64_t freq_,
+                                   int numbufs,int bytes)
 {
     ASSERT((ctx_dma = iio_create_default_context()) && "No context");     
     
@@ -279,8 +287,8 @@ bool config_ad9361_tx_local(uint64_t bandwidth_, uint64_t sample_rate_, uint64_t
     return false;
 }
 
-void iio_buffer_DMA_tx(uint64_t bandwidth_,uint64_t sample_rate_,uint64_t freq_,
-                       void *data, int numbuf, int bytes)
+static void iio_buffer_DMA_tx(uint64_t bandwidth_,uint64_t sample_rate_,uint64_t freq_,
+                              void *data, int numbuf, int bytes)
 {
     ASSERT((ctx_dma = iio_create_default_context()) && "No context");     
     ASSERT(iio_context_get_devices_count(ctx_dma) > 0 && "No Devices");     
@@ -352,8 +360,8 @@ static void *monitor_thread_fn(void *data)
             continue;
         }
 
-        if (status & 4) {
-
+        if (status & 4)
+        {
             fprintf(stderr, "Overflow detected\n");
         }
     
@@ -365,7 +373,7 @@ static void *monitor_thread_fn(void *data)
     return (void*)0;
 }
 
-// Initialize XCVR
+// ---------------------- Initialize XCVR ----------------------
 static int init_xcvr(const sdrini_t *ini, sdrstat_t **stat, 
                     struct iio_device **tx, struct iio_device **rx,
                     struct stream_cfg *txcfg, struct stream_cfg *rxcfg)
@@ -452,10 +460,9 @@ static int init_xcvr(const sdrini_t *ini, sdrstat_t **stat,
     printf("stat->buffer_size = %llu, ini->buffer_size = %u\n",
            (*stat)->buffer_size, ini->buffer_size);
 
-    /* numbuf is the number of kernel buffers that we set, 
-       and also the number of times we write to file, 
-       total bytes written to file = numbuf*buffersize*datasize*datatype 
-    */
+    // numbuf is the number of kernel buffers that we set, 
+    // and also the number of times we write to file, 
+    // total bytes written to file = numbuf*buffersize*datasize*datatype 
     int numbuf = ceil((ini->f_sf * ini->dtype * ini->datasize * sampletime)/
                       ((*stat)->buffer_size * ini->dtype * ini->datasize));
 
@@ -484,7 +491,126 @@ static int init_xcvr(const sdrini_t *ini, sdrstat_t **stat,
     return numbuf;
 }
 
-// Simple configuration and streaming
+// ---------------------- Run TX/RX ----------------------
+static void load_frame_txmod(int16_t *input)
+{
+    boolean_T tx_bb_out[TX_BB_OUT_BITS];
+    cint16_T tx_mod_out[TX_MOD_OUT_SYMS];
+    get_tx_bb_out(tx_bb_out);
+    get_tx_mod_out(tx_bb_out, tx_mod_out);
+    memcpy(input, (int16_t *) tx_mod_out, TX_MOD_OUT_SYMS * 2 * sizeof(input[0]));
+}
+
+static void tx_thread_fn(void* args)
+{
+    // Loop init
+    printf("TX thread started\n");
+    uint32_t loop_num = 0;
+
+    // Only run if shorts are used
+    int datasize = ((sdr_data*) args)->ini->datasize;
+    if (datasize == 2)	
+    {
+        int16_t tx_mod_out[TX_MOD_OUT_SYMS * 2];
+        ssize_t nbytes_tx;
+        char *p_start;
+
+        // Run loop
+        while (!stop)
+        {
+            // WRITE: Get pointers to TX buf and write IQ to TX buf port 0
+            p_start = iio_buffer_first(txbuf, tx0_i);
+            load_frame_txmod(tx_mod_out);
+            memmove(p_start, tx_mod_out, TX_MOD_OUT_SYMS * 2);
+
+            // Schecule TX Buffer
+            nbytes_tx = iio_buffer_push(txbuf);
+            if (nbytes_tx < 0)
+            { 
+                printf("Error scheduling tx buf %d\n", (int) nbytes_tx);
+                program_shutdown(); 
+            }
+
+            // Sleep
+            printf("Finished TX transmit %d\n", loop_num);
+            usleep(5000000); // 0.5 seconds = 5000000
+            loop_num++;
+        }
+    }
+    else
+    {
+        printf("ini->datasize = %d, exiting TX thread\n", datasize);
+    }
+}
+
+static void process_frame_rxdemod(uint32_t* uio_pkt)
+{
+    // Process data
+    struct payload_struct payload;
+    uint8_t output_frame[RX_BB_OUT_BYTES];
+    get_rx_bb_out(uio_pkt, output_frame);
+    parse_payload_packet(output_frame, &payload);
+
+    // Print
+    printf("RX payload:\n");
+    printf("    Name:  %s\n", payload.name);
+    printf("    Lat:   %f\n", payload.lat);
+    printf("    Lon:   %f\n", payload.lon);
+    printf("    Speed: %d\n", payload.speed);
+    printf("    Dir:   %d\n", payload.dir);
+    printf("    DTNS:  %f\n", payload.dist_next_step);
+}
+
+static void rx_thread_fn(void* args)
+{
+    // Loop init
+    printf("RX thread started\n");
+    uint32_t loop_num = 0;
+
+    // Polling init
+    uint32_t rdy = 0;
+    uint32_t rdy_valid = 0;
+    uint32_t ver = 0;
+    uint32_t ver_valid = 0;
+    uint32_t uio_pkt[64];
+
+    // Run loop
+    while (!stop)
+    {
+        // Poll ready signal
+        generic_init(RX_IP_DEV);
+        while (rdy == 0)
+        {
+            rdy = generic_read(RX_IP_RDY);
+            rdy_valid = generic_read(RX_IP_RDY_VALID);
+
+            usleep(5000000); // 0.5 seconds = 5000000
+        }
+
+        // Read version (for IP testing)
+        ver = generic_read(RX_IP_VER);
+        ver_valid = generic_read(RX_IP_VER_VALID);
+
+        // Read demodulated data
+        for (int i = 0; i < 64; i++)
+        {
+            uio_pkt[i] = generic_read(RX_IP_OUTPUT+(i*4)); // *4 because byte addressing
+        }
+
+        // Process demodulated data
+        process_frame_rxdemod(uio_pkt);
+
+        // Sleep
+        printf("Finished TX transmit %d\n", loop_num);
+        usleep(5000000); // 0.5 seconds = 5000000
+        loop_num++;
+    }
+
+    // Cleanup
+    generic_exit();
+}
+
+// ---------------------- External functions ----------------------
 int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
 {
     // Listen to ctrl+c and ASSERT
@@ -502,104 +628,29 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
     // Initialize
     int numbuf = init_xcvr(ini, &stat, &tx, &rx, &txcfg, &rxcfg);
 
-    //------------------------- Debug settings -------------------------
-    int16_t tx_mod_out[TX_MOD_OUT_SYMS * 2];
-    numbuf = NUM_FRAMES;
-
     // Initialize generated code
     tx_bb_init();
     tx_mod_init();
     rx_bb_init();
 
     //------------------------- Data acquisition variables -------------------------
-    pthread_t monitor_thread; // Thread to monitor overflows/underflows
-    static struct xflow_pthread_data xflow_pthread_data;
-    int ret;
-
-    // Output buffer
-    // x2 for I and Q data, x2 for int16.
     printf("* Starting IO streaming (press CTRL+C to cancel)\n" );
-    int16_t* outbuf = (int16_t*) malloc(stat->buffer_size * 4); // Allocated bytes is x4 samples
-    printf("number of bytes attempted to allocate for output buffer is: %llu\n",
-           stat->buffer_size); 
-    if(outbuf == NULL)
-    {
-         printf("Failed to allocate memory for output buffer!\n");
-    }
     
-    // Open file to record data
-    if( (ini->fp = fopen(ini->dump_file, "wb")) == NULL)
-    {
-        printf("FAILED to open file for writing !!!\n");
-        return -1; 
-    }
+    // Run TX
+    pthread_t tx_thread;
+    sdr_data thread_args;
+    thread_args.ini  = ini;
+    thread_args.stat = stat;
+    pthread_create(&tx_thread, NULL, tx_thread_fn, &thread_args);
 
-    // Setup RX thread
-    xflow_pthread_data.dev = rx;
-    if ((ret = pthread_create(&monitor_thread, NULL, monitor_thread_fn, 
-         (void *)&xflow_pthread_data)))
-    { 
-        fprintf(stderr, "Failed to crate monitor thread: %s\n",
-        strerror(-ret));
-    }
-
-    // Write to file
-    printf("* Writing to File \n");
-    if (ini->datasize == 2)	
-    {
-        ssize_t nbytes_rx, nbytes_tx;
-        char *p_start;
-        // char *p_dat;
-        // char *p_end;
-        // ptrdiff_t p_inc;
-        printf("Number of debug buffers set is: %d\n", numbuf);
-           
-        for (int i = 0; i < numbuf; i++)
-        {
-            // Debug statements
-            printf("Entetered frame: %d\n", i);
-
-            // WRITE: Get pointers to TX buf and write IQ to TX buf port 0
-            p_start = iio_buffer_first(txbuf, tx0_i);
-            load_frame_txmod(tx_mod_out);
-            memmove(p_start, tx_mod_out, TX_MOD_OUT_SYMS * 2);
-
-            // Schecule TX Buffer
-            nbytes_tx = iio_buffer_push(txbuf);
-            if (nbytes_tx < 0)
-            { 
-                printf("Error scheduling tx buf %d\n", (int) nbytes_tx);
-                program_shutdown(); 
-            }
-
-            // Sleep until processing is finished
-            sleep(1);
-
-            // Refill RX buffer
-            nbytes_rx = iio_buffer_refill(rxbuf);
-            if (nbytes_rx < 0) { 
-                printf("Error refilling rx buf %d\n", (int) nbytes_rx);
-                program_shutdown(); 
-            }
-            
-            // READ: Get pointers to RX buf and read IQ from RX buf port 0
-            // p_start = iio_buffer_first(rxbuf, rx0_i);
-            p_start = iio_buffer_first(txbuf, tx0_i);
-            memmove(outbuf, p_start, nbytes_tx);
-            fwrite(outbuf, ini->datasize, stat->buffer_size, ini->fp);
-            fflush(ini->fp);
-
-            // // Debug statements
-            // printf("Sleep time is: %d ms\n", ini->msToProcess);
-            // printf("nbytes_rx = %d, nbytes_tx = %d\n", nbytes_rx, nbytes_tx);
-        }
-    }
+    // Run RX
+    pthread_t rx_thread;
+    pthread_create(&rx_thread, NULL, rx_thread_fn, NULL);
 
     // Cleanup
-    free(outbuf);
-    fclose(ini->fp);
+    pthread_join(tx_thread, NULL);
+    pthread_join(rx_thread, NULL);
     printf("* Exiting \n");
     program_shutdown();
-    pthread_join(monitor_thread, NULL);
     return 0;
 } 
