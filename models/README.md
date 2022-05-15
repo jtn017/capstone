@@ -24,7 +24,7 @@ update the `main` folder so that running `make` inside `main` runs successfully 
 the simulink vectors.
 
 ## Full Datapath Simulation
-![alt text](docs/images/simulink_modem.png?raw=true)
+![alt text](../docs/images/simulink_modem.PNG?raw=true)
 
 The full datapath simulation can be exercised by running the file `run_v2x_modem_tb.m`.
 The TX to RX processing chain occurs in the following order:
@@ -37,7 +37,7 @@ HUD data and audio samples are transmitted and processed from known values and b
 These data packets consist of 98 bytes total, and are sent at 0.01 second intervals.
 
 ## TX Baseband
-![alt text](docs/images/simulink_tx_baseband.png?raw=true)
+![alt text](../docs/images/simulink_tx_baseband.PNG?raw=true)
 The TX Baseband consists of the following blocks:
 - Byte to Bit converter
 - Scrambler
@@ -45,13 +45,13 @@ The TX Baseband consists of the following blocks:
 - Preamble Prepender (N = 6, 32 bits out, repeated 2x)
 
 ## TX Modulator
-![alt text](docs/images/simulink_tx_modulator.png?raw=true)
+![alt text](../docs/images/simulink_tx_modulator.PNG?raw=true)
 The TX Modulator consists of the following blocks:
 - Mapper (QPSK)
 - Pulse Shaping (SRRC)
 
 ## RX Demodulator
-![alt text](docs/images/simulink_rx_demodulator.png?raw=true)
+![alt text](../docs/images/simulink_rx_demodulator.PNG?raw=true)
 The RX Demodulator consists of the following blocks:
 - AGC
 - Matched Filter (SRRC)
@@ -60,7 +60,7 @@ The RX Demodulator consists of the following blocks:
 - Fine Frequency Compensation (PLL)
 
 ## RX Baseband
-![alt text](docs/images/simulink_rx_baseband.png?raw=true)
+![alt text](../docs/images/simulink_rx_baseband.PNG?raw=true)
 The RX Baseband consists of the following blocks:
 - Preamble Extractor
 - Decoder (Reed-Solomon (7, 3, 3))
