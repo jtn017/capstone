@@ -20,7 +20,7 @@ The following table gives a brief summary of the contents of the top level direc
 | models      | Contains TX/RX MATLAB/Simulink Models |
 
 # V2X Motorcycle HUD
-TODO attach image
+![alt text](docs/images/v2x.png?raw=true)
 
 The V2X Motorcycle HUD project seeks to create a V2X (vehicle-to-everything) system to improve motorcycle group riding experiences.
 The final implemented system will consist of 2 motorcycles, where each motorcycle will contain a full V2X Motorcycle HUD setup.
@@ -29,7 +29,7 @@ Each vehicle will speak with each other through an audio channel and share its d
 This information includes (but may not be limited to) the other vehicle’s name, geographic location, speed, directions, and distance to next step.
 
 ## HUD System Diagram and Materials
-TODO attach image
+![alt text](docs/images/apparatus.png?raw=true)
 
 As shown in the diagram above, each motorcycle in the V2X system consists of the 4 main components:
 - [Avnet ZedBoard](https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/zedboard/)
