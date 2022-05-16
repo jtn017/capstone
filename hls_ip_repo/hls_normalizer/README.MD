@@ -22,7 +22,7 @@ We investigated three methods of Automatic Gain Control:
 
 The AGC in this folder is implemented using two sequential CORDICs. The first CORDIC uses a atan2 function to calculate the phase, and then the next CORDIC uses the phase to regenerate the signal with an unit amplitude. The CORDICs are easily implemented with the HLS Math library.
 
-![alt text](../../docs/images/hls_norm_1.PNG?raw=true)
+![alt text](../../docs/images/hls_norm_1.png?raw=true)
 
 ## Expected Output of HLS Norm Testbench
-![alt text](../../docs/images/hls_norm_2.PNG?raw=true)
+![alt text](../../docs/images/hls_norm_2.png?raw=true)

@@ -23,7 +23,7 @@ We investigated three methods of Automatic Gain Control:
 
 The AGC in this folder is implemented using a log() to and the exp() function.
 
-![alt text](../../docs/images/hls_agc_1.PNG?raw=true)
+![alt text](../../docs/images/hls_agc_1.png?raw=true)
 
 ### Logarithm and Exponential Implementation
 The two functions can use any type of log() and because our system is a binary system we preferred to use log2() and exp2(). In our code we used the HLS Math library provided by Vitis in order to implement the log2() function. For the exp2() function we used a look-up-table (LUT), although depending on the required precision a shift operator can also be used. Using a shift operator would reduce resource usage.
@@ -51,4 +51,4 @@ agc_t mag = mag_step2 >> 4;
 ````
 
 ## Expected Output of HLS AGC Testbench
-![alt text](../../docs/images/hls_agc_2.PNG?raw=true)
+![alt text](../../docs/images/hls_agc_2.png?raw=true)
