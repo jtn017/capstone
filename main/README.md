@@ -1,12 +1,13 @@
 # Repository Directories
 The following table gives a brief summary of the most important top level files and directories:
-| Directory | Details                                                    |
-| --------- | ---------------------------------------------------------- |
-| conf      | Contains configuration files for the ZedBoard/FMCOMMS4 	 |
-| data      | Contains sample HUD/audio data used in actual transmission |
-| gen       | Contains the source code generated from Simulink models 	 |
-| inc       | Contains the headers of all manually created files         |
-| src    	| Contains all manually created source code        			 |
+| Directory    | Details                                                    |
+| ------------ | ---------------------------------------------------------- |
+| [conf](conf) | Contains configuration files for the ZedBoard/FMCOMMS4     |
+| [data](data) | Contains sample HUD/audio data used in actual transmission |
+| [gen](gen)   | Contains the source code generated from Simulink models 	|
+| [inc](inc)   | Contains the headers of all manually created files     	|
+| [src](src)   | Contains all manually created source code               	|
+
 
 # Zedboard SW
 This directory contains the ZedBoard SW source files.

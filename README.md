@@ -8,25 +8,26 @@ Other important work/resources are listed here:
 - [Google Drive](https://drive.google.com/drive/folders/1-ji_W6FZ46F6Ge3nmcZqJ8UrlpsPyltQ?usp=sharing)
 
 # Repository Directories
-The following table gives a brief summary of the contents of the top level directories:
-| Directory   | Details |
-| ----------- | ------- |
-| arm_sw      | TBD     |
-| docs        | TBD     |
-| hdl_ip_repo | TBD     |
-| hls_ip_repo | TBD     |
-| hud         | TBD     |
-| main        | Contains ZedBoard SW code for TX/RX   |
-| models      | Contains TX/RX MATLAB/Simulink Models |
+The following table gives a brief summary of the contents of the top level directories.
+Each directory may contain its own readme with more details.
+| Directory                  | Details |
+| -------------------------- | ------- |
+| [arm_sw](arm_sw)           | TBD     |
+| [docs](docs)               | Contains documents/presentations created for classes and images for git docs |
+| [hdl_ip_repo](hdl_ip_repo) | TBD     |
+| [hls_ip_repo](hls_ip_repo) | TBD     |
+| [hud](hud)                 | TBD     |
+| [main](main)               | Contains ZedBoard SW code for TX/RX   |
+| [models](models)           | Contains TX/RX MATLAB/Simulink Models |
 
 # V2X Motorcycle HUD
 ![alt text](docs/images/v2x.png?raw=true)
 
-The V2X Motorcycle HUD project seeks to create a V2X (vehicle-to-everything) system to improve motorcycle group riding experiences.
-The final implemented system will consist of 2 motorcycles, where each motorcycle will contain a full V2X Motorcycle HUD setup.
-A custom waveform will be used to transmit HUD data and audio data betweem each motorcycle.
-Each vehicle will speak with each other through an audio channel and share its driving status, where the driving status is shown on the HUD.
-This information includes (but may not be limited to) the other vehicle’s name, geographic location, speed, directions, and distance to next step.
+The V2X Motorcycle HUD project seeks to create a V2X (vehicle-to-everything) system.
+The motivation behind this effort is to improve motorcycle group riding experiences.
+The final system consists of 2 motorcycles (wherein each motorcycle mounts a full V2X Motorcycle HUD setup).
+A custom waveform is used to transmit HUD data (shown on the HUD) and audio (played through speakers).
+This information includes the other vehicle’s name, geographic location, speed, directions, and distance to next step.
 
 ## HUD System Diagram and Materials
 ![alt text](docs/images/apparatus.png?raw=true)
@@ -46,8 +47,8 @@ The data flow is from one V2X TX to the other V2X RX is described as:
 - ZedBoard2 SW sends data to HUD using HTTP requests
 
 ## Waveform Description and Data Packet
-The waveform will consist of QPSK modulated data on the WiFi band (both TX/RX using the same frequency).
-TDMA will be used to schedule transmission between the two motorcycles, and also to calculate the distance between the two motorcycles.
+The waveform consists of QPSK modulated data on the WiFi band (both TX/RX using the same frequency).
+TDMA is used to schedule transmission between motorcycles, and also to calculate distance between the motorcycles.
 - Throughput: 78.4 kbps
 - Minimum Required Sampling Frequency: 1.58 Msps
 - Carrier Frequency: 2.4GHz (WiFi band)

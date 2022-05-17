@@ -1,20 +1,21 @@
 # Repository Directories
-The following table gives a brief summary of the most important top level files and directories:
-| Directory/File        | Details                                                             |
-| --------------------- | ------------------------------------------------------------------- |
-| audio_gen             | Audio files, MATLAB code for conversion/playback                    |
-| main                  | Folder containing buildable SW using Simulink generated code        |
-| misc                  | Miscellaneous files (currently houses old and unused MATLAB scripts |
-| src                   | Directory containing the Simulink generated C code                  |
-| run_v2x_baseband_tb.m | Runs the V2X Baseband simulation (TX/RX baseband)                   |
-| run_v2x_modem_tb.m    | Runs the V2X Modem simulation (TX/RX baseband and mod/demod)        |
-| v2x_baseband.slx      | Library Simulink file containing the V2X Baseband blocks            |
-| v2x_baseband_init.m   | Initialization file for V2X Baseband variables/settings             |
-| v2x_baseband_tb.slx   | Simulink model containing blocks for TX/RX baseband verification    |
-| v2x_modem.slx         | Library Simulink file containing the V2X Modulator blocks           |
-| v2x_modem_init.m      | Initialization file for V2X Modem variables/settings                |
-| v2x_modem_tb.slx      | Simulink model containing blocks for TX/RX modem verification       |
-| QPSK.m                | RX Demodulator MATLAB simulation script                             |
+The following table gives a brief summary of the most important top level files and directories.
+Each directory may contain its own readme with more details.
+| Directory/File         | Details                                                             |
+| ---------------------- | ------------------------------------------------------------------- |
+| [audio_gen](audio_gen) | Audio files, MATLAB code for conversion/playback                    |
+| [main](main)           | Folder containing buildable SW using Simulink generated code        |
+| [misc](misc)           | Miscellaneous files (currently houses old and unused MATLAB scripts |
+| [src](src)             | Directory containing the Simulink generated C code                  |
+| run_v2x_baseband_tb.m  | Runs the V2X Baseband simulation (TX/RX baseband)                   |
+| run_v2x_modem_tb.m     | Runs the V2X Modem simulation (TX/RX baseband and mod/demod)        |
+| v2x_baseband.slx       | Library Simulink file containing the V2X Baseband blocks            |
+| v2x_baseband_init.m    | Initialization file for V2X Baseband variables/settings             |
+| v2x_baseband_tb.slx    | Simulink model containing blocks for TX/RX baseband verification    |
+| v2x_modem.slx          | Library Simulink file containing the V2X Modulator blocks           |
+| v2x_modem_init.m       | Initialization file for V2X Modem variables/settings                |
+| v2x_modem_tb.slx       | Simulink model containing blocks for TX/RX modem verification       |
+| [QPSK.m](QPSK.m)       | RX Demodulator MATLAB simulation script                             |
 
 # V2X Models
 This directory contains the MATLAB scripts and Simulink models used to model the V2X system (TX and RX).

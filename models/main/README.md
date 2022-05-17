@@ -1,12 +1,12 @@
 # Repository Directories
 The following table gives a brief summary of the most important top level files and directories:
-| Directory | Details                                                    |
-| --------- | ---------------------------------------------------------- |
-| .vscode   | Contains Visual Studio Code settings for the project       |
-| data      | Contains test vectors used in unit testing 				 |
-| gen       | Contains the source code generated from Simulink models 	 |
-| inc       | Contains the headers of all manually created files         |
-| src    	| Contains all manually created source code        			 |
+| Directory          | Details                                                    |
+| ------------------ | ---------------------------------------------------------- |
+| [.vscode](.vscode) | Contains Visual Studio Code settings for the project       |
+| [data](data)       | Contains test vectors used in unit testing                 |
+| [gen](gen)         | Contains the source code generated from Simulink models    |
+| [inc](inc)         | Contains the headers of all manually created files         |
+| [src](src)         | Contains all manually created source code                  |
 
 # Testing Setup SW
 This directory contains a working setup of the Simulink generated source code.
