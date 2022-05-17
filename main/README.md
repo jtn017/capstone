@@ -1,5 +1,5 @@
 # Repository Directories
-The following table gives a brief summary of the most important top level files and directories:
+The following table gives a brief summary of the most important top level directories.
 | Directory    | Details                                                    |
 | ------------ | ---------------------------------------------------------- |
 | [conf](conf) | Contains configuration files for the ZedBoard/FMCOMMS4     |

@@ -10,15 +10,15 @@ Other important work/resources are listed here:
 # Repository Directories
 The following table gives a brief summary of the contents of the top level directories.
 Each directory may contain its own readme with more details.
-| Directory                  | Details |
-| -------------------------- | ------- |
-| [arm_sw](arm_sw)           | TBD     |
-| [docs](docs)               | Contains documents/presentations created for classes and images for git docs |
-| [hdl_ip_repo](hdl_ip_repo) | TBD     |
-| [hls_ip_repo](hls_ip_repo) | TBD     |
-| [hud](hud)                 | TBD     |
-| [main](main)               | Contains ZedBoard SW code for TX/RX   |
-| [models](models)           | Contains TX/RX MATLAB/Simulink Models |
+| Directory                  | Details                                     |
+| -------------------------- | ------------------------------------------- |
+| [arm_sw](arm_sw)           | Contains ZedBoard ARM development test code |
+| [docs](docs)               | Contains docs created for class/git docs    |
+| [hdl_ip_repo](hdl_ip_repo) | Contains verilog code for our Vitis IPs     |
+| [hls_ip_repo](hls_ip_repo) | Contains our Vitis HLS IP source code       |
+| [hud](hud)                 | Contains HUD webserver and display code     |
+| [main](main)               | Contains ZedBoard SW code for TX/RX         |
+| [models](models)           | Contains TX/RX MATLAB/Simulink Models       |
 
 # V2X Motorcycle HUD
 ![alt text](docs/images/v2x.png?raw=true)
