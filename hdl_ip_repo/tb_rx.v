@@ -22,6 +22,7 @@ parameter PAY_LEN = 10000*2;
 ****************************************/
 reg clk;
 reg sys_clk;
+reg axi_clk;
 
 reg rst;
 
@@ -33,11 +34,12 @@ wire [15:0] output_i;
 wire [15:0] output_q;
 wire output_vld;
 
+reg agc_en_n = 1'b0;
+reg start = 1'b0;
 /****************************************
  * UUT
 ****************************************/
 rx#(
-    .CC_GEN('d1),
     .SRRC_GEN('d0)
 )
 uut(
@@ -46,24 +48,31 @@ uut(
     .i_clk(clk),      
     .i_rst(rst),
     // Control Signals
-    .i_ctrl(32'd1),
+    .i_ctrl({29'd0,1'b1,agc_en_n,start}),
+    .i_thresh('d200000),//400,000 
+    .i_pow_ref(26'b1100_000000),
+    .i_store_dly('h2),
     // ADC Data Input (RX)
     .i_fromADC_i(input_i),
     .i_fromADC_q(input_q),
     .i_fromADC_vld(input_vld),
     // Receiver Data
-    .o_datarx_i(),
-    .o_datarx_q(),
-    .o_datarx_vld()
+//    .dbg_corr(),
+//    .dbg_max(),
+//    .dbg_sym(),
+//    .dbg_data(),
+//    .dbg_data_vld(),
+    .axi_clk(axi_clk),
+    .axi_rstn(~rst)
 ); 
 
 /****************************************
- * 4MHz ADC
+ * 8MHz = 2x4MHz ADC
 ****************************************/
 initial begin
     clk = 1'b0;
     forever begin
-	    #125 clk = ~clk;
+	    #62.5 clk = ~clk;
 	end
 end
 
@@ -77,6 +86,15 @@ initial begin
 	end
 end
 
+/****************************************
+ * 100MHz Sys Clock
+****************************************/
+initial begin
+    axi_clk = 1'b0;
+    forever begin
+	   #5 axi_clk = ~axi_clk;
+	end
+end
 /****************************************
  * Main Loop Signal Input Genertation
 ****************************************/
@@ -106,12 +124,12 @@ initial begin
     input_q = 'd0;
     rst = 1'b0;
     input_vld = 1'b0;
-    
+    start = 1'b0;
     // Apply reset
     @(posedge clk) rst = 1'b1;
     @(posedge clk) rst = 1'b1;
     @(posedge clk) rst = 1'b0;
-    
+    @(posedge clk) start = 1'b1;
     // Inject Data
     for(idx=0; idx < PAY_LEN-1; idx = idx+2)begin
         @(posedge clk)  begin 

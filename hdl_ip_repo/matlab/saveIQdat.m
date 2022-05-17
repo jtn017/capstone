@@ -31,8 +31,8 @@ function data = saveIQdat(signal,bits,fileName)
     data = [re; im];
     data = reshape(data, 1, []);
 
-    for i=1:length(rx_bpsk_sv)
-        fwrite(fid,data(i),'short','native');
+    or i=1:length(rx_bpsk_sv)
+        fwrite(fid,data(i),'short','ieee-be');
     end
     fid=fclose(fid);
 

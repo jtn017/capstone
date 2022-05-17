@@ -1,7 +1,9 @@
 # Amplitude Normatlization (AGC for quadrature signals)
+
 This directory contains all design files used to create our Custom Normalizer IP using Vitis HLS. We also consider this to be called our CORDIC AGC.
 
 ## Repository Directories
+
 The following table gives a brief summary of the most important top level files and directories:
 | Directory/File        | Details                                                             |
 | --------------------- | ------------------------------------------------------------------- |

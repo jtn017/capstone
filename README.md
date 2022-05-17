@@ -14,7 +14,7 @@ Each directory may contain its own readme with more details.
 | -------------------------- | ------------------------------------------- |
 | [arm_sw](arm_sw)           | Contains ZedBoard ARM development test code |
 | [docs](docs)               | Contains docs created for class/git docs    |
-| [hdl_ip_repo](hdl_ip_repo) | Contains verilog code for our Vitis IPs     |
+| [hdl_ip_repo](hdl_ip_repo) | Contains verilog code for our demodulator IP     |
 | [hls_ip_repo](hls_ip_repo) | Contains our Vitis HLS IP source code       |
 | [hud](hud)                 | Contains HUD webserver and display code     |
 | [main](main)               | Contains ZedBoard SW code for TX/RX         |
@@ -33,22 +33,25 @@ This information includes the other vehicle’s name, geographic location, speed
 ![alt text](docs/images/apparatus.png?raw=true)
 
 As shown in the diagram above, each motorcycle in the V2X system consists of the 4 main components:
+
 - [Avnet ZedBoard](https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/zedboard/)
 - [PYNQ Z2](http://www.pynq.io/board.html)
 - WiFi Module
 - OLED Screen
 
 The data flow is from one V2X TX to the other V2X RX is described as:
+
 - ZedBoard1 SW creates a data packet and processes it (via TX Baseband/Modulator SW)
-- ZedBoard1 SW buffers processed data for transmission
-- ZedBoard2 PL processes the transmitted waveform (via RX Demod PL)
-- ZedBoard2 PL stores demodulated data into UIO
+- ZedBoard1 SW buffers processed data for transmission via DMA and the Digital-to-Analog (DAC).
+- ZedBoard2 PL processes the transmitted waveform (via RX Demodulator IP)
+- ZedBoard2 PL stores demodulated data into a RAM accessed via UIO on the ARM.
 - ZedBoard2 SW retrieves demodulated data and processes it (via RX Baseband SW) 
 - ZedBoard2 SW sends data to HUD using HTTP requests
 
 ## Waveform Description and Data Packet
 The waveform consists of QPSK modulated data on the WiFi band (both TX/RX using the same frequency).
 TDMA is used to schedule transmission between motorcycles, and also to calculate distance between the motorcycles.
+
 - Throughput: 78.4 kbps
 - Minimum Required Sampling Frequency: 1.58 Msps
 - Carrier Frequency: 2.4GHz (WiFi band)
