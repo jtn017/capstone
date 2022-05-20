@@ -141,8 +141,9 @@ int readinifile(sdrini_t *ini)
     ini->quadrature_tracking=readiniint(fendfile,"FEND","QUADRATURE_TRACKING");
     ini->rf_dc_offset_tracking=readiniint(fendfile,"FEND","RF_DC_OFFSET_TRACKING");
     ini->ref_clock=readiniint(fendfile,"FEND","CLOCK");
-    ini->hardware_gain=readinidouble(fendfile,"FEND","GAIN");
-    readinistr(fendfile,"FEND","GAIN_CONTROL_MODE",ini->gain_control_mode);
+    ini->rx_hardware_gain=readinidouble(fendfile,"FEND","RX_GAIN");
+    ini->tx_hardware_gain=readinidouble(fendfile,"FEND","TX_GAIN");
+    readinistr(fendfile,"FEND","RX_GAIN_CONTROL_MODE",ini->rx_gain_control_mode);
     ini->f_bw=MHZ(readinidouble(fendfile,"FEND","BW1"));
     ini->f_if=readinidouble(fendfile,"FEND","IF1");
     ini->dtype=readiniint(fendfile,"FEND","DTYPE1");

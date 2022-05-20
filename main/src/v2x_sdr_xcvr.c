@@ -46,6 +46,7 @@ struct stream_cfg {
     long long lo_hz; // Local oscillator frequency in Hz
     const char* rfport; // Port name
     double rf_gain_rx1_;
+    double rf_gain_tx1_;
     //double rf_gain_rx2_;
     const char* gain_mode_rx1_;
     //const char* gain_mode_rx2_;
@@ -235,56 +236,58 @@ static bool cfg_ad9361_streaming_ch(struct iio_context *ctx, struct stream_cfg *
 }
 
 // ---------------------- RX setup functions ----------------------
+// https://analogdevicesinc.github.io/libiio/v0.16/group__Device
 static bool config_ad9361_rx_local(struct stream_cfg *cfg, struct iio_context *ctx)
 {
+    // Local variables
     struct iio_device *ad9361_phy;
-    printf("* Hardware gain to be set: %f dB\n", cfg->rf_gain_rx1_);
-    ad9361_phy = iio_context_find_device(ctx, "ad9361-phy");
     int ret;
+
+    // Print values to write
+    printf("* RX hardware gain control mode to be set: %s\n", cfg->gain_mode_rx1_);
+    printf("* RX hardware gain to be set: %f dB\n", cfg->rf_gain_rx1_);
+    ad9361_phy = iio_context_find_device(ctx, "ad9361-phy");
+
+    // Gain control mode
+    ret = iio_device_attr_write(ad9361_phy, "in_voltage0_gain_control_mode",
+                                cfg->gain_mode_rx1_);
+    if (ret < 0)
+    {
+        fprintf(stderr, "Failed to set in_voltage0_gain_control_mode: %d\n", ret);
+    }
+
+    // Hardware gain
     ret = iio_device_attr_write_double(ad9361_phy, "in_voltage0_hardwaregain",
                                        cfg->rf_gain_rx1_);
     if (ret < 0)
     {
-        fprintf(stderr,"Failed to set in_voltage0_hardwaregain: %d\n",ret );
+        fprintf(stderr, "Failed to set in_voltage0_hardwaregain: %d\n", ret);
     }
 
+    // Return
     printf("--- END OF FMCOMMS4 RX CONFIGURATION ---\n\n");
     return true;
 }
 
 // ---------------------- TX setup functions ----------------------
-static bool config_ad9361_tx_local(uint64_t bandwidth_, uint64_t sample_rate_, uint64_t freq_,
-                                   int numbufs,int bytes)
+// https://analogdevicesinc.github.io/libiio/v0.16/group__Device
+// https://wiki.analog.com/resources/tools-software/linux-drivers/iio-transceiver/ad9361#tx_attenuation_control
+static bool config_ad9361_tx_local(struct stream_cfg *cfg, struct iio_context *ctx)
 {
-    ASSERT((ctx_dma = iio_create_default_context()) && "No context");     
-    
-    if (!cfg_ad9361_streaming_ch(ctx_dma, &txcfg, TX, 0))
+    // Set harware gain
+    struct iio_device *ad9361_phy;
+    int ret;
+    printf("* TX hardware gain to be set: %f dB\n", cfg->rf_gain_tx1_);
+    ad9361_phy = iio_context_find_device(ctx, "ad9361-phy");
+    ret = iio_device_attr_write_double(ad9361_phy, "out_voltage0_hardwaregain", cfg->rf_gain_tx1_);
+    if (ret < 0)
     {
-        printf("TX port 0 not found\n");
-        printf("AD9361 IIO TX port 0 not found");
+        fprintf(stderr, "Failed to set in_voltage0_hardwaregain: %d\n", ret);
     }
 
-    ASSERT(iio_context_get_devices_count(ctx_dma) > 0 && "No Devices");     
-    ASSERT(get_ad9361_stream_dev(ctx_dma, TX, &tx) && "No tx dev found");
-    ASSERT(get_ad9361_stream_ch(ctx_dma, TX, tx, 0, &tx0_i) && "TX chan i not found");
-    ASSERT(get_ad9361_stream_ch(ctx_dma, TX, tx, 1, &tx0_q) && "TX chan q not found");
-
-    iio_channel_enable(tx0_i);
-    iio_channel_enable(tx0_q);
-
-    iio_device_set_kernel_buffers_count(tx, numbufs);
-    txbuf = iio_device_create_buffer(tx, bytes, false);
-
-    if (!txbuf)
-    {
-        perror("Could not create TX buffer");
-        if (txbuf) { iio_buffer_destroy(txbuf); }
-        if (ctx_dma) { iio_context_destroy(ctx_dma); }
-        if (tx0_i) { iio_channel_disable(tx0_i); }
-        if (tx0_q) { iio_channel_disable(tx0_q); }
-    }
-
-    return false;
+    // Return
+    printf("--- END OF FMCOMMS4 TX CONFIGURATION ---\n\n");
+    return true;
 }
 
 static void iio_buffer_DMA_tx(uint64_t bandwidth_,uint64_t sample_rate_,uint64_t freq_,
@@ -387,8 +390,8 @@ static int init_xcvr(const sdrini_t *ini, sdrstat_t **stat,
     printf(" - Center Freq: %lli Hz\n", rxcfg->lo_hz);
     printf(" - Rf Bandwidth: %lli Hz\n", rxcfg->bw_hz);
     rxcfg->rfport = "A_BALANCED"; // port A (select for rf freq.)
-    rxcfg->rf_gain_rx1_=ini->hardware_gain;
-    rxcfg->gain_mode_rx1_=ini->gain_control_mode;
+    rxcfg->rf_gain_rx1_=ini->rx_hardware_gain;
+    rxcfg->gain_mode_rx1_=ini->rx_gain_control_mode;
     rxcfg->bb_dc_offset_tracking_=ini->bb_dc_offset_tracking;
     rxcfg->quadrature_tracking_=ini->quadrature_tracking;
     rxcfg->rf_dc_offset_tracking_=ini->rf_dc_offset_tracking;
@@ -398,7 +401,8 @@ static int init_xcvr(const sdrini_t *ini, sdrstat_t **stat,
     printf("TX Configuration:\n");
     txcfg->bw_hz = (long long)ini->f_bw;
     txcfg->fs_hz = (long long)ini->f_sf;
-    txcfg->lo_hz = (long long)ini->f_cf; 
+    txcfg->lo_hz = (long long)ini->f_cf;
+    txcfg->rf_gain_tx1_ = ini->tx_hardware_gain;
     txcfg->rfport = "A_BALANCED"; // port A (select for rf freq.)
     printf(" - SAMPLING RATE: %lli Hz\n", txcfg->fs_hz);
     printf(" - Center Freq: %lli Hz\n", txcfg->lo_hz);
@@ -448,6 +452,7 @@ static int init_xcvr(const sdrini_t *ini, sdrstat_t **stat,
     }
 
     config_ad9361_rx_local(rxcfg, ctx);
+    config_ad9361_tx_local(txcfg, ctx);
     
     printf("* Center Freq: %f Hz\n", ini->f_cf);
     printf("* Sampling Freq: %f Hz\n", ini->f_sf);
@@ -533,7 +538,7 @@ static void tx_thread_fn(void* args)
 
             // Sleep
             printf("Finished TX transmit %d\n", loop_num);
-            usleep(5000000); // 0.5 seconds = 5000000
+            usleep(500000); // 0.5 seconds = 500000
             loop_num++;
         }
     }
@@ -579,12 +584,12 @@ static void rx_thread_fn(void* args)
     {
         // Poll ready signal
         generic_init(RX_IP_DEV);
-        while (rdy == 0)
+        while ((!stop) && (rdy == 0))
         {
             rdy = generic_read(RX_IP_RDY);
             rdy_valid = generic_read(RX_IP_RDY_VALID);
 
-            usleep(5000000); // 0.5 seconds = 5000000
+            usleep(500000); // 0.5 seconds = 500000
         }
 
         // Read version (for IP testing)
@@ -602,7 +607,7 @@ static void rx_thread_fn(void* args)
 
         // Sleep
         printf("Finished TX transmit %d\n", loop_num);
-        usleep(5000000); // 0.5 seconds = 5000000
+        usleep(500000); // 0.5 seconds = 500000
         loop_num++;
     }
 
