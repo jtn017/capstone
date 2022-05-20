@@ -1,0 +1,16 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/mnt/c/Users/jpacheco/Documents/UCSD_GradSchool/capstone/models/main'
+mkdir -p obj
+gcc -O0 -Wall -g -I inc -I gen -c gen/V2X_RX_Baseband_data.c -o obj/V2X_RX_Baseband_data.o
+gcc -O0 -Wall -g -I inc -I gen -c gen/V2X_TX_Baseband_data.c -o obj/V2X_TX_Baseband_data.o
+gcc -O0 -Wall -g -I inc -I gen -c gen/V2X_TX_Modulator_data.c -o obj/V2X_TX_Modulator_data.o
+gcc -O0 -Wall -g -I inc -I gen -c gen/V2X_RX_Baseband.c -o obj/V2X_RX_Baseband.o
+gcc -O0 -Wall -g -I inc -I gen -c gen/V2X_TX_Baseband.c -o obj/V2X_TX_Baseband.o
+gcc -O0 -Wall -g -I inc -I gen -c gen/V2X_TX_Modulator.c -o obj/V2X_TX_Modulator.o
+gcc -O0 -Wall -g -I inc -I gen -c src/v2x_tx_main.c -o obj/v2x_tx_main.o
+gcc -O0 -Wall -g -I inc -I gen -c src/v2x_rx_bb_wrapper.c -o obj/v2x_rx_bb_wrapper.o
+gcc -O0 -Wall -g -I inc -I gen -c src/v2x_tx_bb_wrapper.c -o obj/v2x_tx_bb_wrapper.o
+gcc -O0 -Wall -g -I inc -I gen -c src/v2x_tx_mod_wrapper.c -o obj/v2x_tx_mod_wrapper.o
+gcc -O0 -Wall -g obj/V2X_RX_Baseband_data.o obj/V2X_TX_Baseband_data.o obj/V2X_TX_Modulator_data.o obj/V2X_RX_Baseband.o obj/V2X_TX_Baseband.o obj/V2X_TX_Modulator.o obj/v2x_tx_main.o obj/v2x_rx_bb_wrapper.o obj/v2x_tx_bb_wrapper.o obj/v2x_tx_mod_wrapper.o -lm -levent -lcurl -o v2x_tx_main
+make: Leaving directory '/mnt/c/Users/jpacheco/Documents/UCSD_GradSchool/capstone/models/main'
+ 

@@ -1,0 +1,470 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.2.1
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2016 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Sun May 15 10:15:13 2022
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# environment
+WSLENV = VSCODE_WSL_EXT_LOCATION/up
+# default
+.SHELLFLAGS := -c
+# makefile (from 'Makefile', line 20)
+MAIN_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(MAIN_SRC)))
+# environment
+VSCODE_LOG_NATIVE = false
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# makefile (from 'Makefile', line 7)
+MAIN_SDIR = src
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# makefile
+CURDIR := /mnt/c/Users/jpacheco/Documents/UCSD_GradSchool/capstone/models/main
+# makefile
+SHELL = /bin/sh
+# environment
+VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
+# environment
+_ = /home/akamus/.vscode-server/bin/da15b6fd3ef856477bf6f4fb29ba1b7af717770d/node
+# makefile (from 'Makefile', line 3)
+CFLAGS = -O0 -Wall -g
+# makefile (from 'Makefile', line 1)
+MAKEFILE_LIST :=  Makefile
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+XDG_DATA_DIRS = /usr/local/share:/usr/share:/var/lib/snapd/desktop
+# environment
+VSCODE_VERBOSE_LOGGING = true
+# environment
+LESSOPEN = | /usr/bin/lesspipe %s
+# environment
+VSCODE_CWD = /mnt/c/Programs/Microsoft VS Code
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# environment
+PATH = /home/akamus/.vscode-server/bin/da15b6fd3ef856477bf6f4fb29ba1b7af717770d/bin/remote-cli:/home/akamus/pythonVirtualEnv/py3.8/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files/Common Files/Oracle/Java/javapath:/mnt/c/Program Files/National Instruments/Shared/OpenVINO/:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files/MATLAB/R2021b/runtime/win64:/mnt/c/Program Files/MATLAB/R2021b/bin:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/CMake/bin:/mnt/c/Users/jpacheco/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0/LocalCache/local-packages/Python39/Scripts:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files (x86)/IVI Foundation/VISA/WinNT/Bin/:/mnt/c/Program Files/IVI Foundation/VISA/Win64/Bin/:/mnt/c/Program Files (x86)/National Instruments/Shared/LabVIEW CLI:/mnt/c/Program Files (x86)/IVI Foundation/IVI/bin:/mnt/c/Program Files/IVI Foundation/IVI/bin:/mnt/c/Program Files (x86)/IVI Foundation/VISA/WinNT/Bin:/mnt/c/Program Files/PuTTY/:/mnt/c/Users/jpacheco/AppData/Local/Microsoft/WindowsApps:/mnt/c/Programs/Microsoft VS Code/bin:/snap/bin
+# environment
+VIRTUAL_ENV = /home/akamus/pythonVirtualEnv/py3.8
+# environment
+VSCODE_LOG_STACK = false
+# environment
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-a47222db-8688-44d7-86c7-579ade8864be.sock
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
+# environment
+LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+# automatic
+%F = $(notdir $%)
+# makefile (from 'Makefile', line 16)
+GEN_OBJ = $(patsubst %.c,$(ODIR)/%.o,$(notdir $(GEN_SRC)))
+# environment
+VSCODE_PIPE_LOGGING = true
+# makefile (from 'Makefile', line 19)
+MAIN_SRC = $(wildcard $(MAIN_SDIR)/*.c)
+# environment
+PWD = /mnt/c/Users/jpacheco/Documents/UCSD_GradSchool/capstone/models/main
+# default
+.LOADED := 
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /home/akamus
+# environment
+LESSCLOSE = /usr/bin/lesspipe %s %s
+# environment
+LOGNAME = akamus
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# makefile (from 'Makefile', line 23)
+MKDIR = $(mkdir -p)
+# environment
+MAKELEVEL := 0
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+SHLVL = 0
+# makefile (from 'Makefile', line 2)
+CC = gcc
+# makefile (from 'Makefile', line 6)
+ODIR = obj
+# default
+MAKE_VERSION := 4.2.1
+# environment
+USER = akamus
+# makefile
+.DEFAULT_GOAL := all
+# makefile (from 'Makefile', line 8)
+GEN_SDIR = gen
+# environment
+NAME = DESKTOP-D9BLGMA
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/jpacheco/.vscode/extensions/ms-vscode-remote.remote-wsl-0.66.2
+# default
+MAKE_COMMAND := make
+# makefile (from 'Makefile', line 11)
+INC = -I inc -I $(GEN_SDIR)
+# default
+.VARIABLES := 
+# automatic
+*F = $(notdir $*)
+# makefile
+MAKEFLAGS = pqrR
+# environment
+MFLAGS = -pqrR
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# automatic
++F = $(notdir $+)
+# environment
+VSCODE_HANDLES_SIGPIPE = true
+# default
+MAKEFILES := 
+# automatic
+<F = $(notdir $<)
+# environment
+PS1 = (py3.8) \[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ 
+# environment
+LC_ALL = C
+# environment
+HOSTTYPE = x86_64
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# default
+.INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
+# default
+.RECIPEPREFIX := 
+# environment
+LANG = C
+# environment
+TERM = xterm-256color
+# environment
+VSCODE_EXTHOST_WILL_SEND_SOCKET = true
+# environment
+WSL_DISTRO_NAME = Ubuntu-20.04
+# makefile (from 'Makefile', line 15)
+GEN_SRC = $(wildcard $(GEN_SDIR)/*.c)
+# variable set hash-table stats:
+# Load=79/1024=8%, Rehash=0, Collisions=7/131=5%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 14, inode 1688849861902406): 11 files, no impossibilities.
+# gen (device 14, inode 3940649675646728): 12 files, no impossibilities.
+# src (device 14, inode 3659174698937473): 6 files, no impossibilities.
+
+# 29 files, no impossibilities in 3 directories.
+
+# Implicit Rules
+
+obj/%.o: gen/%.c
+#  recipe to execute (from 'Makefile', line 45):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+obj/%.o: src/%.c
+#  recipe to execute (from 'Makefile', line 48):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+# 2 implicit rules, 0 (0.0%) terminal.
+
+# Files
+
+# Not a target:
+gen/V2X_TX_Baseband.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-04-27 20:14:29.6630544
+#  File has been updated.
+#  Successfully updated.
+
+all: obj main
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# variable set hash-table stats:
+# Load=0/32=0%, Rehash=0, Collisions=0/13=0%
+
+.PHONY: clean
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+obj/V2X_TX_Modulator_data.o: gen/V2X_TX_Modulator_data.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'V2X_TX_Modulator_data'
+#  Last modified 2022-05-13 16:51:04.4074292
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 45):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-13 15:08:55.8122189
+#  File has been updated.
+#  Successfully updated.
+
+obj/v2x_tx_mod_wrapper.o: src/v2x_tx_mod_wrapper.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'v2x_tx_mod_wrapper'
+#  Last modified 2022-05-13 16:51:04.7839273
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 48):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+obj/v2x_tx_bb_wrapper.o: src/v2x_tx_bb_wrapper.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'v2x_tx_bb_wrapper'
+#  Last modified 2022-05-13 16:51:04.7323746
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 48):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+obj/V2X_RX_Baseband.o: gen/V2X_RX_Baseband.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'V2X_RX_Baseband'
+#  Last modified 2022-05-13 16:51:04.4639845
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 45):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+# Not a target:
+gen/V2X_TX_Modulator_data.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-04-27 20:14:29.6700608
+#  File has been updated.
+#  Successfully updated.
+
+obj/V2X_TX_Baseband_data.o: gen/V2X_TX_Baseband_data.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'V2X_TX_Baseband_data'
+#  Last modified 2022-05-13 16:51:04.3723854
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 45):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+# Not a target:
+gen/V2X_RX_Baseband.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-04-27 20:14:29.6570489
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+gen/V2X_TX_Baseband_data.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-04-27 20:14:29.6670579
+#  File has been updated.
+#  Successfully updated.
+
+obj:
+#  Implicit rule search has not been done.
+#  Last modified 2022-05-13 16:51:04.7789228
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 51):
+	mkdir -p $(ODIR)
+
+# Not a target:
+src/v2x_tx_mod_wrapper.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-04-12 21:14:00.5653704
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/v2x_tx_bb_wrapper.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-07 11:16:03.471113
+#  File has been updated.
+#  Successfully updated.
+
+mv_gen_code:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 32):
+	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband.c gen/.
+	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband.h gen/.
+	cp ../src/V2X_TX_Baseband_ert_rtw/V2X_TX_Baseband_data.c gen/.
+	cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator.c gen/.
+	cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator.h gen/.
+	cp ../src/V2X_TX_Modulator_ert_rtw/V2X_TX_Modulator_data.c gen/.
+	cp ../src/V2X_TX_Modulator_ert_rtw/rtwtypes.h gen/.
+	cp ../src/V2X_RX_Baseband_ert_rtw/V2X_RX_Baseband.c gen/.
+	cp ../src/V2X_RX_Baseband_ert_rtw/V2X_RX_Baseband.h gen/.
+	cp ../src/V2X_RX_Baseband_ert_rtw/V2X_RX_Baseband_data.c gen/.
+
+obj/v2x_tx_main.o: src/v2x_tx_main.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'v2x_tx_main'
+#  Last modified 2022-05-13 16:51:04.6288222
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 48):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+clean:
+#  Phony target (prerequisite of .PHONY).
+#  Implicit rule search has not been done.
+#  File does not exist.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 57):
+	rm -f $(ODIR)/*.o
+	rm -f v2x_tx_main
+	rm -f v2x_tx_bb_test
+
+obj/v2x_rx_bb_wrapper.o: src/v2x_rx_bb_wrapper.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'v2x_rx_bb_wrapper'
+#  Last modified 2022-05-13 16:51:04.6793157
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 48):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+obj/V2X_RX_Baseband_data.o: gen/V2X_RX_Baseband_data.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'V2X_RX_Baseband_data'
+#  Last modified 2022-05-13 16:51:04.3473633
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 45):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+obj/V2X_TX_Modulator.o: gen/V2X_TX_Modulator.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'V2X_TX_Modulator'
+#  Last modified 2022-05-13 16:51:04.5490707
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 45):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+main: obj/V2X_RX_Baseband_data.o obj/V2X_TX_Baseband_data.o obj/V2X_TX_Modulator_data.o obj/V2X_RX_Baseband.o obj/V2X_TX_Baseband.o obj/V2X_TX_Modulator.o obj/v2x_tx_main.o obj/v2x_rx_bb_wrapper.o obj/v2x_tx_bb_wrapper.o obj/v2x_tx_mod_wrapper.o
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: ''
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := main
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := obj/V2X_RX_Baseband_data.o obj/V2X_TX_Baseband_data.o obj/V2X_TX_Modulator_data.o obj/V2X_RX_Baseband.o obj/V2X_TX_Baseband.o obj/V2X_TX_Modulator.o obj/v2x_tx_main.o obj/v2x_rx_bb_wrapper.o obj/v2x_tx_bb_wrapper.o obj/v2x_tx_mod_wrapper.o
+# automatic
+# | := 
+# automatic
+# < := obj/V2X_RX_Baseband_data.o
+# automatic
+# ^ := obj/V2X_RX_Baseband_data.o obj/V2X_TX_Baseband_data.o obj/V2X_TX_Modulator_data.o obj/V2X_RX_Baseband.o obj/V2X_TX_Baseband.o obj/V2X_TX_Modulator.o obj/v2x_tx_main.o obj/v2x_rx_bb_wrapper.o obj/v2x_tx_bb_wrapper.o obj/v2x_tx_mod_wrapper.o
+# automatic
+# ? := obj/V2X_RX_Baseband_data.o obj/V2X_TX_Baseband_data.o obj/V2X_TX_Modulator_data.o obj/V2X_RX_Baseband.o obj/V2X_TX_Baseband.o obj/V2X_TX_Modulator.o obj/v2x_tx_main.o obj/v2x_rx_bb_wrapper.o obj/v2x_tx_bb_wrapper.o obj/v2x_tx_mod_wrapper.o
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=5/21=24%
+#  recipe to execute (from 'Makefile', line 29):
+	$(CC) $(CFLAGS) $(GEN_OBJ) $(MAIN_OBJ) -lm -levent -lcurl -o v2x_tx_main
+
+# Not a target:
+src/v2x_tx_main.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-13 16:51:01.2083419
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+gen/V2X_RX_Baseband_data.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-04-27 20:14:29.6620535
+#  File has been updated.
+#  Successfully updated.
+
+# Not a target:
+gen/V2X_TX_Modulator.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-04-27 20:14:29.6680591
+#  File has been updated.
+#  Successfully updated.
+
+obj/V2X_TX_Baseband.o: gen/V2X_TX_Baseband.c
+#  Implicit rule search has been done.
+#  Implicit/static pattern stem: 'V2X_TX_Baseband'
+#  Last modified 2022-05-13 16:51:04.50403
+#  File has been updated.
+#  Successfully updated.
+#  recipe to execute (from 'Makefile', line 45):
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+# Not a target:
+src/v2x_rx_bb_wrapper.c:
+#  Implicit rule search has been done.
+#  Last modified 2022-05-13 15:08:55.8162219
+#  File has been updated.
+#  Successfully updated.
+
+# files hash-table stats:
+# Load=29/1024=3%, Rehash=0, Collisions=3/91=3%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 70 / storage = 1180 B / avg = 16 B
+# current buf: size = 8162 B / used = 1180 B / count = 70 / avg = 16 B
+
+# strcache performance: lookups = 104 / hit rate = 32%
+# hash-table stats:
+# Load=70/8192=1%, Rehash=0, Collisions=5/104=5%
+# Finished Make data base on Sun May 15 10:15:13 2022
+
+ 
