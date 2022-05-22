@@ -91,11 +91,12 @@ typedef struct {
 	int skipnb;
 	int nch;
 	int ref_clock;	
-	double hardware_gain;
+	double rx_hardware_gain;
+	double tx_hardware_gain;
 	int bb_dc_offset_tracking;	
 	int quadrature_tracking;	
 	int rf_dc_offset_tracking;
-	char gain_control_mode[50];	
+	char rx_gain_control_mode[50];	
 } sdrini_t;
 
 typedef struct {

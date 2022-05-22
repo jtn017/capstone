@@ -6,19 +6,23 @@ This effort was part of [UCSD MAS WES](https://jacobsschool.ucsd.edu/mas/wes) Co
 
 Other important work/resources are listed here:
 - [Google Drive](https://drive.google.com/drive/folders/1-ji_W6FZ46F6Ge3nmcZqJ8UrlpsPyltQ?usp=sharing)
+- [iio_device library](https://analogdevicesinc.github.io/libiio/v0.16/group__Device)
+- [iio_device TX attenuation example](https://wiki.analog.com/resources/tools-software/linux-drivers/iio-transceiver/ad9361#tx_attenuation_control)
+- [ZedBoard Audio (linux device driver)](https://yuhei1-horibe.medium.com/linux-device-driver-for-zedboard-audio-7e2d1efc2941)
+- [Zedboard Audio (bitstream design)](https://yuhei1-horibe.medium.com/zedboard-audio-hardware-design-b19c3a1bf453)
 
 # Repository Directories
 The following table gives a brief summary of the contents of the top level directories.
 Each directory may contain its own readme with more details.
-| Directory                  | Details                                     |
-| -------------------------- | ------------------------------------------- |
-| [arm_sw](arm_sw)           | Contains ZedBoard ARM development test code |
-| [docs](docs)               | Contains docs created for class/git docs    |
-| [hdl_ip_repo](hdl_ip_repo) | Contains verilog code for our demodulator IP     |
-| [hls_ip_repo](hls_ip_repo) | Contains our Vitis HLS IP source code       |
-| [hud](hud)                 | Contains HUD webserver and display code     |
-| [main](main)               | Contains ZedBoard SW code for TX/RX         |
-| [models](models)           | Contains TX/RX MATLAB/Simulink Models       |
+| Directory                  | Details                                      |
+| -------------------------- | -------------------------------------------- |
+| [arm_sw](arm_sw)           | Contains ZedBoard ARM development test code  |
+| [docs](docs)               | Contains docs created for class/git docs     |
+| [hdl_ip_repo](hdl_ip_repo) | Contains verilog code for our demodulator IP |
+| [hls_ip_repo](hls_ip_repo) | Contains our Vitis HLS IP source code        |
+| [hud](hud)                 | Contains HUD webserver and display code      |
+| [main](main)               | Contains ZedBoard SW code for TX/RX          |
+| [models](models)           | Contains TX/RX MATLAB/Simulink Models        |
 
 # V2X Motorcycle HUD
 ![alt text](docs/images/v2x.png?raw=true)
