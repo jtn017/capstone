@@ -1,5 +1,13 @@
-
-// Load Wi-Fi library
+/*------------------------------------------------------------------------------
+  03/06/2022
+  Author: Jorge Pacheco
+  File: 
+  ------------------------------------------------------------------------------
+  Description: 
+  Simple Server implementation that listens to simple HTTP commands from
+  Clients connected to its own network
+------------------------------------------------------------------------------*/
+// Setup the server to receive data over WiFi
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <SPI.h>
@@ -20,16 +28,11 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // Replace with your network credentials
 const char* ssid     = "OnePlus8Pro";
 const char* password = "70a8d2c12d5e";
+//const char* ssid     = "NETGEAR66";
+//const char* password = "shinyvase603";
 
 // Set up the server object
-//ESP8266WebServer server;
 ESP8266WebServer server;
-
-/*
-float range = 0.0;
-float velocity = 0.0;
-float gas_milage = 0.0;
-*/
 
 String n_name;
 float lat = 0.0;
@@ -89,12 +92,6 @@ void setup() {
   display.print(ip_addr);
   display.println();
   display.display();
-
-  //display.print(String(dist_next_step));
-  //display.println();
-  //display.display();
-
-  //Serial.println(WiFi.localIP());
   
 }
 void loop() {
