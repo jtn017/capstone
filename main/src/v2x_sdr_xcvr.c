@@ -548,13 +548,19 @@ static void tx_thread_fn(void* args)
     }
 }
 
-static void process_frame_rxdemod(uint32_t* uio_pkt)
+static void process_frame_rxdemod(uint32_t* uio_pkt, int* sockfd, struct sockaddr_in * addr_con)
 {
     // Process data
     struct payload_struct payload;
+
+    // Reset payload to zero
+    memset(&payload, 0, sizeof(payload));
+
     uint8_t output_frame[RX_BB_OUT_BYTES];
     get_rx_bb_out(uio_pkt, output_frame);
-    parse_payload_packet(output_frame, &payload);
+
+    // Fix endianness of payload portion of packet
+    fix_payload_packet(output_frame, &payload);
 
     // Print
     printf("RX payload:\n");
@@ -564,6 +570,19 @@ static void process_frame_rxdemod(uint32_t* uio_pkt)
     printf("    Speed: %d\n", payload.speed);
     printf("    Dir:   %d\n", payload.dir);
     printf("    DTNS:  %f\n", payload.dist_next_step);
+
+#ifdef USE_UDP_CLIENT
+
+    unsigned int frame_size = TX_BB_IN_BYTES;
+
+    int addrlen = sizeof(*addr_con);
+
+    // usleep(150e3);
+    sendto(*sockfd, (void *)output_frame, frame_size, sendrecvflag, (struct sockaddr*)addr_con, addrlen);
+
+#endif
+
+
 }
 
 static void rx_thread_fn(void* args)
@@ -578,6 +597,28 @@ static void rx_thread_fn(void* args)
     uint32_t ver = 0;
     uint32_t ver_valid = 0;
     uint32_t uio_pkt[64];
+
+    int sockfd = 0;
+    struct sockaddr_in addr_con;
+
+#ifdef USE_UDP_CLIENT
+
+	addr_con.sin_family = AF_INET;
+	addr_con.sin_port = htons(PORT_NO);
+	addr_con.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+
+	// socket()
+	sockfd = socket(AF_INET, SOCK_DGRAM,IP_PROTOCOL);
+
+	if (sockfd < 0)
+	{
+		printf("\nfile descriptor not received!!\n");
+		exit(-1);
+	}
+	else{
+		printf("\nfile descriptor %d received\n", sockfd);
+	}
+#endif
 
     // Run loop
     while (!stop)
@@ -603,13 +644,18 @@ static void rx_thread_fn(void* args)
         }
 
         // Process demodulated data
-        process_frame_rxdemod(uio_pkt);
+        process_frame_rxdemod(uio_pkt, &sockfd, &addr_con);
 
         // Sleep
         printf("Finished TX transmit %d\n", loop_num);
         usleep(500000); // 0.5 seconds = 500000
         loop_num++;
     }
+
+
+#ifdef USE_UDP_CLIENT
+    close(sockfd);
+#endif
 
     // Cleanup
     generic_exit();

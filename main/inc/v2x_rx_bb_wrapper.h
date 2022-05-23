@@ -15,14 +15,16 @@
 
 #include <curl/curl.h>
 
+#include <arpa/inet.h>
+
 // Function declarations
 void rx_bb_init(void);
 void get_rx_bb_out(uint32_t* uio_pkt, uint8_T* output_frame);
 int parse_payload_packet(uint8_T* in_frame, struct payload_struct * pyld);
 void send_packet_esp8266(char * str);
 void tx_payload_wifimodule2(struct payload_struct * pyld);
+int fix_payload_packet(uint8_T* in_frame, struct payload_struct * pyld);
 float fix_endianness(float val);
-
 
 #endif // V2X_RX_BASE_WRAPPER_H
 

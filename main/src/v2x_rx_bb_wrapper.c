@@ -96,22 +96,11 @@ void get_rx_bb_out(uint32_t* uio_pkt, uint8_T* output_frame)
     memcpy(output_frame, rtY_data_frame, RX_BB_OUT_BYTES*sizeof(rtY_data_frame[0]));
 }
 
-#define MAX 20
-#define N_FLOAT_DIGITS 6
-#define EXPLICIT_INITIALIZATION
-
 // ---------------------- External functions ----------------------
-int parse_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
+int fix_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
 {
-    // Get number of bytes in info packet
-    unsigned int payload_size = INFO_PKT_BYTES;
-
-    // Crete buffer and copy packets contents locally
-    uint8_T payload[payload_size];
-    memcpy(payload, in_frame, payload_size);
-
     // Reset memory of struct to 0
-    memset(pyld, 0, sizeof(*pyld));
+    float temp1, temp2, temp3;
 
     /* 
         Use implicit or explicit initialization.
@@ -120,25 +109,28 @@ int parse_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
     */
    
 #ifndef EXPLICIT_INITIALIZATION 
-    memcpy(&pyld->name, &payload[0], 4);
-    memcpy(&pyld->lat, &payload[4], 4);
-    memcpy(&pyld->lon, &payload[8], 4);
+    memcpy(pyld->name, &payload[0], 4);
+    memcpy(pyld->lat, &payload[4], 4);
+    memcpy(pyld->lon, &payload[8], 4);
     pyld->speed = payload[12];
     pyld->dir = payload[13];
-    memcpy(&pyld->dist_next_step, &payload[14], 4);
+    memcpy(pyld->dist_next_step, &payload[14], 4);
 #else
-    memcpy(pyld, &payload[0], 14);
-    memcpy(&pyld->dist_next_step, &payload[14], 4);
+    memcpy(pyld, &in_frame[0], 14);
+    memcpy(&pyld->dist_next_step, &in_frame[14], 4);
 #endif
 
-    float temp = fix_endianness(pyld->lat);
-    pyld->lat = temp;
+    temp1 = fix_endianness(pyld->lat);
+    pyld->lat = temp1;
 
-    temp = fix_endianness(pyld->lon);
-    pyld->lon = temp;
+    temp2 = fix_endianness(pyld->lon);
+    pyld->lon = temp2;
 
-    temp = fix_endianness(pyld->dist_next_step);
-    pyld->dist_next_step = temp;
+    temp3 = fix_endianness(pyld->dist_next_step);
+    pyld->dist_next_step = temp3;
+
+    memcpy(&in_frame[0], pyld, 14);
+    memcpy(&in_frame[14], &pyld->dist_next_step, 4);
 
     return 0;
 }
@@ -172,92 +164,6 @@ float fix_endianness(float val)
 
     // return correct floating pt value
     return flt_val;
-}
-
-void tx_payload_wifimodule2(struct payload_struct * pyld){
-  
-    char ip_addr[] = "192.168.1.16";
-
-    char str1[200];
-    char str2[200];
-    char str3[200];
-    char str4[200];
-    char str5[200];
-    char str6[200];
-
-    // Reset char string structure to 0
-    struct char_strings strs;
-    memset(&strs, 0, sizeof(strs));
-
-    // Copy every member of payload into string arrays
-    memcpy(&strs.name, pyld->name, 4);
-    gcvt(pyld->lat, N_FLOAT_DIGITS, strs.lat);
-    gcvt(pyld->lon, N_FLOAT_DIGITS, strs.lon);
-    snprintf( strs.speed, N_FLOAT_DIGITS, "%d", pyld->speed );
-    snprintf( strs.dir, N_FLOAT_DIGITS, "%d", pyld->dir );
-    gcvt(pyld->dist_next_step, N_FLOAT_DIGITS, strs.dist_next_step);
-
-    /*
-    printf("%s\n",strs.name);
-    printf("%s\n",strs.lat);
-    printf("%s\n",strs.lon);
-    printf("%s\n",strs.speed);
-    printf("%s\n",strs.dir);
-    printf("%s\n",strs.dist_next_step);
-    */
-
-    // Create HTTP GET requests(URL path and query)
-    sprintf(str1, "%s/name?value=%s",           ip_addr, strs.name);
-    sprintf(str2, "%s/lat?value=%s",            ip_addr, strs.lat);
-    sprintf(str3, "%s/lon?value=%s",            ip_addr, strs.lon);
-    sprintf(str4, "%s/speed?value=%s",          ip_addr, strs.speed);
-    sprintf(str5, "%s/dir?value=%s",            ip_addr, strs.dir);
-    sprintf(str6, "%s/dist_next_step?value=%s", ip_addr, strs.dist_next_step);
-
-    /*
-    printf("%s\n",str1);
-    printf("%s\n",str2);
-    printf("%s\n",str3);
-    printf("%s\n",str4);
-    printf("%s\n",str5);
-    printf("%s\n",str6);
-    printf("\n");
-    */
-
-    send_packet_esp8266(str1);
-    send_packet_esp8266(str2);
-    send_packet_esp8266(str3);
-    send_packet_esp8266(str4);
-    send_packet_esp8266(str5);
-    send_packet_esp8266(str6);
-
-    return;
-
-}
-
-void send_packet_esp8266(char * str){
-
-    CURL *curl;
-    CURLcode res;
-
-    curl = curl_easy_init();
-    if(curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, str);
-        /* example.com is redirected, so we tell libcurl to follow redirection */
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-
-        /* Perform the request, res will get the return code */
-        res = curl_easy_perform(curl);
-        /* Check for errors */
-        if(res != CURLE_OK)
-            fprintf(stderr, "curl_easy_perform() failed: %s\n",
-
-        curl_easy_strerror(res));
-
-        /* always cleanup */
-        curl_easy_cleanup(curl);
-    }
-
 }
 
 

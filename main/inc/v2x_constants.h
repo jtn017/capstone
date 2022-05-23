@@ -37,4 +37,17 @@
 // Modulator is sfix16_En14
 #define MOD_FRACT_BITS 14
 
+// Flag used to reset payload data structure
+#define EXPLICIT_INITIALIZATION
+
+// UDP client related parameters
+#define IP_PROTOCOL 0
+#define IP_ADDRESS "10.0.0.1" // IP of pynq_z2
+// #define IP_ADDRESS "127.0.0.1" // localhost
+// #define IP_ADDRESS "192.168.1.23" // localhost
+#define PORT_NO 15050
+#define sendrecvflag 0
+
+// #define USE_UDP_CLIENT
+
 #endif // V2X_CONSTANTS_H

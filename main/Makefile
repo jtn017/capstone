@@ -52,6 +52,9 @@ $(ODIR)/%.o: $(MAIN_SDIR)/%.c
 $(ODIR)/%.o: $(MAIN_SDIR)/%.cpp
 	$(CC) $(CFLAGS) $(INC) $(LDFLAGS) -c $< -o $@
 
+run:
+	sudo ./xcvr_demo
+
 # Clean
 .PHONY: clean
 
