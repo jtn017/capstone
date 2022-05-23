@@ -1,6 +1,6 @@
 # Repository Files
 The following table gives a brief summary of the most important top level files.
-| Directory/File                                     | Details                                                        |
+| File                                               | Details                                                        |
 | -------------------------------------------------- | -------------------------------------------------------------- |
 | [Config.txt](Config.txt)                           | File read during runtime to obtain local HUD data              |
 | [sample_audio.bin](sample_audio.bin)               | File read during runtime to obtaim local audio samples         |
