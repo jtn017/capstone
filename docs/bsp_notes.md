@@ -128,3 +128,142 @@ Got error so replaced '-dev zlib1g:i386' with 'zlib1g:i386' and 'zlib1g-dev'
 * https://ez.analog.com/sw-interface-tools/f/q-a/540822/pyadi-iio-on-zedboard-fmcomms4-eval
 * sudo usermod -a -G vboxsf $(whoami) 
   * then log out and back in for shared folder permissions
+
+# Notes on PL to PS Data Transfer Using UDMA/UIO
+
+We intend to not use the current adi dma, and instead add in another DMA, so we still use the defual ADI image, but also have our RX signal processing run at our own clock rate. This should allow us more control on how we want to send data.
+
+## First Steps
+* Copied ADI base FPGA project to /capstone/zed/
+* Then modified the copy.
+* Add DMA block to design (we are only doing RX or PL->PS)
+* Created a simple counter block. This block sends a 32 bit value where the upper 16 bits are 0xFEED and the lower 16bits are a count.
+* Generate Bitstream and export .hdf
+  
+## Petalinux Steps
+* Make changes to device tree file /peta_adi_proj/project-spec/meta-user/recipes-bsp/device-tree/files/system-user.dtsi
+
+        /include/ "system-conf.dtsi"
+        /{
+        };
+
+        /*
+        * Device tree for petalinux 2018.3
+        */
+
+        / {
+
+
+            chosen {
+                bootargs = "console=ttyPS0,115200 consoleblank=0 cma=1024M root=/dev/mmcblk0p2 rootfstype=ext4 rw rootwait earlyprintk uio_pdrv_genirq.of_id=generic-uio";
+            };
+
+                udmabuf-tx {
+                compatible  = "ikwzm,udmabuf-0.10.a";
+                device-name = "udmabuf-tx";
+                size = <0x00100000>;
+                sync-direction = <1>;
+                    };
+        
+            udmabuf-rx {
+                compatible  = "ikwzm,udmabuf-0.10.a";
+                device-name = "udmabuf-rx";
+                size = <0x00100000>;
+                sync-direction = <2>;
+                };
+        };
+
+        v2x_signal_processing_capstone_rx_dmac{
+            compatible = "generic-uio";
+        };
+
+* In Petalinux folder run the following
+  
+    petalinux-config --get-hw-description=~/capstone/zed/fmcomms2_zed.sdk/
+
+* Create the DMA petalinux kernel module
+
+    petalinux-create -t modules -n udmabuf --enable
+
+* Copy udmabuf.c into petalinux project at recipes_modules/udmabuf/files/ This file was obtained from [github.com/ikwzm/udmabuf/](https://raw.githubusercontent.com/ikwzm/udmabuf/v1.4.7/udmabuf.c)
+
+* Now run:
+  
+        $: petalinux-config -c kernel
+            * device drivers -> userspace io -> <*> for uio_pdrv_genirq and uio_dmem_genirq
+        $ petalinux-build
+        $ petalinux-package --force --boot --fsbl --fpga --u-boot
+
+        $ cd ../images/linux
+
+        $ cp BOOT.BIN /media/adi/BOOT/
+
+        $ cp image.ub /media/adi/BOOT/
+
+* Do a search for udmabuf.ko and uio_pdrv_genirq.ko
+* Grab the lib/modules folder from ~/capstone/peta_adi_proj/build/tmp/deploy/images/plnx-zynq7/modules--4.14.tar.gz
+  
+## Root Filesystem Steps
+
+* Boot the device (note in petalinux you can set the kernel name)
+  
+         $ sudo cp *.ko /lib/modules/4.14.0-xilinx-v2018.3/kernel/
+         $ sudo nano /lib/modules/4.14.0-xilinx-v2018.3/modules.builtin
+
+* add the following to the file (at end) 
+        
+        /kernel/udmabuf.ko
+* note: uio_pdrv_genirq.ko already there.
+* Repeat for modules.order
+
+* Boot the device
+
+        $ mkdir -p /lib/modules/$(uname -r)/
+        $ cp *.ko /lib/modules/$(uname -r)/
+        $ depmod -a
+
+* Got warning so edited the two files by adding the following lines to each file modules.builtin and modules.order
+        
+        udmabuf.ko
+        uio_pdrv_genirq.ko
+
+* Then
+
+        $ depmod -a
+        $ modprobe udmabuf
+        $ modprobe uio_pdrv_genirq
+
+* Then Run
+
+        $ sudo insmod udmabuf.ko
+        $ sudo insmod uio_pdrv_genirq.ko
+
+* Then open file for editing
+  
+        $ nano /etc/modules
+
+* Add line
+
+        $ uio_pdrv_genirq.ko
+        $ udmabuf.ko
+
+* Then reboot
+
+        $ reboot
+
+* Then 
+  
+        % ls /dev/
+
+Should see udmabuf-rx and udmabuf-tx
+
+**!!! NEED TO FIX why the /etc/modules aren't being loaded at boot time !!!**
+
+* for now after boot do
+        
+        $ cd /lib/modules/$(uname -r)/
+        $ sudo insmod uio_pdrv_genirq.ko
+        $ sudo insmod udmabuf.ko
+        
+## Software Steps
+See uio and /dev/mem portions of our code.
