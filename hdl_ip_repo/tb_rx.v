@@ -49,30 +49,25 @@ uut(
     .i_rst(rst),
     // Control Signals
     .i_ctrl({29'd0,1'b1,agc_en_n,start}),
-    .i_thresh('d200000),//400,000 
+    .i_thresh('h10000),//400,000 
     .i_pow_ref(26'b1100_000000),
-    .i_store_dly('h2),
+    .i_store_dly('h0),
     // ADC Data Input (RX)
     .i_fromADC_i(input_i),
     .i_fromADC_q(input_q),
     .i_fromADC_vld(input_vld),
     // Receiver Data
-//    .dbg_corr(),
-//    .dbg_max(),
-//    .dbg_sym(),
-//    .dbg_data(),
-//    .dbg_data_vld(),
     .axi_clk(axi_clk),
     .axi_rstn(~rst)
 ); 
 
 /****************************************
- * 8MHz = 2x4MHz ADC
+ * 32MHz ADC = 32/8=4MHz
 ****************************************/
 initial begin
     clk = 1'b0;
     forever begin
-	    #62.5 clk = ~clk;
+	    #15.625 clk = ~clk;
 	end
 end
 
@@ -87,7 +82,7 @@ initial begin
 end
 
 /****************************************
- * 100MHz Sys Clock
+ * 100MHz AXI PS Sys Clock
 ****************************************/
 initial begin
     axi_clk = 1'b0;
@@ -141,6 +136,12 @@ initial begin
             input_vld = 1'b1;
         end
         @(posedge clk)input_vld = 1'b0;
+        @(posedge clk);
+        @(posedge clk);
+        @(posedge clk);
+        @(posedge clk); 
+        @(posedge clk);
+        @(posedge clk);
     end
 
     // Pause signal input for a while
@@ -153,6 +154,25 @@ initial begin
         end
     end
    
+    // Inject Data
+    for(idx=0; idx < PAY_LEN-1; idx = idx+2)begin
+        @(posedge clk)  begin 
+            // Input Data to UUT
+            temp_input_i = {payload[idx+0]};
+            temp_input_q = {payload[idx+1]};
+            input_i = $signed(temp_input_i[11:0]);
+            input_q = $signed(temp_input_q[11:0]);
+            input_vld = 1'b1;
+        end
+        @(posedge clk)input_vld = 1'b0;
+        @(posedge clk);
+        @(posedge clk);
+        @(posedge clk);
+        @(posedge clk); 
+        @(posedge clk);
+        @(posedge clk);
+    end
+    
     $display("At end. File Closed. Finished!");
     $fclose(outfile);
     $fclose(fd);
@@ -175,27 +195,5 @@ always begin
         end
     end
 end
-
-
-// *** Display Gold Output ***
-//integer gold_out_idx = 0;
-//integer gidx;
-
-//initial begin
-//    gold_output_i = 0;
-//    gold_output_q = 0;
-//    fd2 = $fopen("tb_rx_gold.dat","rb"); // matlab 'short','ieee-be'
-//    $fread(gold_out,fd2);// Read in Data
-    
-//    for(gidx=0; gidx < 2; gidx = gidx+1) @(posedge clk);
-    
-//    forever begin
-//        @(posedge clk)  begin 
-//        gold_output_i = {gold_out[gold_out_idx+0]};
-//        gold_output_q = {gold_out[gold_out_idx+1]};
-//        gold_out_idx = gold_out_idx + 2'b10;
-//        end
-//    end
-//end
 
 endmodule

@@ -16,7 +16,9 @@ void tec(data_t real, data_t imag, dout_t *out_real, dout_t *out_imag, bool *out
 #pragma HLS INTERFACE mode=ap_vld port=imag
 
 	static unsigned int scnt = 0;
+#pragma HLS RESET variable=scnt
 	static unsigned int fbsel = 1;
+#pragma HLS RESET variable=fbsel
 	static dout_t y_t_i, y_t_q,dy_t_i, dy_t_q;
 
 	dout_t mf_real, dmf_real;
@@ -150,7 +152,9 @@ void dmf_pfb(data_t real, data_t imag,unsigned int bank_sel, dout_t *out_real, d
 	void tec_loopf(dout_t y_re, dout_t y_im, dout_t dy_re, dout_t dy_im,unsigned int *fbsel)
 	{
 		static ap_fixed<32,8> integrator = 0;
+#pragma HLS RESET variable=integrator
 		static ap_fixed<32,8> accum = 1;
+#pragma HLS RESET variable=accum
 
 		//float det_t = y_re*dy_re; // Option 0
 		ap_fixed<32,8> det = ((y_re*dy_re)+(y_im*dy_im))>>2; // Option 1 do a shift for divide by two

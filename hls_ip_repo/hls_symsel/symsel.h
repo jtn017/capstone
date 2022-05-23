@@ -1,12 +1,12 @@
 /*
- * Author: 
+ * Author:
  * Project: Capstone V2X Motorcycle HUD
  * File: xcorr.h
  *
  * Description: Header file for LOG Based AGC
  */
-#ifndef XCORR_H_
-#define XCORR_H_
+#ifndef SYMSEL_H_
+#define SYMSEL_H_
 
 #include <ap_int.h>
 #include <ap_axi_sdata.h>
@@ -40,7 +40,6 @@ const unsigned int SPS = 8; // samples per symbol
 const bool pa[N] = {0,0,0,1,0,0,1,0,1,1,0,1,1,1,0,1,1,0,0,1,1,0,1,0,1,0,1,1,1,1,1,1,0,0,0,1,0,0,1,0,1,1,0,1,1,1,0,1,1,0,0,1,1,0,1,0,1,0,1,1,1,1,1,1};
 
 // Function Definitions
-void myCmpy(cmpy_t a_re, cmpy_t b_im,cmpy_t c_re, cmpy_t d_im,cmpy_t *o_re,cmpy_t *o_im);
-void xcorr(corr_t thresh, din_t in_i, din_t in_q, dout_t *out_i, dout_t *out_q, corr_t *corr, bool *max_vld,cmpy_t *to_atan_i,cmpy_t *to_atan_q);
+void symsel(corr_t thresh, din_t in_i, din_t in_q, dout_t *out_i, dout_t *out_q, corr_t *corr, bool *max_vld);
 
-#endif // XCORR_H_
+#endif // SYMSEL_H_

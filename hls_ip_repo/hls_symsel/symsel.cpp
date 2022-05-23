@@ -1,7 +1,6 @@
-#include "xcorr.h"
+#include "symsel.h"
 
-
-void xcorr(corr_t thresh, din_t in_i, din_t in_q, dout_t *out_i, dout_t *out_q, corr_t *corr, bool *max_vld,cmpy_t *to_atan_i,cmpy_t *to_atan_q)
+void symsel(corr_t thresh, din_t in_i, din_t in_q, dout_t *out_i, dout_t *out_q, corr_t *corr, bool *max_vld)
 {
 #pragma HLS INTERFACE mode=ap_vld port=thresh
 #pragma HLS INTERFACE mode=ap_vld port=in_i
@@ -16,8 +15,6 @@ void xcorr(corr_t thresh, din_t in_i, din_t in_q, dout_t *out_i, dout_t *out_q, 
     static din_t shift_ph_calc_i[N*SPS];
     static din_t shift_ph_calc_q[N*SPS];
     static corr_t max = 0;
-    static avg_t avg_i = 0;
-    static avg_t avg_q = 0;
 
 #pragma HLS RESET variable=max
 #pragma HLS PIPELINE II=2
@@ -60,6 +57,9 @@ void xcorr(corr_t thresh, din_t in_i, din_t in_q, dout_t *out_i, dout_t *out_q, 
 	accum_re += pa[0] ? (ap_int<17>)shift_re_reg[0] : (ap_int<17>)-shift_re_reg[0];
     accum_im += pa[0] ? (ap_int<17>)shift_im_reg[0] : (ap_int<17>)-shift_im_reg[0];
 
+    din_t ot_i = shift_re_reg[N*SPS-1];
+    din_t ot_q = shift_im_reg[N*SPS-1];
+
     //
     // --- Magnitude Approximation Calculation ---
     //
@@ -91,55 +91,8 @@ void xcorr(corr_t thresh, din_t in_i, din_t in_q, dout_t *out_i, dout_t *out_q, 
     	flag = 0;
     }
 
-    if(flag == 1){ // posedge
-    	cnt = 0;
-        avg_i = 0;
-        avg_q = 0;
-    }else{
-		cnt++;
-    }
-
-    //if(cnt > 64*8*8)
-    //	max = 0;
-
-    //
-    // Z2 = mean(conj(rx_signal(N1+(0:N-1))) .* rx_signal(N2+(0:N-1)));
-    //
-    din_t temp_i = shift_re_reg[(N-PN_LEN)*SPS-1];
-    din_t temp_q = shift_im_reg[(N-PN_LEN)*SPS-1];
-    din_t ot_i = shift_re_reg[N*SPS-1];
-    din_t ot_q = shift_im_reg[N*SPS-1];
-
-    cmpy_t c1,c2;
-    myCmpy( (cmpy_t)ot_i, (cmpy_t)-ot_q, (cmpy_t)temp_i, (cmpy_t)temp_q, &c1, &c2);
-    avg_i += c1;
-    avg_q += c2;
-
-    //
-    // --- Assign Outputs ---
-    //
-	if(cnt == N*SPS-1){ // need to understand
-		#ifdef BIT_ACCURATE
-			*to_atan_i = avg_i >> 8;
-			*to_atan_q = avg_q >> 8;
-		#else
-			*to_atan_i = avg_i/256;
-			*to_atan_q = avg_q/256;
-		#endif
-	}
-
 	*max_vld = flag;
     *out_i = ot_i;
     *out_q = ot_q;
 	*corr = magnitude;
-}
-
-
-void myCmpy(cmpy_t a_re, cmpy_t b_im,cmpy_t c_re, cmpy_t d_im,cmpy_t *o_re,cmpy_t *o_im)
-{
-	// Use 3 multiplies
-	cmpy_t ac = a_re*c_re;
-	cmpy_t bd = b_im*d_im;
-	*o_re = ac-bd;
-	*o_im = (a_re+b_im)*(c_re+d_im)-ac-bd;
 }

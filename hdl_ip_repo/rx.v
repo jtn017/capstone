@@ -38,11 +38,10 @@ module rx#(
     output wire dbg_max,
     output wire [1:0] dbg_sym,
     output wire dbg_store,
-    output wire [15:0] dbg_agc_i,
-    output wire dbg_agc_vld,
-    output wire [15:0] dbg_tec_i,
-    output wire [15:0] dbg_tec_q,
-    output wire dbg_tec_vld,
+    output wire [15:0] dbg_agc_out,
+    output wire [15:0] dbg_tec_out,
+    output wire [15:0] dbg_pll_out_i,
+    output wire [15:0] dbg_pll_out_q,
     
     // AXI Interface
     input wire axi_clk,
@@ -69,12 +68,12 @@ module rx#(
          * Internal Registers and Wires
     *******************************************/
     wire rst, rstn;
-    assign rst = i_rst;
+    assign rst = i_rst && ~start;
     assign rstn = ~rst;
     
     // control if needed
     wire [2:0] bypass;
-    wire atart;
+    wire start;
     wire clk;
     
     assign start = i_ctrl[0]; 
@@ -120,7 +119,7 @@ module rx#(
         r2_fromADC_v <= r1_fromADC_v;
         r3_fromADC_v <= r2_fromADC_v;
     end
-    assign pe_adc_v = r3_fromADC_v == 1'b1 && r2_fromADC_v == 1'b0;
+    assign pe_adc_v = (r3_fromADC_v == 1'b1) && (r2_fromADC_v == 1'b0);
     
     // cc outputs
     assign to_agc_i = r3_fromADC_i;
@@ -268,37 +267,70 @@ module rx#(
     ****************************************/
     
     wire [15:0] to_pll_i, to_pll_q; // <32,2>
+    wire [15:0] to_symsel_i, to_symsel_q; // <32,2>
     wire to_pll_v;
     wire to_pll_out_vld;
+    wire to_symsel_out_vld;
     wire samp_sel;
     wire samp_sel_v;
     
     tec_0 spt_tec (
       .real_r_ap_vld(to_tec_v),          
       .imag_ap_vld  (to_tec_v),              
-      .out_real_ap_vld(to_pll_out_vld),
+      .out_real_ap_vld(),
       .out_imag_ap_vld(),      
       .out_vld_ap_vld(samp_sel_v),        
       .bank_ap_vld(),              
       .ap_clk(clk),                   
       .ap_rst(rst),                    
       .ap_start(start),       
-      .ap_done(),                   
+      .ap_done(to_symsel_out_vld),                   
       .ap_idle(),                    
       .ap_ready(),                 
       .real_r(to_tec_i),                 
       .imag  (to_tec_q),                
-      .out_real(to_pll_i),         
-      .out_imag(to_pll_q),                  
+      .out_real(to_symsel_i),         
+      .out_imag(to_symsel_q),                  
       .out_vld (samp_sel),                 
       .bank()                           
     );
 
-    assign to_pll_v = samp_sel && to_pll_out_vld;
+    wire new_sop;
+    
+    symsel_0 spt_symsel(
+      .thresh_ap_vld(1'b1),  // input wire thresh_ap_vld
+      .in_i_ap_vld(to_symsel_out_vld),      // input wire in_i_ap_vld
+      .in_q_ap_vld(to_symsel_out_vld),      // input wire in_q_ap_vld
+      .out_i_ap_vld(),    // output wire out_i_ap_vld
+      .out_q_ap_vld(),    // output wire out_q_ap_vld
+      .corr_ap_vld(),      // output wire corr_ap_vld
+      .ap_clk(clk),                // input wire ap_clk
+      .ap_rst(rst),                // input wire ap_rst
+      .ap_start(start),            // input wire ap_start
+      .ap_done(to_pll_out_vld),              // output wire ap_done
+      .ap_idle(),              // output wire ap_idle
+      .ap_ready(),            // output wire ap_ready
+      .thresh(i_thresh),                // input wire [31 : 0] thresh
+      .in_i(to_symsel_i),                    // input wire [15 : 0] in_i
+      .in_q(to_symsel_q),                    // input wire [15 : 0] in_q
+      .out_i(to_pll_i),                  // output wire [15 : 0] out_i
+      .out_q(to_pll_q),                  // output wire [15 : 0] out_q
+      .corr(),                    // output wire [31 : 0] corr
+      .max_vld(new_sop)              // output wire max_vld
+    );
+
+    reg [2:0] ssel_cnt = 0;
+    always @(posedge clk)begin
+        if(new_sop)
+            ssel_cnt = 0;
+        else if(to_pll_out_vld)
+            ssel_cnt = ssel_cnt+1'b1;
+    end
+    assign to_pll_v = (ssel_cnt == 0) && to_pll_out_vld;
+    
     /****************************************
       * PLL
     ****************************************/
-    
     wire [15:0] to_hard_decision_i, to_hard_decision_q;
     wire to_hard_decision_v;
     
@@ -308,8 +340,8 @@ module rx#(
       .OUT_R_ap_vld(),    
       .OUT_I_ap_vld(),      
       .ap_clk(clk),          
-      .ap_rst(rst),            
-      .ap_start(start),    
+      .ap_rst(new_sop),            
+      .ap_start(~new_sop),    
       .ap_done(to_hard_decision_v),         
       .ap_idle(),          
       .ap_ready(),           
@@ -323,66 +355,50 @@ module rx#(
     // Data Store logic
     //
     wire store;
-    reg [31:0] dly_cnt;
-    reg data_sop = 1'b0;
+//    reg [31:0] dly_cnt;
+//    reg data_sop = 1'b0;
 
-    always @(posedge clk)begin
-        if(~start)begin
-            data_sop <= 1'b0;
-            dly_cnt <= 1'b0;
-        end else begin
-            if(sop)begin// && samp_sel && samp_sel_v)begin
-                dly_cnt <= 0;
-                data_sop <= 1'b1;  
-            end else if (dly_cnt < i_store_dly && to_hard_decision_v) begin
-                dly_cnt <= dly_cnt + 1'b1; 
-            end 
-        end
-    end
+//    always @(posedge clk)begin
+//        if(~start)begin
+//            data_sop <= 1'b0;
+//            dly_cnt <= 1'b0;
+//        end else begin
+//            if(new_sop)begin
+//                dly_cnt <= 0;
+//                data_sop <= 1'b1;  
+//            end else if (dly_cnt <= i_store_dly && to_hard_decision_v) begin
+//                dly_cnt <= dly_cnt + 1'b1; 
+//            end 
+//        end
+//    end
     
-    assign store = (data_sop && (dly_cnt >= i_store_dly)) ? 1'b1: 1'b0;
+    assign store = ~new_sop;//(data_sop && (dly_cnt >= i_store_dly)) ? 1'b1: 1'b0;
     
+    wire [1:0] sym;
+    assign sym = {to_hard_decision_i[15],to_hard_decision_q[15]};
     /****************************************
       * Hard Decision
-      * Need to add valid logic for know start
-      * of packet
     ****************************************/
     reg [3:0] r_data_word_vld; //0 to 15
-    reg data_word_vld;
     reg [31:0] data_word;
-    reg [1:0] sym;
-    reg err;
+
     reg data_word_v = 1'b0;
     reg r_data_word_v = 1'b0;
     always @(posedge clk)begin
         data_word_v <= 1'b0;
-        if(sop)begin // use sop as reset
-            data_word_v <= 1'b0;
+        if(rst)begin
+            data_word <= 'd0;// shift register to accumulate byte
             r_data_word_v <= 1'b0;
             r_data_word_vld <= 4'd0;
-            sym <= 2'b00;
-            err <= 1'b0;
+        end else if(new_sop)begin // use sop as reset
+            data_word <= {data_word[29:0],sym};// shift register to accumulate byte
+            r_data_word_v <= 1'b0;
+            r_data_word_vld <= 4'd0;
         end else if(to_hard_decision_v && store)begin
-            r_data_word_v <= (r_data_word_vld == 4'd15);
+            r_data_word_v <= (r_data_word_vld == 4'd14); // adjusted for delay of PLL
             data_word_v <= r_data_word_v;
             r_data_word_vld <= r_data_word_vld + 1;
             data_word <= {data_word[29:0],sym};// shift register to accumulate byte
-            if( ($signed(to_hard_decision_i) > 0) && ($signed(to_hard_decision_q) > 0)) begin //(1,1) (I,Q)
-                sym <= 2'b00;
-                err <= 1'b0;
-            end else if ( ($signed(to_hard_decision_i) > 0) && ($signed(to_hard_decision_q) < 0)) begin //(1,-1) 
-                sym <= 2'b10;
-                err <= 1'b0;
-            end else if ( ($signed(to_hard_decision_i) < 0) && ($signed(to_hard_decision_q) > 0)) begin //(-1,1)
-                sym <= 2'b01;
-                err <= 1'b0;
-            end else if ( ($signed(to_hard_decision_i) < 0) && ($signed(to_hard_decision_q) < 0)) begin //(-1,-1)
-                sym <= 2'b11;
-                err <= 1'b0;
-            end else begin // can't decide
-                sym <= 2'b00;
-                err <= 1'b1;
-            end
         end
     end
 
@@ -391,7 +407,7 @@ module rx#(
       * CC for AXI-LITE @100MHz
     ****************************************/
     wire word_valid_cc;
-    wire data_sop_cc;
+//    wire data_sop_cc;
     
     FlagAck_CrossDomain cc_1_inst(
     .clkA(clk),
@@ -401,13 +417,13 @@ module rx#(
     .FlagOut_clkB(word_valid_cc)
     );
     
-    FlagAck_CrossDomain cc_2_inst(
-    .clkA(clk),
-    .FlagIn_clkA(data_sop),
-    .Busy_clkA(),
-    .clkB(axi_clk),
-    .FlagOut_clkB(data_sop_cc)
-    );
+//    FlagAck_CrossDomain cc_2_inst(
+//    .clkA(clk),
+//    .FlagIn_clkA(data_sop),
+//    .Busy_clkA(),
+//    .clkB(axi_clk),
+//    .FlagOut_clkB(data_sop_cc)
+//    );
     
     reg [31:0] data_word_cc; 
     always @(posedge clk)begin
@@ -438,7 +454,7 @@ module rx#(
       .s_axi_BUS_A_RVALID(s_axi_BUS_A_RVALID),    // output wire s_axi_BUS_A_RVALID
       .s_axi_BUS_A_RREADY(s_axi_BUS_A_RREADY),    // input wire s_axi_BUS_A_RREADY
       .ap_clk(axi_clk),                            // input wire ap_clk
-      .ap_rst_n(axi_rstn),                        // input wire ap_rst_n
+      .ap_rst_n(store),                        // input wire ap_rst_n
       .ap_start(store),                        // input wire ap_start
       .ap_done(),                          // output wire ap_done
       .ap_idle(),                          // output wire ap_idle
@@ -454,10 +470,10 @@ module rx#(
     assign dbg_max = sop;
     assign dbg_sym = sym;
     assign dbg_store = store;
-    assign dbg_agc = to_cfc_i;
-    assign dbg_agc_vld = to_cfc_v;
-    assign dbg_tec_i   = to_tec_i;
-    assign dbg_tec_q   = to_tec_q;
+    assign dbg_agc_out = to_tec_i;
+    assign dbg_tec_out   = to_pll_i;
+    assign dbg_pll_out_i   = to_hard_decision_i;
+    assign dbg_pll_out_q   = to_hard_decision_q;
     assign dbg_tec_vld = to_tec_v;
     
 endmodule

@@ -4,12 +4,18 @@ void pll(DATA_T IN_R, DATA_T IN_I, DATA_T *OUT_R, DATA_T *OUT_I)
 {
 #pragma HLS INTERFACE ap_vld port=IN_I
 #pragma HLS INTERFACE ap_vld port=IN_R
-
+#pragma HLS INTERFACE mode=ap_vld port=OUT_R register
+#pragma HLS INTERFACE mode=ap_vld port=OUT_I register
 	#pragma HLS PIPELINE II=100
 
 	// Statically allocate registers
-	static REG_T phs_int = 0.0; // Phase integral register
-	static REG_T phs_acc = 0.0; // Phase accumulator register
+	// Phase integral register
+	static REG_T phs_int = 0;
+#pragma HLS RESET variable=phs_int
+	// Phase accumulator register
+	static REG_T phs_acc = 0;
+#pragma HLS RESET variable=phs_acc
+
 
 	// Phase shift
 	PHASE_T phase = 2*PI*phs_acc;
@@ -26,7 +32,7 @@ void pll(DATA_T IN_R, DATA_T IN_I, DATA_T *OUT_R, DATA_T *OUT_I)
 	PHASE_T phs_err = hls::atan2(phs_err_I, phs_err_R);
 
 	// Loop filter
-	phs_int = KI * phs_int;
+	phs_int = phs_int + KI * phs_err;
 	DATA_T phs_prop  = KP * phs_err;
 	DATA_T loop_filt = phs_prop + phs_int;
 
