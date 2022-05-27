@@ -1,3 +1,56 @@
+# FMComms4 Rebuild Attempt
+Master for Meta-adi and HDL git repositories use
+Vivado 2021.1 and Petalinux 2021.1
+
+Versions:
+* Vivado 2021.1
+* Ubuntu 16.04 LTS (Virtual Maching)
+* Petalinux 2021.1
+* Analog Devices HDL (master as of May 2022)
+  
+## Vivado Install
+chmod +x Xilinx_Unified_2021.1_0610_2318_Lin64.bin  && ./Xilinx_Vivado_SDK_Web_2018.3_1207_2324_Lin64.bin
+
+## Petalinux Install
+https://www.fpgadeveloper.com/how-to-install-petalinux-2020.1/
+
+## **Notes for HDL build**
+	
+	$ cd capstone_2
+	$ git clone https://github.com/analogdevicesinc/hdl.git
+	$ cd hdl/projects/fmcomms2/zed
+	$ source /opt/Xilinx/Vivado/2021.1/settings64.sh 
+	$ make
+
+## Meta-adi and petalinux
+
+	$ git clone https://github.com/analogdevicesinc/meta-adi.git
+	$ source ~/petalinux/2021.1/settings.sh 
+	$ petalinux-create -t project --template zynq --name peta_adi_proj
+	$ cd peta_adi_proj/
+	$ petalinux-config --get-hw-description=/media/sf_Capstone_work/hdl/projects/fmcomms2/zed/fmcomms2_zed.sdk/
+
+note: make sure Vivado but the newest .xsa at the above location.
+	
+Add layers meta-adi-core and meta-adi-xilinx (in this order). Then...
+Also add pl-delete-nodes for fmcomms4 (similar to fmcomms2-3). Also add appropriate file to device-tree.bbappend.
+
+	$ echo "KERNEL_DTB=\"zynq-zed-adv7511-ad9364-fmcomms4\"" >> project-spec/meta-user/conf/petalinuxbsp.conf
+	$ cd build
+	$ petalinux-build
+
+Now that it has build we can modify the device tree appropriately
+
+Now let's rebuild
+	$ petalinux-build
+	$ petalinux-package --force --boot --fsbl --fpga --u-boot
+	$ cd ../images/linux
+	$ cp BOOT.BIN /media/adi/BOOT/
+	$ cp image.ub /media/adi/BOOT/
+	$ sudo tar xvf rootfs.tar.gz -C /media/adi/rootfs/
+
+# **Below is a log of steps taken** 
+These steps are retained for completeness and to fill any gpas in the above steps.
 # Getting Started with HDL and Petalinux Project
 Project: V2X Motorcycle HUD
 For: UCSD MAS 
@@ -266,4 +319,4 @@ Should see udmabuf-rx and udmabuf-tx
         $ sudo insmod udmabuf.ko
         
 ## Software Steps
-See uio and /dev/mem portions of our code.
+See [uio](../main/src/v2x_sdr_uio.c), [vio](../main/src/v2x_sdr_vio.c), and /dev/mem in our code.
