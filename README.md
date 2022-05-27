@@ -109,7 +109,16 @@ Then we added our IP and set the addresses appropriately:
 
 ![alt text](docs/images/rx_ip_bd.PNG?raw=true)
 
-| IP NAME          | Address     |
-| ---------------- | ----------- |
-| rx_ip            | 0x43C0_0000 |
-| rx_ip_ctrl       | 0xXXXXXXXXX |
+| IP NAME          | Address     | Other  |
+| ---------------- | ----------- |------- |
+| rx_ip            | 0x43C0_0000 | [see the code](./main/inc/v2x_sdr_uio.h)       |
+| rx_interface     | 0x4000_0000 | [see the code](./main/inc/v2x_sdr_uio.h)       |
+
+Once we had a working FPGA .bit and .xsa file we used Petalinux with the [meta-adi](https://github.com/analogdevicesinc/meta-adi/) Yocto layer to build the required [sd card boot files](bootfiles).
+
+The boot files contain all the important code to ensure the linux project can interface with our Vivado design.
+
+These files are combined with a [Pynq root file system](https://github.com/CaptainKey/PYNQ-2.4-Zedboard) that was build for the zedboard.
+
+In depth steps and instructions can be found [here](docs/bsp_notes.md).
+

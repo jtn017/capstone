@@ -15,7 +15,7 @@ This folder contains the files for the RX IP which is a Verilog file that connec
 
 ## Architecture
 
-The matlab script demonstrates the entire receiver processing. This flow was implemented in a verilog file. The Verilog file passes the data through the IP and verilog processing in the following order:
+The matlab script demonstrates the entire receiver processing. This flow was implemented in a Verilog file. The Verilog file passes the data through the IP and Verilog processing in the following order:
 
 * Clock Crossing (4MHz to 200MHz)
 * [Automatic Gain Control](../hls_ip_repo/hls_agc) (AGC)
@@ -39,6 +39,20 @@ In order to ensure a "Real Time" design approach we need to ensure each of our H
 
 ## Test Bench
 
-The tb_rx file provides stimulation for our rx IP. The matlab script creates data files that the test bench uses as an input to the rx IP. The test bench results can be viewed in the waveform viewer.
+The [tb_rx](tb_rx.v) file provides stimulation for our rx IP. The matlab script creates data files that the test bench uses as an input to the rx IP. The test bench results can be viewed in the waveform viewer.
 
 ![alt text](../docs/images/rx_testbench_output.PNG?raw=true)
+
+### Added Value
+
+The test bench helped the team to identify several issues with our design. 
+
+First, it helped in ensuring all our IP are integrated and connected correctly. Additionally, it allowed us to verify our function behavior and ensure the timing and correct signals were stored.
+
+Secondly, it helped to identify issues with both the timing error correction (TEC) and the phase lock loop (PLL).
+
+*Timing Error Correction:*
+
+Through the testbench we were able to fully understand the output of the TEC. Our design was based of the [poly-phase filter bank synchronization block from GNU Radio](https://github.com/gnuradio/gnuradio/blob/master/gr-digital/lib/pfb_clock_sync_fff_impl.cc). However, that design had extra code for selecting the correct sample. In our investigation we found that this code wasn't needed.
+
+Our simulation also helped us to identify that the matched filters were not working as expected. We used our simulink model to create data input for the Verilog test bench. This allowed us to realize that the filter coefficients for the software transmitter were not the same as what was implemented in the receiver.
