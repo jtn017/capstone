@@ -122,3 +122,40 @@ These files are combined with a [Pynq root file system](https://github.com/Capta
 
 In depth steps and instructions can be found [here](docs/bsp_notes.md).
 
+### FPGA Utilization
+
+| Resource | Utilization | Available | Utilization % |
+| -------- | ------------| --------- | ------------- |
+|LUT|25555|53200|48.035713|
+|LUTRAM|2992|17400|17.195402|
+|FF|34391|106400|32.32237|
+|BRAM|72.5|140|51.785713|
+|DSP|126|220|57.272728|
+|IO|124|200|62.0|
+|BUFG|8|32|25.0|
+|MMCM|2|4|50.0|
+
+# Current Status
+
+## Last Sprint
+
+- Debug/V&V RX post correlator (*Still Debugging*)
+  - TEC loop and PLL issues identified.
+    - Misunderstood TEC sample output selection
+    - Had different coefficients in TX and RX
+    - PLL had a few missing lines of code.
+- V&V with antennas (*Started and Still Debugging*)
+- Merge all code TX and RX onto one SD Card (*Complete*)
+  - UIO Kernel Module
+  - WIFI/Ethernet code
+  - TX
+  - RX
+  
+- Two-way link (*Still Debugging*)
+- TDMA protocol investigation and planning (*We have a plan*)
+
+## Next Sprint
+
+- Finish Demo
+- Create Video
+- Git Cleanup/Complete
