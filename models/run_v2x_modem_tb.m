@@ -57,8 +57,7 @@ if save_to_bin
     fclose(v2x_tx_bb_in_fileID);
     fclose(v2x_tx_bb_out_fileID);
 
-    % Enable this data saving only for small data sets
-    % TX Modulator
+    % TX Modulator (float)
     v2x_tx_mod_out_real_fileID = fopen('main/data/v2x_tx_mod_out_real.bin', 'w');
     v2x_tx_mod_out_imag_fileID = fopen('main/data/v2x_tx_mod_out_imag.bin', 'w');
     v2x_tx_mod_out = squeeze(sim_out.logsout.getElement('v2x_tx_mod_out').Values.Data);
@@ -66,6 +65,15 @@ if save_to_bin
     fwrite(v2x_tx_mod_out_imag_fileID, imag(single(v2x_tx_mod_out)), 'single');
     fclose(v2x_tx_mod_out_real_fileID);
     fclose(v2x_tx_mod_out_imag_fileID);
+
+    % TX Modulator (int16)
+    v2x_tx_mod_out_real_16bit_fileID = fopen('main/data/v2x_tx_mod_out_16bit_real.bin', 'w');
+    v2x_tx_mod_out_imag_16bit_fileID = fopen('main/data/v2x_tx_mod_out_16bit_imag.bin', 'w');
+    fwrite(v2x_tx_mod_out_real_16bit_fileID, real(storedInteger(v2x_tx_mod_out)), 'int16');
+    fwrite(v2x_tx_mod_out_imag_16bit_fileID, imag(storedInteger(v2x_tx_mod_out)), 'int16');
+    fclose(v2x_tx_mod_out_real_16bit_fileID);
+    fclose(v2x_tx_mod_out_imag_16bit_fileID);
+
 
     % RX Baseband
     v2x_rx_bb_in_fileID = fopen('main/data/v2x_rx_bb_in.bin', 'w');
