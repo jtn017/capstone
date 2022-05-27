@@ -9,6 +9,5 @@ This directory contains our Vitis HLS IP. Each folder contains its own readme wi
 | [hls_normalizer](hls_normalizer) | Alternative AGC approach using two CORDICS |
 | [hls_rxif](hls_rxif)  | Axi-lite IP used to control the RX_IP from the arm |
 | [hls_pll](hls_pll) | Phase Lock Loop for fine frequency correction |
-| [hls_symsel](hls_symsel) | Correlator based of hls_xcorr for finding best sample|
 | [hls_tec](hls_tec) | Timing Error Correction (TEC) used for Symbol/Timing Recovery |
 | [hls_xcorr](hls_xcorr) | Cross Correlator used for Coarse Frequency Correction (CFC) |

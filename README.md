@@ -17,12 +17,16 @@ Each directory may contain its own readme with more details.
 | Directory                  | Details                                      |
 | -------------------------- | -------------------------------------------- |
 | [arm_sw](arm_sw)           | Contains ZedBoard ARM development test code  |
+| [bootfiles](bootfiles)     | Contains Petalinux Generated Boot File (place on SD card boot partition)  |
 | [docs](docs)               | Contains docs created for class/git docs     |
 | [hdl_ip_repo](hdl_ip_repo) | Contains verilog code for our demodulator IP |
 | [hls_ip_repo](hls_ip_repo) | Contains our Vitis HLS IP source code        |
 | [hud](hud)                 | Contains HUD webserver and display code      |
 | [main](main)               | Contains ZedBoard SW code for TX/RX          |
 | [models](models)           | Contains TX/RX MATLAB/Simulink Models        |
+| [udp_client](udp_client)           |         |
+| [udp_server](udp_server)           |         |
+| [vivado_project](vivado_project)   | Archived Vivado Project         |
 
 # V2X Motorcycle HUD
 ![alt text](docs/images/v2x.png?raw=true)
@@ -74,88 +78,3 @@ The data packet consists of 784 total bits, where the first 144 bits contain HUD
 | Directions                        | uint8_t      (8  bits)  |
 | Distance to next step             | float        (32 bits)  |
 | Audio (mono, 16bit, 4kHz, 0.01s)  | uint16_t[40] (640 bits) |
-
-## FPGA Design
-
-This project is based off Analog Devices base project. https://github.com/analogdevicesinc/hdl
-
-Our additions consist of adding the following:
-
-* Decimation Filter 
-* Interpolation Filter
-* [RX_IP](hdl_ip_repo) 
-  * This module contains several custom IP located in [hls_ip_repo](hls_ip_repo).
-  * A test bench exists for testing the RX IP
-  * This code was packaged using Vivado IP Packager.
-
-For ease all code that was developed resides in our git repo. However, for ease of reuse the complete Vivado project can be found in the google drive located here: [HDL](https://drive.google.com/drive/folders/1hCCl8DFLbI2U8BpWim0KFGjcfS-IHtDU?usp=sharing)
-
-### Our Additions
-
-The FMCOMMS4 has a minimum sampling rate of 25MHz. Our design is meant to operate at 4 MSPS. As a result we had two options:
-
-* Use the Half-band filters that reside in the AD9361.
-* Add interpolating/decimating filters in the FPGA.
-
-We decided to add filters in the FPGA, based on the easy availability of the tutorial below which needed only slight modifications:
-
-https://wiki.analog.com/resources/fpga/docs/hdl/fmcomms2_fir_filt
-
-In our design the filters were added:
-
-![alt text](docs/images/Rate_change.PNG?raw=true)
-
-Then we added our IP and set the addresses appropriately:
-
-![alt text](docs/images/rx_ip_bd.PNG?raw=true)
-
-| IP NAME          | Address     | Other  |
-| ---------------- | ----------- |------- |
-| rx_ip            | 0x43C0_0000 | [see the code](./main/inc/v2x_sdr_uio.h)       |
-| rx_interface     | 0x4000_0000 | [see the code](./main/inc/v2x_sdr_uio.h)       |
-
-Once we had a working FPGA .bit and .xsa file we used Petalinux with the [meta-adi](https://github.com/analogdevicesinc/meta-adi/) Yocto layer to build the required [sd card boot files](bootfiles).
-
-The boot files contain all the important code to ensure the linux project can interface with our Vivado design.
-
-These files are combined with a [Pynq root file system](https://github.com/CaptainKey/PYNQ-2.4-Zedboard) that was build for the zedboard.
-
-In depth steps and instructions can be found [here](docs/bsp_notes.md).
-
-### FPGA Utilization
-
-| Resource | Utilization | Available | Utilization % |
-| -------- | ------------| --------- | ------------- |
-|LUT|25555|53200|48.035713|
-|LUTRAM|2992|17400|17.195402|
-|FF|34391|106400|32.32237|
-|BRAM|72.5|140|51.785713|
-|DSP|126|220|57.272728|
-|IO|124|200|62.0|
-|BUFG|8|32|25.0|
-|MMCM|2|4|50.0|
-
-# Current Status
-
-## Last Sprint
-
-- Debug/V&V RX post correlator (*Still Debugging*)
-  - TEC loop and PLL issues identified.
-    - Misunderstood TEC sample output selection
-    - Had different coefficients in TX and RX
-    - PLL had a few missing lines of code.
-- V&V with antennas (*Started and Still Debugging*)
-- Merge all code TX and RX onto one SD Card (*Complete*)
-  - UIO Kernel Module
-  - WIFI/Ethernet code
-  - TX
-  - RX
-  
-- Two-way link (*Still Debugging*)
-- TDMA protocol investigation and planning (*We have a plan*)
-
-## Next Sprint
-
-- Finish Demo
-- Create Video
-- Git Cleanup/Complete
