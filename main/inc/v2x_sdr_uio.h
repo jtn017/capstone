@@ -6,9 +6,7 @@
 // Defines
 #define UIO_ERROR   -1
 #define UIO_SUCCESS  0
-#define MMAP_OFFSET  0
 #define UIO_MMAP_SIZE 0x1000 // size of memory to allocate (rx_IP is 64K but don't need all of that)
-#define OPEN_ERROR -1        // open() returns -1 on error
 #define RX_IP_DEV "/dev/uio0"
 
 // Enums
@@ -22,9 +20,9 @@ enum RX_IP_REGS
 };
 
 // Function prototypes
-int32_t generic_init(char devDevice[]);
-void generic_write(uint32_t offset, uint32_t value);
-uint32_t generic_read(uint32_t offset);
-void generic_exit();
+int32_t generic_uio_init(char devDevice[]);
+void generic_uio_write(uint32_t offset, uint32_t value);
+uint32_t generic_uio_read(uint32_t offset);
+void generic_uio_exit();
 
 #endif // V2X_SDR_UIO_H

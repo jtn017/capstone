@@ -96,7 +96,12 @@ typedef struct {
 	int bb_dc_offset_tracking;	
 	int quadrature_tracking;	
 	int rf_dc_offset_tracking;
-	char rx_gain_control_mode[50];	
+	char rx_gain_control_mode[50];
+	uint32_t rx_ctl_start_agc;
+	uint32_t rx_ctl_corr_thresh;
+	uint32_t rx_ctl_agc_pow_ref;
+	uint32_t rx_ctl_store_delay;
+	uint32_t rx_ctl_time_sel;
 } sdrini_t;
 
 typedef struct {

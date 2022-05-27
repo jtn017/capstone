@@ -99,6 +99,13 @@ void readinistr(char *file, char *sec, char *key, char *out)
 {
     GetPrivateProfileString(sec,key,"",out,256,file);
 }
+uint32_t readiniuint(char *file, char *sec, char *key)
+{
+    char str[256];
+    char* ptr; 
+    GetPrivateProfileString(sec,key,"",str,256,file);
+    return strtoul(str, &ptr, 10);
+}
 
 // ---------------------- Read and run from ini file ----------------------
 int readinifile(sdrini_t *ini)
@@ -148,6 +155,11 @@ int readinifile(sdrini_t *ini)
     ini->f_if=readinidouble(fendfile,"FEND","IF1");
     ini->dtype=readiniint(fendfile,"FEND","DTYPE1");
     ini->datasize=readiniint(fendfile,"FEND","DATASIZE");
+    ini->rx_ctl_start_agc=readiniuint(fendfile,"FEND","RX_CTL_START_AGC");
+    ini->rx_ctl_corr_thresh=readiniuint(fendfile,"FEND","RX_CTL_CORR_THRESH");
+    ini->rx_ctl_agc_pow_ref=readiniuint(fendfile,"FEND","RX_CTL_AGC_POW_REF");
+    ini->rx_ctl_store_delay=readiniuint(fendfile,"FEND","RX_CTL_STORE_DELAY");
+    ini->rx_ctl_time_sel=readiniuint(fendfile,"FEND","RX_CTL_TIME_SEL");
 
     // No issues
     return 0;

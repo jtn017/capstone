@@ -593,10 +593,11 @@ static void rx_thread_fn(void* args)
 
     // Polling init
     uint32_t rdy = 0;
-    uint32_t rdy_valid = 0;
-    uint32_t ver = 0;
-    uint32_t ver_valid = 0;
+    // uint32_t rdy_valid = 0;
+    // uint32_t ver = 0;
+    // uint32_t ver_valid = 0;
     uint32_t uio_pkt[64];
+    uint32_t vio_start_agc = 0;
 
     int sockfd = 0;
     struct sockaddr_in addr_con;
@@ -624,29 +625,30 @@ static void rx_thread_fn(void* args)
     while (!stop)
     {
         // Poll ready signal
-        generic_init(RX_IP_DEV);
         while ((!stop) && (rdy == 0))
         {
-            rdy = generic_read(RX_IP_RDY);
-            rdy_valid = generic_read(RX_IP_RDY_VALID);
+            rdy = generic_uio_read(RX_IP_RDY);
+            // rdy_valid = generic_uio_read(RX_IP_RDY_VALID);
 
             usleep(500000); // 0.5 seconds = 500000
         }
 
-        // Read version (for IP testing)
-        ver = generic_read(RX_IP_VER);
-        ver_valid = generic_read(RX_IP_VER_VALID);
+        // // Read version (for IP testing)
+        // ver = generic_uio_read(RX_IP_VER);
+        // ver_valid = generic_uio_read(RX_IP_VER_VALID);
 
         // Read demodulated data
         for (int i = 0; i < 64; i++)
         {
-            uio_pkt[i] = generic_read(RX_IP_OUTPUT+(i*4)); // *4 because byte addressing
+            uio_pkt[i] = generic_uio_read(RX_IP_OUTPUT+(i*4)); // *4 because byte addressing
         }
 
         // Process demodulated data
         process_frame_rxdemod(uio_pkt, &sockfd, &addr_con);
 
-        // Sleep
+        // Sleep and reset RX
+        // vio_start_agc = generic_vio_write(RX_CTL_START_AGC)
+        // generic_vio_write(RX_CTL_START_AGC, vio_start_agc & 0xFFFFFFFE);
         printf("Finished TX transmit %d\n", loop_num);
         usleep(500000); // 0.5 seconds = 500000
         loop_num++;
@@ -658,8 +660,26 @@ static void rx_thread_fn(void* args)
 #endif
 
     // Cleanup
-    generic_exit();
+    generic_uio_exit();
 }
+
+void rx_ctl_init(sdrini_t *ini)
+{
+    // Generic initialize
+    // generic_vio_init(RX_CTL_DEV);
+
+    // Write to IP Cores
+    printf("* Writing RX_CTL_START_AGC   = %d\n", ini->rx_ctl_start_agc);
+    printf("* Writing RX_CTL_CORR_THRESH = %d\n", ini->rx_ctl_corr_thresh);
+    printf("* Writing RX_CTL_AGC_POW_REF = %d\n", ini->rx_ctl_agc_pow_ref);
+    printf("* Writing RX_CTL_STORE_DELAY = %d\n", ini->rx_ctl_store_delay);
+    printf("* Writing RX_CTL_TIME_SEL    = %d\n", ini->rx_ctl_time_sel);
+    // generic_vio_write(RX_CTL_START_AGC,   ini->rx_ctl_start_agc);
+    // generic_vio_write(RX_CTL_CORR_THRESH, ini->rx_ctl_corr_thresh);
+    // generic_vio_write(RX_CTL_AGC_POW_REF, ini->rx_ctl_agc_pow_ref);
+    // generic_vio_write(RX_CTL_STORE_DELAY, ini->rx_ctl_store_delay);
+    // generic_vio_write(RX_CTL_TIME_SEL,    ini->rx_ctl_time_sel);
+};
 
 // ---------------------- External functions ----------------------
 int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
@@ -683,6 +703,10 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
     tx_bb_init();
     tx_mod_init();
     rx_bb_init();
+
+    // Initialize IP Cores
+    generic_uio_init(RX_IP_DEV);
+    rx_ctl_init(ini);
 
     //------------------------- Data acquisition variables -------------------------
     printf("* Starting IO streaming (press CTRL+C to cancel)\n" );
