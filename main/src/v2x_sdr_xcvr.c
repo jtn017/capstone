@@ -16,6 +16,7 @@
 // Includes (SDR)
 #include "v2x_sdr.h"
 #include "v2x_sdr_uio.h"
+#include "v2x_sdr_vio.h"
 
 // Includes (Simulink)
 #include "rtwtypes.h"
