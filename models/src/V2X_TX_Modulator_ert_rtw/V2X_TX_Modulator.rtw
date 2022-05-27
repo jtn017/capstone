@@ -6,8 +6,8 @@ CompiledModel {
   ModelReferenceTargetType "NONE"
   Version		  "9.6 (R2021b) 14-May-2021"
   SimulinkVersion	  "10.4"
-  ModelVersion		  "1.159"
-  GeneratedOn		  "Mon Apr 25 21:20:28 2022"
+  ModelVersion		  "1.160"
+  GeneratedOn		  "Fri May 27 13:06:28 2022"
   HasSimStructVars	  0
   HasVariants		  0
   PreserveExternInFcnDecls 1
@@ -847,7 +847,7 @@ CompiledModel {
   Solver		  FixedStepDiscrete
   SolverType		  FixedStep
   StartTime		  0.0
-  StopTime		  0.03
+  StopTime		  0.19
   HasLocalSolver	  no
   LoadInitialState	  no
   SolverConsistencyChecking no
@@ -889,11 +889,11 @@ CompiledModel {
     tlcTargetType	    "RT"
     RelativeBuildDir	    "V2X_TX_Modulator_ert_rtw"
   }
-  RTWContext		  [518122672, 624]
+  RTWContext		  [151764464, 616]
   RTWCGIR		  1
   TLCBlkFcnInCGIR	  1
   SLCI			  off
-  SubsystemHdlForRightClickBuild 207.001708984375
+  SubsystemHdlForRightClickBuild 112.0001220703125
   SubsystemPathForRightClickBuild "v2x_modem_tb"
   SubsystemNameForRightClickBuild "V2X_TX_Modulator"
   LocalSharedCodeManagerFile "C:\\Users\\jacob\\Documents\\Important\\UCSD\\2021-2022 Year\\WES Capstone\\capstone\\mo"
@@ -926,7 +926,7 @@ CompiledModel {
   NumZCEvents		  0
   ZCVectorlength	  0
   NumBlockSignals	  16796
-  NumBlockParams	  97
+  NumBlockParams	  65
   NumAlgebraicLoops	  0
   NumDataTransfers	  0
   HasRootTriggerPort	  no
@@ -1518,20 +1518,20 @@ CompiledModel {
 	SID			"479:62:21"
 	Type			"S-Function"
 	DiscState {
-	  Dimensions		  [1, 10]
+	  Dimensions		  [1, 6]
 	  _idx			  0
 	}
 	NumDiscStates		1
 	DWork {
-	  Dimensions		  [1, 88]
+	  Dimensions		  [1, 56]
 	  _idx			  1
 	}
 	DWork {
-	  Dimensions		  [1, 176]
+	  Dimensions		  [1, 112]
 	  _idx			  2
 	}
 	DWork {
-	  Dimensions		  [1, 176]
+	  Dimensions		  [1, 112]
 	  _idx			  3
 	}
 	NumDWorks		3
@@ -3360,14 +3360,14 @@ CompiledModel {
       PID		      -1
       firstEntryOfTsMapIsGCD  yes
       NumDataOutputPorts      0
-      TLCFileName	      "s0_b0_ek16f"
+      TLCFileName	      "s0_b0_20nth"
       OpaqueBlockMethode {
 	HasOutputs		1
 	HasModelInitialize	1
 	HasModelExternalOutputInit 1
 	HasModelExternalInputInit 1
       }
-      Parameters	      [3, 97]
+      Parameters	      [3, 65]
       Parameter {
 	BlockParamIdx		0
 	Name			"modmap"
@@ -3411,8 +3411,8 @@ CompiledModel {
       NumRTWdatas	      0
     }
   }
-  BlockParamChecksum	  ["186017955U", "2602138404U", "1383526863U", "585815306U"]
-  ModelChecksum		  ["2315095365U", "2756443215U", "3947808685U", "3973042933U"]
+  BlockParamChecksum	  ["4038643768U", "1633403994U", "1049062766U", "340000753U"]
+  ModelChecksum		  ["2882841568U", "3335951273U", "1106556475U", "3805763542U"]
   IncludeCodeGenSettings  1
   CGTypes {
     CGTypeDefaults {
@@ -3530,15 +3530,15 @@ CompiledModel {
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [10]
+      Dimensions	      [6]
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [88]
+      Dimensions	      [56]
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [176]
+      Dimensions	      [112]
     }
     CGType {
       NumDimensions	      1
@@ -3564,7 +3564,7 @@ CompiledModel {
     }
     CGType {
       NumDimensions	      1
-      Dimensions	      [10]
+      Dimensions	      [6]
     }
     CGType {
       NumDimensions	      1
@@ -3574,7 +3574,7 @@ CompiledModel {
       Dimensions	      [8, 1]
     }
     CGType {
-      Dimensions	      [11, 8]
+      Dimensions	      [7, 8]
     }
     CGType {
       Name		      "ExtU"
@@ -3662,32 +3662,32 @@ CompiledModel {
     RTWCGModule {
       RateGrouping	      0
       PeriodicRateGrouping    0
-      TLCFileName	      "s0_b0_ek16f"
+      TLCFileName	      "s0_b0_20nth"
       RTWFcnConst {
 	HasInstanceSetup	"no"
 	baseTidOfTasks		"[0]"
 	Outputs_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_ek16f_Outputs"
+	  TLCFileName		  "s0_b0_20nth_Outputs"
 	  StackSize		  48
 	}
 	ModelInitialize_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_ek16f_ModelInitialize"
+	  TLCFileName		  "s0_b0_20nth_ModelInitialize"
 	  StackSize		  0
 	}
 	ModelExternalOutputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_ek16f_ModelExternalOutputInit"
+	  TLCFileName		  "s0_b0_20nth_ModelExternalOutputInit"
 	  StackSize		  4
 	}
 	ModelExternalInputInit_Function {
 	  HasTidArg		  0
 	  HasCpiArg		  0
-	  TLCFileName		  "s0_b0_ek16f_ModelExternalInputInit"
+	  TLCFileName		  "s0_b0_20nth_ModelExternalInputInit"
 	  StackSize		  4
 	}
       }

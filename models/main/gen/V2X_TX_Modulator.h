@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Modulator'.
  *
- * Model version                  : 1.159
+ * Model version                  : 1.160
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Apr 25 21:20:28 2022
+ * C/C++ source code generated on : Fri May 27 13:06:28 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -37,7 +37,7 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  creal_T FIRInterpolation_TapDelayBuff[10];/* '<S4>/FIR Interpolation' */
+  creal_T FIRInterpolation_TapDelayBuff[6];/* '<S4>/FIR Interpolation' */
 } DW;
 
 /* Constant parameters (default storage) */
@@ -50,7 +50,7 @@ typedef struct {
   /* Expression: a.h
    * Referenced by: '<S4>/FIR Interpolation'
    */
-  real_T FIRInterpolation_FILTER_COEFF[88];
+  real_T FIRInterpolation_FILTER_COEFF[56];
 } ConstP;
 
 /* Real-time Model Data Structure */

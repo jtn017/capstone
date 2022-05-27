@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Baseband'.
  *
- * Model version                  : 1.159
+ * Model version                  : 1.160
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Apr 25 21:20:15 2022
+ * C/C++ source code generated on : Fri May 27 13:06:16 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -179,7 +179,7 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[98],
   for (B_n_idx_0 = 0; B_n_idx_0 < 784; B_n_idx_0++) {
     tmp = rtY_bits_in[B_n_idx_0];
     for (i = 0; i < 16; i++) {
-      tmp += (uint8_T)(rtConstP_tx_bb.Scrambler_Polynomial[i + 1] * shiftReg[i]);
+      tmp += (uint8_T)(rtConstP_tx_base.Scrambler_Polynomial[i + 1] * shiftReg[i]);
     }
 
     tmp %= 2;
@@ -257,12 +257,12 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[98],
       if (tmp == 0) {
         tmp = 0;
       } else {
-        tmp = (rtConstP_tx_bb.RSEncoder_table2[tmp - 1] + 3) % 7;
+        tmp = (rtConstP_tx_base.RSEncoder_table2[tmp - 1] + 3) % 7;
         if (tmp == 0) {
           tmp = 7;
         }
 
-        tmp = rtConstP_tx_bb.RSEncoder_table1[tmp - 1];
+        tmp = rtConstP_tx_base.RSEncoder_table1[tmp - 1];
       }
 
       B_n_idx_0 = B_n_idx_1 ^ tmp;
@@ -270,12 +270,12 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[98],
       if (tmp == 0) {
         tmp = 0;
       } else {
-        tmp = rtConstP_tx_bb.RSEncoder_table2[tmp - 1] % 7;
+        tmp = rtConstP_tx_base.RSEncoder_table2[tmp - 1] % 7;
         if (tmp == 0) {
           tmp = 7;
         }
 
-        tmp = rtConstP_tx_bb.RSEncoder_table1[tmp - 1];
+        tmp = rtConstP_tx_base.RSEncoder_table1[tmp - 1];
       }
 
       B_n_idx_1 = B_n_idx_2 ^ tmp;
@@ -283,12 +283,12 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[98],
       if (tmp == 0) {
         tmp = 0;
       } else {
-        tmp = (rtConstP_tx_bb.RSEncoder_table2[tmp - 1] + 1) % 7;
+        tmp = (rtConstP_tx_base.RSEncoder_table2[tmp - 1] + 1) % 7;
         if (tmp == 0) {
           tmp = 7;
         }
 
-        tmp = rtConstP_tx_bb.RSEncoder_table1[tmp - 1];
+        tmp = rtConstP_tx_base.RSEncoder_table1[tmp - 1];
       }
 
       B_n_idx_2 = B_n_idx_3 ^ tmp;
@@ -296,12 +296,12 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[98],
       if (tmp == 0) {
         B_n_idx_3 = 0;
       } else {
-        tmp = (rtConstP_tx_bb.RSEncoder_table2[tmp - 1] + 3) % 7;
+        tmp = (rtConstP_tx_base.RSEncoder_table2[tmp - 1] + 3) % 7;
         if (tmp == 0) {
           tmp = 7;
         }
 
-        B_n_idx_3 = rtConstP_tx_bb.RSEncoder_table1[tmp - 1];
+        B_n_idx_3 = rtConstP_tx_base.RSEncoder_table1[tmp - 1];
       }
     }
 
@@ -347,7 +347,7 @@ void V2X_TX_Baseband_step(RT_MODEL *const rtM, uint8_T rtU_v2x_tx_bb_in[98],
   /* Constant: '<S3>/preamble' incorporates:
    *  Outport: '<Root>/tx_frame'
    */
-  memcpy(&rtY_tx_frame[0], &rtConstP_tx_bb.preamble_Value[0], sizeof(boolean_T) << 7U);
+  memcpy(&rtY_tx_frame[0], &rtConstP_tx_base.preamble_Value[0], sizeof(boolean_T) << 7U);
   UNUSED_PARAMETER(rtM);
 }
 
