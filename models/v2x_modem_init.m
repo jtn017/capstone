@@ -30,7 +30,7 @@ end
 
 function params = get_srrc_params()
     params.rolloff = 0.5;
-    params.filt_span = 10;
+    params.filt_span = 6;
     params.sps = 8;
     params.decim = 1;
     params.lin_amp = 1;

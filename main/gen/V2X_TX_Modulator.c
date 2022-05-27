@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_TX_Modulator'.
  *
- * Model version                  : 1.159
+ * Model version                  : 1.160
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Apr 25 21:20:28 2022
+ * C/C++ source code generated on : Fri May 27 13:06:28 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -96,10 +96,10 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out[1976
   /* Loop over each input channel */
   for (inIdx = 0; inIdx < 8; inIdx++) {
     outIdx = inIdx;
-    inIdx_0 = inIdx * 11;
+    inIdx_0 = inIdx * 7;
 
     /* Consume delay line and beginning of input samples */
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 6; i++) {
       real_T accumulator_re_tmp_0;
       accumulator_re = 0.0;
       accumulator_im = 0.0;
@@ -114,7 +114,7 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out[1976
           accumulator_re_tmp_0;
       }
 
-      for (symbolIndex = 0; symbolIndex < 10 - i; symbolIndex++) {
+      for (symbolIndex = 0; symbolIndex < 6 - i; symbolIndex++) {
         accumulator_re_tmp_0 = rtConstP_tx_mod.FIRInterpolation_FILTER_COEFF[((inIdx_0
           + i) + symbolIndex) + 1];
         accumulator_re += accumulator_re_tmp_0 *
@@ -129,13 +129,13 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out[1976
     }
 
     /* Consume remaining input samples */
-    for (i = 0; i < 978; i++) {
+    for (i = 0; i < 982; i++) {
       accumulator_re = 0.0;
       accumulator_im = 0.0;
-      for (symbolIndex = 0; symbolIndex < 11; symbolIndex++) {
-        accumulator_re += rtY_map_out[(i - symbolIndex) + 10].re *
+      for (symbolIndex = 0; symbolIndex < 7; symbolIndex++) {
+        accumulator_re += rtY_map_out[(i - symbolIndex) + 6].re *
           rtConstP_tx_mod.FIRInterpolation_FILTER_COEFF[inIdx_0 + symbolIndex];
-        accumulator_im += rtY_map_out[(i - symbolIndex) + 10].im *
+        accumulator_im += rtY_map_out[(i - symbolIndex) + 6].im *
           rtConstP_tx_mod.FIRInterpolation_FILTER_COEFF[inIdx_0 + symbolIndex];
       }
 
@@ -146,8 +146,8 @@ void V2X_TX_Modulator_step(RT_MODEL *const rtM, boolean_T rtU_v2x_tx_bb_out[1976
   }
 
   /* Update delay line for next frame */
-  for (i = 0; i < 10; i++) {
-    rtDW->FIRInterpolation_TapDelayBuff[9 - i] = rtY_map_out[i + 978];
+  for (i = 0; i < 6; i++) {
+    rtDW->FIRInterpolation_TapDelayBuff[5 - i] = rtY_map_out[i + 982];
   }
 
   /* End of S-Function (sdspupfir2): '<S4>/FIR Interpolation' */
@@ -205,7 +205,7 @@ void V2X_TX_Modulator_initialize(RT_MODEL *const rtM, boolean_T
   (void)memset(&rtY_ps_out[0], 0, 7904U * sizeof(creal_T));
 
   /* InitializeConditions for S-Function (sdspupfir2): '<S4>/FIR Interpolation' */
-  memset(&rtDW->FIRInterpolation_TapDelayBuff[0], 0, 10U * sizeof(creal_T));
+  memset(&rtDW->FIRInterpolation_TapDelayBuff[0], 0, 6U * sizeof(creal_T));
 }
 
 /*

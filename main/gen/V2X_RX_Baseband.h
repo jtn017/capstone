@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.159
+ * Model version                  : 1.160
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Mon Apr 25 21:20:37 2022
+ * C/C++ source code generated on : Fri May 27 13:06:37 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -73,7 +73,7 @@ struct tag_RTM {
 };
 
 /* Constant parameters (default storage) */
-extern const ConstP rtConstP_rx_bb;
+extern const ConstP rtConstP_rx_base;
 
 /* Model entry point functions */
 extern void V2X_RX_Baseband_initialize(RT_MODEL *const rtM, boolean_T
