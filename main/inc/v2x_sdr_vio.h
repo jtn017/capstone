@@ -12,6 +12,7 @@
 // Enums
 enum RX_CTL_REGS
 {
+    RX_CTL_AP_CTRL     = 0x0,  // AP control, bit0 = ap_start 
     RX_CTL_START_AGC   = 0x10, // Bit 0 = start/restart, Bit 1 = AGC_BYPASS
     RX_CTL_CORR_THRESH = 0x18, // 32 bits
     RX_CTL_AGC_POW_REF = 0x20, // 26 bits

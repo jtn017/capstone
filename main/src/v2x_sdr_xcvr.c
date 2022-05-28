@@ -89,6 +89,8 @@ typedef struct sdr_data
     sdrstat_t* stat;
 } sdr_data;
 
+static uint32_t vio_start_agc = 0;
+
 // ---------------------- Cleanup and exit ----------------------
 static void program_shutdown()
 {
@@ -538,8 +540,8 @@ static void tx_thread_fn(void* args)
             }
 
             // Sleep
-            printf("Finished TX transmit %d\n", loop_num);
-            usleep(500000); // 0.5 seconds = 500000
+            printf("Finished TX thread %d\n", loop_num);
+            usleep(12500000); // 0.5 seconds = 500000
             loop_num++;
         }
     }
@@ -565,6 +567,10 @@ static void process_frame_rxdemod(uint32_t* uio_pkt, int* sockfd, struct sockadd
 
     // Print
     printf("RX payload:\n");
+    printf("    Preamble0: 0x%x\n", uio_pkt[0]);
+    printf("    Preamble1: 0x%x\n", uio_pkt[1]);
+    printf("    Preamble2: 0x%x\n", uio_pkt[2]);
+    printf("    Preamble3: 0x%x\n", uio_pkt[3]);
     printf("    Name:  %s\n", payload.name);
     printf("    Lat:   %f\n", payload.lat);
     printf("    Lon:   %f\n", payload.lon);
@@ -582,8 +588,6 @@ static void process_frame_rxdemod(uint32_t* uio_pkt, int* sockfd, struct sockadd
     sendto(*sockfd, (void *)output_frame, frame_size, sendrecvflag, (struct sockaddr*)addr_con, addrlen);
 
 #endif
-
-
 }
 
 static void rx_thread_fn(void* args)
@@ -598,7 +602,6 @@ static void rx_thread_fn(void* args)
     // uint32_t ver = 0;
     // uint32_t ver_valid = 0;
     uint32_t uio_pkt[64];
-    uint32_t vio_start_agc = 0;
 
     int sockfd = 0;
     struct sockaddr_in addr_con;
@@ -625,6 +628,9 @@ static void rx_thread_fn(void* args)
     // Run loop
     while (!stop)
     {
+        // Tell RX to listen
+        generic_vio_write(RX_CTL_START_AGC, vio_start_agc | 0x1); // set start bit
+
         // Poll ready signal
         while ((!stop) && (rdy == 0))
         {
@@ -648,38 +654,37 @@ static void rx_thread_fn(void* args)
         process_frame_rxdemod(uio_pkt, &sockfd, &addr_con);
 
         // Sleep and reset RX
-        // vio_start_agc = generic_vio_write(RX_CTL_START_AGC)
-        // generic_vio_write(RX_CTL_START_AGC, vio_start_agc & 0xFFFFFFFE);
-        printf("Finished TX transmit %d\n", loop_num);
-        usleep(500000); // 0.5 seconds = 500000
+        generic_vio_write(RX_CTL_START_AGC, vio_start_agc & 0xFFFFFFFE);
+        printf("Finished RX thread %d\n", loop_num);
+        usleep(12500000); // 0.5 seconds = 500000
         loop_num++;
     }
-
 
 #ifdef USE_UDP_CLIENT
     close(sockfd);
 #endif
-
-    // Cleanup
-    generic_uio_exit();
 }
 
 void rx_ctl_init(sdrini_t *ini)
 {
     // Generic initialize
-    // generic_vio_init(RX_CTL_DEV);
+    generic_vio_init(RX_CTL_DEV);
+    vio_start_agc = ini->rx_ctl_start_agc;
 
     // Write to IP Cores
-    printf("* Writing RX_CTL_START_AGC   = %d\n", ini->rx_ctl_start_agc);
-    printf("* Writing RX_CTL_CORR_THRESH = %d\n", ini->rx_ctl_corr_thresh);
-    printf("* Writing RX_CTL_AGC_POW_REF = %d\n", ini->rx_ctl_agc_pow_ref);
-    printf("* Writing RX_CTL_STORE_DELAY = %d\n", ini->rx_ctl_store_delay);
-    printf("* Writing RX_CTL_TIME_SEL    = %d\n", ini->rx_ctl_time_sel);
-    // generic_vio_write(RX_CTL_START_AGC,   ini->rx_ctl_start_agc);
-    // generic_vio_write(RX_CTL_CORR_THRESH, ini->rx_ctl_corr_thresh);
-    // generic_vio_write(RX_CTL_AGC_POW_REF, ini->rx_ctl_agc_pow_ref);
-    // generic_vio_write(RX_CTL_STORE_DELAY, ini->rx_ctl_store_delay);
-    // generic_vio_write(RX_CTL_TIME_SEL,    ini->rx_ctl_time_sel);
+    printf("* Writing RX_CTL_START_AGC   = %u\n", ini->rx_ctl_start_agc);
+    printf("* Writing RX_CTL_CORR_THRESH = %u\n", ini->rx_ctl_corr_thresh);
+    printf("* Writing RX_CTL_AGC_POW_REF = %u\n", ini->rx_ctl_agc_pow_ref);
+    printf("* Writing RX_CTL_STORE_DELAY = %u\n", ini->rx_ctl_store_delay);
+    printf("* Writing RX_CTL_TIME_SEL    = %u\n", ini->rx_ctl_time_sel);
+
+
+    generic_vio_write(RX_CTL_AP_CTRL,     1);
+    generic_vio_write(RX_CTL_START_AGC,   ini->rx_ctl_start_agc);
+    generic_vio_write(RX_CTL_CORR_THRESH, ini->rx_ctl_corr_thresh);
+    generic_vio_write(RX_CTL_AGC_POW_REF, ini->rx_ctl_agc_pow_ref);
+    generic_vio_write(RX_CTL_STORE_DELAY, ini->rx_ctl_store_delay);
+    generic_vio_write(RX_CTL_TIME_SEL,    ini->rx_ctl_time_sel);
 };
 
 // ---------------------- External functions ----------------------
@@ -726,6 +731,8 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
     // Cleanup
     pthread_join(tx_thread, NULL);
     pthread_join(rx_thread, NULL);
+    generic_uio_exit();
+    generic_vio_exit();
     printf("* Exiting \n");
     program_shutdown();
     return 0;
