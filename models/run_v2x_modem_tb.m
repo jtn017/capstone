@@ -74,7 +74,6 @@ if save_to_bin
     fclose(v2x_tx_mod_out_real_16bit_fileID);
     fclose(v2x_tx_mod_out_imag_16bit_fileID);
 
-
     % RX Baseband
     v2x_rx_bb_in_fileID = fopen('main/data/v2x_rx_bb_in.bin', 'w');
     v2x_rx_bb_out_fileID = fopen('main/data/v2x_rx_bb_out.bin', 'w');
@@ -87,7 +86,7 @@ if save_to_bin
 end
 
 %% Build script
-build_src = 0;
+build_src = 1;
 
 if build_src
     % Models

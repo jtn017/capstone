@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.160
+ * Model version                  : 1.186
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri May 27 13:06:37 2022
+ * C/C++ source code generated on : Sun May 29 15:42:47 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -34,31 +34,219 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
   int32_T RSDecoder_TempVec2t1[5];
   int32_T RSDecoder_Errloc[4];
   int32_T RSDecoder_Syndrome[4];
-  int32_T ForEach_itr;
-  int32_T RSDecoder_OmegaZActual_idx_0;
   int32_T Temp4;
+  int32_T i;
   int32_T intVal;
   int32_T inv;
   int32_T j;
+  int32_T rtb_uDMaximum;
+  int32_T temp;
   uint32_T rtb_RSDecoder[264];
+  uint32_T tmp;
+  uint32_T tmp_0;
+  uint32_T tmp_1;
+  uint32_T u;
   int8_T rtb_IntegertoBitConverter[792];
   int8_T rtb_BittoIntegerConverter[616];
   int8_T y[8];
+  uint8_T uDMaximum_Valdata;
+  boolean_T rtb_off1[1976];
+  boolean_T rtb_off2[1976];
+  boolean_T rtb_off3[1976];
   boolean_T rtb_Conversion[792];
+  boolean_T guard1 = false;
+  boolean_T guard2 = false;
+  boolean_T loopflag;
 
-  /* S-Function (scominttobit): '<S6>/Bit to Integer Converter' incorporates:
+  /* MATLAB Function: '<S4>/rotator' incorporates:
    *  Inport: '<Root>/rx_frame'
    */
+  memcpy(&rtb_off1[0], &rtU_v2x_rx_bb_in[0], 1976U * sizeof(boolean_T));
+  for (i = 0; i < 988; i++) {
+    temp = i << 1;
+    loopflag = rtb_off1[temp];
+    if ((!loopflag) && (!rtb_off1[temp + 1])) {
+      rtb_off1[temp] = false;
+      rtb_off1[temp + 1] = true;
+    } else {
+      guard1 = false;
+      guard2 = false;
+      if (!loopflag) {
+        rtb_uDMaximum = (i << 1) + 1;
+        if (rtb_off1[rtb_uDMaximum]) {
+          rtb_off1[temp] = true;
+          rtb_off1[rtb_uDMaximum] = true;
+        } else {
+          guard2 = true;
+        }
+      } else {
+        guard2 = true;
+      }
+
+      if (guard2) {
+        if (rtb_off1[temp]) {
+          rtb_uDMaximum = (i << 1) + 1;
+          if (rtb_off1[rtb_uDMaximum]) {
+            rtb_off1[temp] = true;
+            rtb_off1[rtb_uDMaximum] = false;
+          } else {
+            guard1 = true;
+          }
+        } else {
+          guard1 = true;
+        }
+      }
+
+      if (guard1) {
+        rtb_off1[temp] = false;
+        rtb_off1[(i << 1) + 1] = false;
+      }
+    }
+  }
+
+  for (i = 0; i < 1976; i++) {
+    rtb_off2[i] = !rtU_v2x_rx_bb_in[i];
+    rtb_off3[i] = rtU_v2x_rx_bb_in[i];
+  }
+
+  for (i = 0; i < 988; i++) {
+    temp = i << 1;
+    loopflag = rtb_off3[temp];
+    if ((!loopflag) && (!rtb_off3[temp + 1])) {
+      rtb_off3[temp] = true;
+      rtb_off3[temp + 1] = false;
+    } else {
+      guard1 = false;
+      guard2 = false;
+      if (!loopflag) {
+        rtb_uDMaximum = (i << 1) + 1;
+        if (rtb_off3[rtb_uDMaximum]) {
+          rtb_off3[temp] = false;
+          rtb_off3[rtb_uDMaximum] = false;
+        } else {
+          guard2 = true;
+        }
+      } else {
+        guard2 = true;
+      }
+
+      if (guard2) {
+        if (rtb_off3[temp]) {
+          rtb_uDMaximum = (i << 1) + 1;
+          if (rtb_off3[rtb_uDMaximum]) {
+            rtb_off3[temp] = false;
+            rtb_off3[rtb_uDMaximum] = true;
+          } else {
+            guard1 = true;
+          }
+        } else {
+          guard1 = true;
+        }
+      }
+
+      if (guard1) {
+        rtb_off3[temp] = true;
+        rtb_off3[(i << 1) + 1] = true;
+      }
+    }
+  }
+
+  /* Sum: '<S4>/Sum' */
+  u = 0U;
+
+  /* Sum: '<S4>/Sum1' */
+  tmp = 0U;
+
+  /* Sum: '<S4>/Sum2' */
+  tmp_0 = 0U;
+
+  /* Sum: '<S4>/Sum3' */
+  tmp_1 = 0U;
+  for (i = 0; i < 128; i++) {
+    /* Sum: '<S4>/Sum' incorporates:
+     *  Constant: '<S4>/Constant'
+     *  Inport: '<Root>/rx_frame'
+     *  Logic: '<S4>/AND'
+     *  MATLAB Function: '<S4>/rotator'
+     */
+    u += ((rtConstP_rx_base.Constant_Value[i] != 0.0) == (int32_T)rtU_v2x_rx_bb_in[i]);
+
+    /* Sum: '<S4>/Sum1' incorporates:
+     *  Constant: '<S4>/Constant'
+     *  Logic: '<S4>/AND1'
+     */
+    tmp += ((rtConstP_rx_base.Constant_Value[i] != 0.0) == (int32_T)rtb_off1[i]);
+
+    /* Sum: '<S4>/Sum2' incorporates:
+     *  Constant: '<S4>/Constant'
+     *  Logic: '<S4>/AND2'
+     */
+    tmp_0 += ((rtConstP_rx_base.Constant_Value[i] != 0.0) == (int32_T)rtb_off2[i]);
+
+    /* Sum: '<S4>/Sum3' incorporates:
+     *  Constant: '<S4>/Constant'
+     *  Logic: '<S4>/AND3'
+     */
+    tmp_1 += ((rtConstP_rx_base.Constant_Value[i] != 0.0) == (int32_T)rtb_off3[i]);
+  }
+
+  /* S-Function (svipstatminmax): '<S4>/2-D Maximum' incorporates:
+   *  Sum: '<S4>/Sum'
+   *  Sum: '<S4>/Sum1'
+   *  Sum: '<S4>/Sum2'
+   *  Sum: '<S4>/Sum3'
+   */
+  uDMaximum_Valdata = (uint8_T)u;
+  rtb_uDMaximum = 1;
+  if ((uint8_T)tmp > (uint8_T)u) {
+    uDMaximum_Valdata = (uint8_T)tmp;
+    rtb_uDMaximum = 2;
+  }
+
+  if ((uint8_T)tmp_0 > uDMaximum_Valdata) {
+    uDMaximum_Valdata = (uint8_T)tmp_0;
+    rtb_uDMaximum = 3;
+  }
+
+  if ((uint8_T)tmp_1 > uDMaximum_Valdata) {
+    rtb_uDMaximum = 4;
+  }
+
+  /* End of S-Function (svipstatminmax): '<S4>/2-D Maximum' */
+
+  /* MultiPortSwitch: '<S4>/Multiport Switch' incorporates:
+   *  Inport: '<Root>/rx_frame'
+   *  MATLAB Function: '<S4>/rotator'
+   */
+  switch ((uint32_T)rtb_uDMaximum) {
+   case 1:
+    memcpy(&rtb_off3[0], &rtU_v2x_rx_bb_in[0], 1976U * sizeof(boolean_T));
+    break;
+
+   case 2:
+    memcpy(&rtb_off3[0], &rtb_off1[0], 1976U * sizeof(boolean_T));
+    break;
+
+   case 3:
+    memcpy(&rtb_off3[0], &rtb_off2[0], 1976U * sizeof(boolean_T));
+    break;
+  }
+
+  /* End of MultiPortSwitch: '<S4>/Multiport Switch' */
+
+  /* Outport: '<Root>/dec_in' */
+  memcpy(&rtY_dec_in[0], &rtb_off3[128], 1848U * sizeof(boolean_T));
+
+  /* S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
   /* Bit to Integer Conversion */
-  ForEach_itr = 128;
-  for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 616;
-       RSDecoder_OmegaZActual_idx_0++) {
+  rtb_uDMaximum = 128;
+  for (i = 0; i < 616; i++) {
     /* Input bit order is MSB first */
-    intVal = (int32_T)(((uint32_T)rtU_v2x_rx_bb_in[ForEach_itr] << 1U |
-                        rtU_v2x_rx_bb_in[ForEach_itr + 1]) << 1U |
-                       rtU_v2x_rx_bb_in[ForEach_itr + 2]);
-    ForEach_itr += 3;
-    rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0] = (int8_T)intVal;
+    intVal = (int32_T)(((uint32_T)rtb_off3[rtb_uDMaximum] << 1U |
+                        rtb_off3[rtb_uDMaximum + 1]) << 1U |
+                       rtb_off3[rtb_uDMaximum + 2]);
+    rtb_uDMaximum += 3;
+    rtb_BittoIntegerConverter[i] = (int8_T)intVal;
   }
 
   /* End of S-Function (scominttobit): '<S6>/Bit to Integer Converter' */
@@ -77,35 +265,27 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
   rtDW->RSDecoder_GammaZ[3] = 0;
   rtDW->RSDecoder_GammaZ[4] = 0;
   rtDW->RSDecoder_GammaZTemp[0U] = 1;
-  for (ForEach_itr = 0; ForEach_itr < 88; ForEach_itr++) {
+  for (rtb_uDMaximum = 0; rtb_uDMaximum < 88; rtb_uDMaximum++) {
     int32_T Temp3;
     int32_T noErrorStatus;
-    int32_T temp;
     noErrorStatus = 1;
 
     /*  start of assignInputs(): Populate the codeword and erasure vectors with the proper data  */
     /* Assign message symbols. */
     /* If there are erasures, insert zeros in the erased positions. */
-    RSDecoder_OmegaZActual_idx_0 = ForEach_itr * 7;
-    rtDW->RSDecoder_CCode[0] =
-      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0];
-    rtDW->RSDecoder_CCode[1] =
-      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 1];
-    rtDW->RSDecoder_CCode[2] =
-      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 2];
+    i = rtb_uDMaximum * 7;
+    rtDW->RSDecoder_CCode[0] = rtb_BittoIntegerConverter[i];
+    rtDW->RSDecoder_CCode[1] = rtb_BittoIntegerConverter[i + 1];
+    rtDW->RSDecoder_CCode[2] = rtb_BittoIntegerConverter[i + 2];
 
     /* Assign parity symbols, again accounting for erasures */
     /* no puncturing */
     /*  end of assignInputs()  */
     /* Initialize Gamma(Z) = 1 : ASCENDING ORDER.  length = 2t+1 */
-    rtDW->RSDecoder_CCode[3] =
-      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 3];
-    rtDW->RSDecoder_CCode[4] =
-      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 4];
-    rtDW->RSDecoder_CCode[5] =
-      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 5];
-    rtDW->RSDecoder_CCode[6] =
-      rtb_BittoIntegerConverter[RSDecoder_OmegaZActual_idx_0 + 6];
+    rtDW->RSDecoder_CCode[3] = rtb_BittoIntegerConverter[i + 3];
+    rtDW->RSDecoder_CCode[4] = rtb_BittoIntegerConverter[i + 4];
+    rtDW->RSDecoder_CCode[5] = rtb_BittoIntegerConverter[i + 5];
+    rtDW->RSDecoder_CCode[6] = rtb_BittoIntegerConverter[i + 6];
 
     /* Calculate the erasure polynomial GammaZ.GammaZ is the set of coefficients */
     /* of the erasure polynomial in ASCENDING order, because the syndrome is */
@@ -114,13 +294,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
     /*  end of calculateGammaZ()  */
     /* Calculate the syndrome by evaluating the codeword at successive */
     /* powers of alpha.  The syndrome is in ASCENDING order. */
-    for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 4;
-         RSDecoder_OmegaZActual_idx_0++) {
+    for (i = 0; i < 4; i++) {
       Temp3 = 0;
       for (j = 6; j >= 0; j--) {
         /*  start of gf_pow():gf_pow raises x^yd  */
-        temp = (RSDecoder_OmegaZActual_idx_0 + 1) * j *
-          rtConstP_rx_base.RSDecoder_table2[1] % 7;
+        temp = (i + 1) * j * rtConstP_rx_base.RSDecoder_table2[1] % 7;
         if (temp == 0) {
           temp = 7;
         }
@@ -152,16 +330,16 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
         noErrorStatus = 0;
       }
 
-      RSDecoder_Syndrome[RSDecoder_OmegaZActual_idx_0] = Temp3;
+      RSDecoder_Syndrome[i] = Temp3;
     }
 
     /* Stop if all syndromes == 0 (i.e. input word is already a valid BCH/RS codeword) */
     if (noErrorStatus == 1) {
       /*  start of assignOutputs():Populate output vectors with proper data */
       /* Corrected message.  If there is a decoding failure, return the input message. */
-      rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
-      rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)rtDW->RSDecoder_CCode[1];
-      rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)rtDW->RSDecoder_CCode[2];
+      rtb_RSDecoder[rtb_uDMaximum * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
+      rtb_RSDecoder[rtb_uDMaximum * 3 + 1] = (uint32_T)rtDW->RSDecoder_CCode[1];
+      rtb_RSDecoder[rtb_uDMaximum * 3 + 2] = (uint32_T)rtDW->RSDecoder_CCode[2];
 
       /* Optional output for # of errors corrected */
       /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -169,7 +347,6 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
       /*  end of assignOutputs()  */
     } else {
       int32_T RSDecoder_OmegaZActual_idx_1;
-      boolean_T loopflag;
 
       /* Calculate the error/erasure locator polynomial PsiZ */
       /*  start of calculatePsiZ(): Calculate the error/erasure locator polynomial PsiZ */
@@ -197,13 +374,10 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
       /* Initialize correction polynomial D(z) = z*GammaZ : ASCENDING ORDER. */
       /*   length = 2t+2  */
       rtDW->RSDecoder_Dz[0U] = 0;
-      for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 5;
-           RSDecoder_OmegaZActual_idx_0++) {
-        RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0] = rtDW->
-          RSDecoder_GammaZ[RSDecoder_OmegaZActual_idx_0];
-        RSDecoder_PsiZStar[RSDecoder_OmegaZActual_idx_0] = 0;
-        rtDW->RSDecoder_Dz[RSDecoder_OmegaZActual_idx_0 + 1] =
-          rtDW->RSDecoder_GammaZ[RSDecoder_OmegaZActual_idx_0];
+      for (i = 0; i < 5; i++) {
+        RSDecoder_PsiZ[i] = rtDW->RSDecoder_GammaZ[i];
+        RSDecoder_PsiZStar[i] = 0;
+        rtDW->RSDecoder_Dz[i + 1] = rtDW->RSDecoder_GammaZ[i];
       }
 
       /* 2*t-numErasPuncs iterations (Diamond 3) */
@@ -211,22 +385,19 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
         /* Box 2 -- Calculate the discrepancy, which is the sum over i of */
         /*          PsiZ(i)*Syndrome(n-i) with i going from 0 to L  */
         Temp3 = 0;
-        for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 <
-             RSDecoder_OmegaZActual_idx_1 + 1; RSDecoder_OmegaZActual_idx_0++) {
-          temp = j - RSDecoder_OmegaZActual_idx_0;
+        for (i = 0; i < RSDecoder_OmegaZActual_idx_1 + 1; i++) {
+          temp = j - i;
           if (temp >= 0) {
             /* Check that syndrome position is valid */
             /* Multiply the current Psi coefficient by the */
             /* (nCC-L)'th syndrome value.  Then update sum. */
             /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
             temp = RSDecoder_Syndrome[temp];
-            if ((RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0] == 0) || (temp ==
-                 0)) {
+            if ((RSDecoder_PsiZ[i] == 0) || (temp == 0)) {
               intVal = 0;
             } else {
               temp = (rtConstP_rx_base.RSDecoder_table2[temp - 1] +
-                      rtConstP_rx_base.RSDecoder_table2[RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0]
-                      - 1]) % 7;
+                      rtConstP_rx_base.RSDecoder_table2[RSDecoder_PsiZ[i] - 1]) % 7;
               if (temp == 0) {
                 temp = 7;
               }
@@ -243,9 +414,8 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
         if (Temp3 != 0) {
           /* Box 3 -- Connection polynomial */
           /*          PsiZ(n) = PsiZ(n-1) - discrep(n)*Dz */
-          for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 <
-               5; RSDecoder_OmegaZActual_idx_0++) {
-            RSDecoder_TempVec2t1[RSDecoder_OmegaZActual_idx_0] = Temp3;
+          for (i = 0; i < 5; i++) {
+            RSDecoder_TempVec2t1[i] = Temp3;
           }
 
           /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
@@ -318,10 +488,9 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
             /* Boxes 4-7 -- Correction polynomial */
             /*              Dz = PsiZ(n-1) / discrep(n) */
             noErrorStatus = j - RSDecoder_OmegaZActual_idx_1;
-            for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 <
-                 5; RSDecoder_OmegaZActual_idx_0++) {
-              intVal = RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0];
-              temp = RSDecoder_TempVec2t1[RSDecoder_OmegaZActual_idx_0];
+            for (i = 0; i < 5; i++) {
+              intVal = RSDecoder_PsiZ[i];
+              temp = RSDecoder_TempVec2t1[i];
 
               /*  start of gf_div():gf_div divides the scalars x/b */
               if (temp == 0) {
@@ -333,7 +502,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
 
               /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
               if ((temp == 0) || (intVal == 0)) {
-                rtDW->RSDecoder_Dz[RSDecoder_OmegaZActual_idx_0] = 0;
+                rtDW->RSDecoder_Dz[i] = 0;
               } else {
                 temp = (rtConstP_rx_base.RSDecoder_table2[temp - 1] +
                         rtConstP_rx_base.RSDecoder_table2[intVal - 1]) % 7;
@@ -341,8 +510,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
                   temp = 7;
                 }
 
-                rtDW->RSDecoder_Dz[RSDecoder_OmegaZActual_idx_0] =
-                  rtConstP_rx_base.RSDecoder_table1[temp - 1];
+                rtDW->RSDecoder_Dz[i] = rtConstP_rx_base.RSDecoder_table1[temp - 1];
               }
 
               /* end of gf_mul() */
@@ -353,10 +521,8 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
           }
 
           /* Box 8 -- Reset the error/erasure locator polynomial */
-          for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 <
-               5; RSDecoder_OmegaZActual_idx_0++) {
-            RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0] =
-              RSDecoder_PsiZStar[RSDecoder_OmegaZActual_idx_0];
+          for (i = 0; i < 5; i++) {
+            RSDecoder_PsiZ[i] = RSDecoder_PsiZStar[i];
           }
         }
 
@@ -375,10 +541,9 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
       /* Find degree of Psi(Z) */
       Temp3 = 0;
       loopflag = true;
-      for (RSDecoder_OmegaZActual_idx_0 = 4; RSDecoder_OmegaZActual_idx_0 >= 0;
-           RSDecoder_OmegaZActual_idx_0--) {
-        if ((RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0] > 0) && loopflag) {
-          Temp3 = RSDecoder_OmegaZActual_idx_0;
+      for (i = 4; i >= 0; i--) {
+        if ((RSDecoder_PsiZ[i] > 0) && loopflag) {
+          Temp3 = i;
           loopflag = false;
         }
       }
@@ -388,12 +553,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
       if ((Temp3 != RSDecoder_OmegaZActual_idx_1) || (Temp3 < 1)) {
         /*  start of assignOutputs():Populate output vectors with proper data */
         /* Corrected message.  If there is a decoding failure, return the input message. */
-        rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)
-          rtb_BittoIntegerConverter[ForEach_itr * 7];
-        rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
-          rtb_BittoIntegerConverter[ForEach_itr * 7 + 1];
-        rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
-          rtb_BittoIntegerConverter[ForEach_itr * 7 + 2];
+        rtb_RSDecoder[rtb_uDMaximum * 3] = (uint32_T)
+          rtb_BittoIntegerConverter[rtb_uDMaximum * 7];
+        rtb_RSDecoder[rtb_uDMaximum * 3 + 1] = (uint32_T)
+          rtb_BittoIntegerConverter[rtb_uDMaximum * 7 + 1];
+        rtb_RSDecoder[rtb_uDMaximum * 3 + 2] = (uint32_T)
+          rtb_BittoIntegerConverter[rtb_uDMaximum * 7 + 2];
 
         /* Optional output for # of errors corrected */
         /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -414,17 +579,15 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
         /* it returns the number of roots */
         RSDecoder_OmegaZActual_idx_1 = 5;
         noErrorStatus = 0;
-        for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 5;
-             RSDecoder_OmegaZActual_idx_0++) {
-          RSDecoder_PsiZStar[RSDecoder_OmegaZActual_idx_0] =
-            RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0];
+        for (i = 0; i < 5; i++) {
+          RSDecoder_PsiZStar[i] = RSDecoder_PsiZ[i];
         }
 
-        RSDecoder_OmegaZActual_idx_0 = 0;
-        while (RSDecoder_OmegaZActual_idx_0 < 8) {
+        i = 0;
+        while (i < 8) {
           RSDecoder_OmegaZActual_idx_2 = 0;
           for (j = 0; j < RSDecoder_OmegaZActual_idx_1; j++) {
-            rtDW->RSDecoder_d[j] = RSDecoder_OmegaZActual_idx_0;
+            rtDW->RSDecoder_d[j] = i;
           }
 
           for (j = 0; j < RSDecoder_OmegaZActual_idx_1; j++) {
@@ -463,7 +626,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
           }
 
           if (RSDecoder_OmegaZActual_idx_2 == 0) {
-            RSDecoder_Errloc[noErrorStatus] = RSDecoder_OmegaZActual_idx_0;
+            RSDecoder_Errloc[noErrorStatus] = i;
             noErrorStatus++;
 
             /*  start of gf_div():gf_div divides the scalars x/b */
@@ -473,11 +636,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
             /* end of gf_mul() */
             /*  end of gf_div() */
             /*  start of gf_div():gf_div divides the scalars x/b */
-            if (RSDecoder_OmegaZActual_idx_0 == 0) {
+            if (i == 0) {
               temp = 1;
             } else {
-              temp = rtConstP_rx_base.RSDecoder_table1[6 -
-                rtConstP_rx_base.RSDecoder_table2[RSDecoder_OmegaZActual_idx_0 - 1]];
+              temp = rtConstP_rx_base.RSDecoder_table1[6 - rtConstP_rx_base.RSDecoder_table2[i -
+                1]];
             }
 
             /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
@@ -578,10 +741,10 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
 
             /*  end of gf_deconv  */
             RSDecoder_OmegaZActual_idx_1--;
-            RSDecoder_OmegaZActual_idx_0--;
+            i--;
           }
 
-          RSDecoder_OmegaZActual_idx_0++;
+          i++;
         }
 
         for (j = 0; j < noErrorStatus; j++) {
@@ -616,12 +779,12 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
         if (noErrorStatus != Temp3) {
           /*  start of assignOutputs():Populate output vectors with proper data */
           /* Corrected message.  If there is a decoding failure, return the input message. */
-          rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)
-            rtb_BittoIntegerConverter[ForEach_itr * 7];
-          rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
-            rtb_BittoIntegerConverter[ForEach_itr * 7 + 1];
-          rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
-            rtb_BittoIntegerConverter[ForEach_itr * 7 + 2];
+          rtb_RSDecoder[rtb_uDMaximum * 3] = (uint32_T)
+            rtb_BittoIntegerConverter[rtb_uDMaximum * 7];
+          rtb_RSDecoder[rtb_uDMaximum * 3 + 1] = (uint32_T)
+            rtb_BittoIntegerConverter[rtb_uDMaximum * 7 + 1];
+          rtb_RSDecoder[rtb_uDMaximum * 3 + 2] = (uint32_T)
+            rtb_BittoIntegerConverter[rtb_uDMaximum * 7 + 2];
 
           /* Optional output for # of errors corrected */
           /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -631,28 +794,26 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
           /* Test if the error locations are unique
            */
           loopflag = true;
-          RSDecoder_OmegaZActual_idx_0 = 0;
-          while ((RSDecoder_OmegaZActual_idx_0 < noErrorStatus - 1) && loopflag)
-          {
-            j = RSDecoder_OmegaZActual_idx_0 + 1;
+          i = 0;
+          while ((i < noErrorStatus - 1) && loopflag) {
+            j = i + 1;
             while ((j < noErrorStatus) && loopflag) {
-              loopflag = (RSDecoder_Errloc[RSDecoder_OmegaZActual_idx_0] !=
-                          RSDecoder_Errloc[j]);
+              loopflag = (RSDecoder_Errloc[i] != RSDecoder_Errloc[j]);
               j++;
             }
 
-            RSDecoder_OmegaZActual_idx_0++;
+            i++;
           }
 
           if (!loopflag) {
             /*  start of assignOutputs():Populate output vectors with proper data */
             /* Corrected message.  If there is a decoding failure, return the input message. */
-            rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)
-              rtb_BittoIntegerConverter[ForEach_itr * 7];
-            rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)
-              rtb_BittoIntegerConverter[ForEach_itr * 7 + 1];
-            rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)
-              rtb_BittoIntegerConverter[ForEach_itr * 7 + 2];
+            rtb_RSDecoder[rtb_uDMaximum * 3] = (uint32_T)
+              rtb_BittoIntegerConverter[rtb_uDMaximum * 7];
+            rtb_RSDecoder[rtb_uDMaximum * 3 + 1] = (uint32_T)
+              rtb_BittoIntegerConverter[rtb_uDMaximum * 7 + 1];
+            rtb_RSDecoder[rtb_uDMaximum * 3 + 2] = (uint32_T)
+              rtb_BittoIntegerConverter[rtb_uDMaximum * 7 + 2];
 
             /* Optional output for # of errors corrected */
             /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -663,20 +824,17 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
             /* AND CORRECT THEM */
             /*  start of correctErrors():Calculate the error magnitude in the current error position,  */
             /*                           and correct the errors. */
-            for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 <
-                 10; RSDecoder_OmegaZActual_idx_0++) {
-              RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0] = 0;
+            for (i = 0; i < 10; i++) {
+              RSDecoder_OmegaZ[i] = 0;
             }
 
             /*  start of gf_conv():gf_conv convolves A with B and stores the result in retValue  */
-            for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 <
-                 8; RSDecoder_OmegaZActual_idx_0++) {
-              RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0] = 0;
+            for (i = 0; i < 8; i++) {
+              RSDecoder_OmegaZ[i] = 0;
             }
 
-            for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 <
-                 5; RSDecoder_OmegaZActual_idx_0++) {
-              intVal = RSDecoder_PsiZ[RSDecoder_OmegaZActual_idx_0];
+            for (i = 0; i < 5; i++) {
+              intVal = RSDecoder_PsiZ[i];
               if ((intVal == 0) || (RSDecoder_Syndrome[0] == 0)) {
                 temp = 0;
               } else {
@@ -690,7 +848,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
                 temp = rtConstP_rx_base.RSDecoder_table1[temp - 1];
               }
 
-              RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0] ^= temp;
+              RSDecoder_OmegaZ[i] ^= temp;
               if ((intVal == 0) || (RSDecoder_Syndrome[1] == 0)) {
                 temp = 0;
               } else {
@@ -704,7 +862,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
                 temp = rtConstP_rx_base.RSDecoder_table1[temp - 1];
               }
 
-              RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0 + 1] ^= temp;
+              RSDecoder_OmegaZ[i + 1] ^= temp;
               if ((intVal == 0) || (RSDecoder_Syndrome[2] == 0)) {
                 temp = 0;
               } else {
@@ -718,7 +876,7 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
                 temp = rtConstP_rx_base.RSDecoder_table1[temp - 1];
               }
 
-              RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0 + 2] ^= temp;
+              RSDecoder_OmegaZ[i + 2] ^= temp;
               if ((intVal == 0) || (RSDecoder_Syndrome[3] == 0)) {
                 temp = 0;
               } else {
@@ -732,14 +890,14 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
                 temp = rtConstP_rx_base.RSDecoder_table1[temp - 1];
               }
 
-              RSDecoder_OmegaZ[RSDecoder_OmegaZActual_idx_0 + 3] ^= temp;
+              RSDecoder_OmegaZ[i + 3] ^= temp;
             }
 
             /*  end of gf_conv()  */
             /* Disregard terms of x^(2t) and higher in Omega(Z) */
             /* because we have no knowledge of such terms in S(Z). */
             /* That is, retain terms up to x^(2t-1) */
-            RSDecoder_OmegaZActual_idx_0 = RSDecoder_OmegaZ[0];
+            i = RSDecoder_OmegaZ[0];
             RSDecoder_OmegaZActual_idx_1 = RSDecoder_OmegaZ[1];
             RSDecoder_OmegaZActual_idx_2 = RSDecoder_OmegaZ[2];
             RSDecoder_OmegaZActual_idx_3 = RSDecoder_OmegaZ[3];
@@ -766,13 +924,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
               }
 
               /*  end of gf_pow()  */
-              if (RSDecoder_OmegaZActual_idx_0 > 0) {
+              if (i > 0) {
                 /*  start of gf_mul: gf_mul multiplies the scalars  a * b */
                 if (intVal == 0) {
                   Temp3 = 0;
                 } else {
-                  temp = (rtConstP_rx_base.RSDecoder_table2[RSDecoder_OmegaZActual_idx_0
-                          - 1] + rtConstP_rx_base.RSDecoder_table2[intVal - 1]) % 7;
+                  temp = (rtConstP_rx_base.RSDecoder_table2[i - 1] +
+                          rtConstP_rx_base.RSDecoder_table2[intVal - 1]) % 7;
                   if (temp == 0) {
                     temp = 7;
                   }
@@ -1148,11 +1306,11 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
             /* Assign outputs.  Reduce cnumerr by the number of punctures and erasures. */
             /*  start of assignOutputs():Populate output vectors with proper data */
             /* Corrected message.  If there is a decoding failure, return the input message. */
-            rtb_RSDecoder[ForEach_itr * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
-            rtb_RSDecoder[ForEach_itr * 3 + 1] = (uint32_T)rtDW->
-              RSDecoder_CCode[1];
-            rtb_RSDecoder[ForEach_itr * 3 + 2] = (uint32_T)rtDW->
-              RSDecoder_CCode[2];
+            rtb_RSDecoder[rtb_uDMaximum * 3] = (uint32_T)rtDW->RSDecoder_CCode[0];
+            rtb_RSDecoder[rtb_uDMaximum * 3 + 1] = (uint32_T)
+              rtDW->RSDecoder_CCode[1];
+            rtb_RSDecoder[rtb_uDMaximum * 3 + 2] = (uint32_T)
+              rtDW->RSDecoder_CCode[2];
 
             /* Optional output for # of errors corrected */
             /* Parity of corrected codeword. If it is punctured, remove the punctured symbols. */
@@ -1171,15 +1329,13 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
    */
   /*  end of COMM_DoBerlekamp()  */
   /* Integer to Bit Conversion */
-  for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 264;
-       RSDecoder_OmegaZActual_idx_0++) {
-    uint32_T u;
-    ForEach_itr = (RSDecoder_OmegaZActual_idx_0 + 1) * 3;
-    u = rtb_RSDecoder[RSDecoder_OmegaZActual_idx_0];
-    rtb_IntegertoBitConverter[ForEach_itr - 1] = (int8_T)(u & 1U);
+  for (i = 0; i < 264; i++) {
+    rtb_uDMaximum = (i + 1) * 3;
+    u = rtb_RSDecoder[i];
+    rtb_IntegertoBitConverter[rtb_uDMaximum - 1] = (int8_T)(u & 1U);
     u >>= 1U;
-    rtb_IntegertoBitConverter[ForEach_itr - 2] = (int8_T)(u & 1U);
-    rtb_IntegertoBitConverter[ForEach_itr - 3] = (int8_T)(u >> 1U & 1U);
+    rtb_IntegertoBitConverter[rtb_uDMaximum - 2] = (int8_T)(u & 1U);
+    rtb_IntegertoBitConverter[rtb_uDMaximum - 3] = (int8_T)(u >> 1U & 1U);
   }
 
   /* End of S-Function (scominttobit): '<S6>/Integer to Bit Converter' */
@@ -1187,10 +1343,8 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
   /* DataTypeConversion: '<S7>/Conversion' incorporates:
    *  S-Function (scominttobit): '<S6>/Integer to Bit Converter'
    */
-  for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 792;
-       RSDecoder_OmegaZActual_idx_0++) {
-    rtb_Conversion[RSDecoder_OmegaZActual_idx_0] = ((uint8_T)
-      rtb_IntegertoBitConverter[RSDecoder_OmegaZActual_idx_0] != 0);
+  for (i = 0; i < 792; i++) {
+    rtb_Conversion[i] = ((uint8_T)rtb_IntegertoBitConverter[i] != 0);
   }
 
   /* End of DataTypeConversion: '<S7>/Conversion' */
@@ -1202,57 +1356,48 @@ void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T rtU_v2x_rx_bb_in[1976],
   memset(&shiftReg[0], 0, sizeof(int32_T) << 4U);
   for (j = 0; j < 784; j++) {
     inv = rtb_Conversion[j];
-    ForEach_itr = inv;
-    for (RSDecoder_OmegaZActual_idx_0 = 0; RSDecoder_OmegaZActual_idx_0 < 16;
-         RSDecoder_OmegaZActual_idx_0++) {
-      ForEach_itr -= (uint8_T)
-        (rtConstP_rx_base.Descrambler_Polynomial[RSDecoder_OmegaZActual_idx_0 + 1] *
-         shiftReg[RSDecoder_OmegaZActual_idx_0]);
+    rtb_uDMaximum = inv;
+    for (i = 0; i < 16; i++) {
+      rtb_uDMaximum -= (uint8_T)(rtConstP_rx_base.Descrambler_Polynomial[i + 1] *
+        shiftReg[i]);
     }
 
-    while (ForEach_itr < 0) {
-      ForEach_itr += 2;
+    while (rtb_uDMaximum < 0) {
+      rtb_uDMaximum += 2;
     }
 
-    rtY_bits_out[j] = (ForEach_itr % 2 != 0);
-    for (RSDecoder_OmegaZActual_idx_0 = 14; RSDecoder_OmegaZActual_idx_0 >= 0;
-         RSDecoder_OmegaZActual_idx_0--) {
-      shiftReg[RSDecoder_OmegaZActual_idx_0 + 1] =
-        shiftReg[RSDecoder_OmegaZActual_idx_0];
+    rtY_bits_out[j] = (rtb_uDMaximum % 2 != 0);
+    for (i = 14; i >= 0; i--) {
+      shiftReg[i + 1] = shiftReg[i];
     }
 
     shiftReg[0U] = inv;
   }
 
   /* Outputs for Iterator SubSystem: '<S5>/bit_concat_per_col' incorporates:
-   *  ForEach: '<S8>/For Each'
+   *  ForEach: '<S9>/For Each'
    */
-  for (ForEach_itr = 0; ForEach_itr < 98; ForEach_itr++) {
-    /* Outputs for Atomic SubSystem: '<S9>/bc4' */
-    /* MATLAB Function: '<S10>/bit_concat_unary' incorporates:
-     *  ForEachSliceSelector generated from: '<S8>/bits'
+  for (i = 0; i < 98; i++) {
+    /* Outputs for Atomic SubSystem: '<S10>/bc4' */
+    /* MATLAB Function: '<S11>/bit_concat_unary' incorporates:
+     *  ForEachSliceSelector generated from: '<S9>/bits'
      *  S-Function (scomscram2): '<S3>/Descrambler'
      */
     for (inv = 0; inv < 8; inv++) {
-      y[inv] = (int8_T)rtY_bits_out[(ForEach_itr << 3) + inv];
+      y[inv] = (int8_T)rtY_bits_out[(i << 3) + inv];
     }
 
-    /* ForEachSliceAssignment generated from: '<S8>/bytes' incorporates:
-     *  MATLAB Function: '<S10>/bit_concat_unary'
+    /* ForEachSliceAssignment generated from: '<S9>/bytes' incorporates:
+     *  MATLAB Function: '<S11>/bit_concat_unary'
      */
-    rtY_data_frame[ForEach_itr] = (uint8_T)((uint8_T)y[6] << 1 | (uint8_T)y[7] |
-      (uint8_T)y[5] << 2 | (uint8_T)y[4] << 3 | (uint8_T)y[3] << 4 | (uint8_T)y
-      [2] << 5 | (uint8_T)y[1] << 6 | (uint8_T)y[0] << 7);
+    rtY_data_frame[i] = (uint8_T)((uint8_T)y[6] << 1 | (uint8_T)y[7] | (uint8_T)
+      y[5] << 2 | (uint8_T)y[4] << 3 | (uint8_T)y[3] << 4 | (uint8_T)y[2] << 5 |
+      (uint8_T)y[1] << 6 | (uint8_T)y[0] << 7);
 
-    /* End of Outputs for SubSystem: '<S9>/bc4' */
+    /* End of Outputs for SubSystem: '<S10>/bc4' */
   }
 
   /* End of Outputs for SubSystem: '<S5>/bit_concat_per_col' */
-
-  /* Outport: '<Root>/dec_in' incorporates:
-   *  Inport: '<Root>/rx_frame'
-   */
-  memcpy(&rtY_dec_in[0], &rtU_v2x_rx_bb_in[128], 1848U * sizeof(boolean_T));
 }
 
 /* Model initialize function */

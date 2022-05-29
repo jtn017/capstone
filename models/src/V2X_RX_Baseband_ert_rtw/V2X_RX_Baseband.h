@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'V2X_RX_Baseband'.
  *
- * Model version                  : 1.160
+ * Model version                  : 1.186
  * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
- * C/C++ source code generated on : Fri May 27 13:06:37 2022
+ * C/C++ source code generated on : Sun May 29 15:42:47 2022
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Intel->x86-64 (Linux 64)
@@ -51,6 +51,11 @@ typedef struct {
 
 /* Constant parameters (default storage) */
 typedef struct {
+  /* Expression: ini.preamble.bit.seq
+   * Referenced by: '<S4>/Constant'
+   */
+  real_T Constant_Value[128];
+
   /* Computed Parameter: RSDecoder_table1
    * Referenced by: '<S6>/RS Decoder'
    */
@@ -88,6 +93,10 @@ extern void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T
  *
  * Block '<S7>/Data Type Duplicate' : Unused code path elimination
  * Block '<S3>/Data Type Conversion' : Eliminate redundant data type conversion
+ * Block '<S4>/Reshape' : Reshape block reduction
+ * Block '<S4>/Reshape1' : Reshape block reduction
+ * Block '<S4>/Reshape2' : Reshape block reduction
+ * Block '<S4>/Reshape3' : Reshape block reduction
  * Block '<S5>/Reshape' : Reshape block reduction
  * Block '<S5>/Reshape1' : Reshape block reduction
  */
@@ -117,10 +126,11 @@ extern void V2X_RX_Baseband_step(RT_MODEL *const rtM, boolean_T
  * '<S5>'   : 'v2x_modem_tb/V2X_RX_Baseband/bits_to_bytes'
  * '<S6>'   : 'v2x_modem_tb/V2X_RX_Baseband/Decoder/Binary-Output RS Decoder'
  * '<S7>'   : 'v2x_modem_tb/V2X_RX_Baseband/Decoder/Binary-Output RS Decoder/Data Type Conversion Inherited'
- * '<S8>'   : 'v2x_modem_tb/V2X_RX_Baseband/bits_to_bytes/bit_concat_per_col'
- * '<S9>'   : 'v2x_modem_tb/V2X_RX_Baseband/bits_to_bytes/bit_concat_per_col/Bit Concat'
- * '<S10>'  : 'v2x_modem_tb/V2X_RX_Baseband/bits_to_bytes/bit_concat_per_col/Bit Concat/bc4'
- * '<S11>'  : 'v2x_modem_tb/V2X_RX_Baseband/bits_to_bytes/bit_concat_per_col/Bit Concat/bc4/bit_concat_unary'
+ * '<S8>'   : 'v2x_modem_tb/V2X_RX_Baseband/Preamble Extractor/rotator'
+ * '<S9>'   : 'v2x_modem_tb/V2X_RX_Baseband/bits_to_bytes/bit_concat_per_col'
+ * '<S10>'  : 'v2x_modem_tb/V2X_RX_Baseband/bits_to_bytes/bit_concat_per_col/Bit Concat'
+ * '<S11>'  : 'v2x_modem_tb/V2X_RX_Baseband/bits_to_bytes/bit_concat_per_col/Bit Concat/bc4'
+ * '<S12>'  : 'v2x_modem_tb/V2X_RX_Baseband/bits_to_bytes/bit_concat_per_col/Bit Concat/bc4/bit_concat_unary'
  */
 
 /*-

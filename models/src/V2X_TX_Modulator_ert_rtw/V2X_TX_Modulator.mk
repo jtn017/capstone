@@ -2,7 +2,7 @@
 ## Makefile generated for component 'V2X_TX_Modulator'. 
 ## 
 ## Makefile     : V2X_TX_Modulator.mk
-## Generated on : Fri May 27 13:06:31 2022
+## Generated on : Sun May 29 15:42:29 2022
 ## Final product: $(RELATIVE_PATH_TO_ANCHOR)/V2X_TX_Modulator.exe
 ## Product type : executable
 ## 
@@ -22,7 +22,7 @@ MAKEFILE                  = V2X_TX_Modulator.mk
 MATLAB_ROOT               = C:/PROGRA~1/MATLAB/R2021b
 MATLAB_BIN                = C:/PROGRA~1/MATLAB/R2021b/bin
 MATLAB_ARCH_BIN           = $(MATLAB_BIN)/win64
-START_DIR                 = C:/Users/jacob/DOCUME~1/IMPORT~1/UCSD/2021-2~1/WESCAP~1/capstone/models/src
+START_DIR                 = C:/Users/ryans/OneDrive/Documents/GitHub/capstone/models/src
 SOLVER                    = 
 SOLVER_OBJ                = 
 CLASSIC_INTERFACE         = 0
