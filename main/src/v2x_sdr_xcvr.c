@@ -80,12 +80,6 @@ typedef struct xflow_pthread_data
     struct iio_device *dev;
 } xflow_pthread_data;
 
-typedef struct sdr_data
-{
-    sdrini_t* ini;
-    sdrstat_t* stat;
-} sdr_data;
-
 uint32_t vio_start_agc = 0;
 uint32_t thread_period = 10000; // 0.01 seconds
 uint32_t uio_poll_period = 1000; // 0.001 seconds
@@ -427,40 +421,30 @@ static void* tx_thread_fn(void* args)
     // Loop init
     printf("TX thread started\n");
     uint32_t loop_num = 0;
+    int16_t tx_mod_out[TX_MOD_OUT_SYMS * 2];
+    ssize_t nbytes_tx;
+    char *p_start;
 
-    // Only run if shorts are used
-    int datasize = ((sdr_data*) args)->ini->datasize;
-    if (datasize == 2)	
+    // Run loop
+    while (!stop)
     {
-        int16_t tx_mod_out[TX_MOD_OUT_SYMS * 2];
-        ssize_t nbytes_tx;
-        char *p_start;
+        // WRITE: Get pointers to TX buf and write IQ to TX buf port 0
+        p_start = iio_buffer_first(txbuf, tx0_i);
+        load_frame_txmod(tx_mod_out);
+        memmove(p_start, tx_mod_out, TX_MOD_OUT_SYMS * 2);
 
-        // Run loop
-        while (!stop)
-        {
-            // WRITE: Get pointers to TX buf and write IQ to TX buf port 0
-            p_start = iio_buffer_first(txbuf, tx0_i);
-            load_frame_txmod(tx_mod_out);
-            memmove(p_start, tx_mod_out, TX_MOD_OUT_SYMS * 2);
-
-            // Schecule TX Buffer
-            nbytes_tx = iio_buffer_push(txbuf);
-            if (nbytes_tx < 0)
-            { 
-                printf("Error scheduling tx buf %d\n", (int) nbytes_tx);
-                program_shutdown(); 
-            }
-
-            // Sleep
-            printf("Finished TX thread %d\n", loop_num);
-            usleep(thread_period); // 0.5 seconds = 500000
-            loop_num++;
+        // Schecule TX Buffer
+        nbytes_tx = iio_buffer_push(txbuf);
+        if (nbytes_tx < 0)
+        { 
+            printf("Error scheduling tx buf %d\n", (int) nbytes_tx);
+            program_shutdown(); 
         }
-    }
-    else
-    {
-        printf("ini->datasize = %d, exiting TX thread\n", datasize);
+
+        // Sleep
+        printf("Finished TX thread %d\n", loop_num);
+        usleep(thread_period); // 0.5 seconds = 500000
+        loop_num++;
     }
 
     // Return
@@ -595,6 +579,7 @@ void rx_ctl_init(sdrini_t *ini)
     printf("* Writing RX_CTL_STORE_DELAY = %u\n", ini->rx_ctl_store_delay);
     printf("* Writing RX_CTL_TIME_SEL    = %u\n", ini->rx_ctl_time_sel);
 
+    generic_vio_write(RX_CTL_AP_CTRL,     1);
     generic_vio_write(RX_CTL_START_AGC,   ini->rx_ctl_start_agc);
     generic_vio_write(RX_CTL_CORR_THRESH, ini->rx_ctl_corr_thresh);
     generic_vio_write(RX_CTL_AGC_POW_REF, ini->rx_ctl_agc_pow_ref);
@@ -643,10 +628,7 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
     if (ini->tx_thread_enable)
     {
         printf("* TX thread enabled \n");
-        sdr_data thread_args;
-        thread_args.ini  = ini;
-        thread_args.stat = stat;
-        pthread_create(&tx_thread, NULL, tx_thread_fn, &thread_args);
+        pthread_create(&tx_thread, NULL, tx_thread_fn, NULL);
     }
     else
     {
