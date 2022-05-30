@@ -68,12 +68,9 @@ static struct iio_channel *rx0_q = NULL;
 static struct iio_buffer  *rxbuf = NULL;
 
 // Addifng for TX
-static struct iio_device *tx;
 static struct iio_channel *tx0_i = NULL;
 static struct iio_channel *tx0_q = NULL;
 static struct iio_buffer *txbuf = NULL;
-static struct iio_context *ctx_dma = NULL;
-static struct stream_cfg txcfg;
 
 static bool stop = false;
 static bool app_running = true;
@@ -83,13 +80,9 @@ typedef struct xflow_pthread_data
     struct iio_device *dev;
 } xflow_pthread_data;
 
-typedef struct sdr_data
-{
-    sdrini_t* ini;
-    sdrstat_t* stat;
-} sdr_data;
-
-static uint32_t vio_start_agc = 0;
+uint32_t vio_start_agc = 0;
+uint32_t thread_period = 10000; // 0.01 seconds
+uint32_t uio_poll_period = 1000; // 0.001 seconds
 
 // ---------------------- Cleanup and exit ----------------------
 static void program_shutdown()
@@ -293,92 +286,6 @@ static bool config_ad9361_tx_local(struct stream_cfg *cfg, struct iio_context *c
     return true;
 }
 
-static void iio_buffer_DMA_tx(uint64_t bandwidth_,uint64_t sample_rate_,uint64_t freq_,
-                              void *data, int numbuf, int bytes)
-{
-    ASSERT((ctx_dma = iio_create_default_context()) && "No context");     
-    ASSERT(iio_context_get_devices_count(ctx_dma) > 0 && "No Devices");     
-    ASSERT(get_ad9361_stream_dev(ctx_dma, TX, &tx) && "No tx dev found");
-    ASSERT(get_ad9361_stream_ch(ctx_dma, TX, tx, 0, &tx0_i) && "TX chan i not found");
-    ASSERT(get_ad9361_stream_ch(ctx_dma, TX, tx, 1, &tx0_q) && "TX chan q not found");
-
-    iio_channel_enable(tx0_i);
-    iio_channel_enable(tx0_q);
-
-    iio_device_set_kernel_buffers_count(tx,numbuf);
-    txbuf = iio_device_create_buffer(tx, bytes, false);
-
-    if (!txbuf)
-    {
-        perror("Could not create TX buffer");
-        if (txbuf) { iio_buffer_destroy(txbuf); }
-        if (ctx_dma) { iio_context_destroy(ctx_dma); }
-        if (tx0_i) { iio_channel_disable(tx0_i); }
-        if (tx0_q) { iio_channel_disable(tx0_q); }
-    }
-    if (!txbuf)
-    {
-        perror("Could not create TX buffer");
-        if (txbuf) { iio_buffer_destroy(txbuf); }
-        if (ctx_dma) { iio_context_destroy(ctx_dma); }
-        if (tx0_i) { iio_channel_disable(tx0_i); }
-        if (tx0_q) { iio_channel_disable(tx0_q); }
-    }
-    
-    iio_buffer_set_data(txbuf, data);
-    iio_channel_write_raw(tx0_i, txbuf, data, bytes);
-    iio_buffer_push_partial(txbuf, (bytes/2 ));
-
-    if (txbuf) { iio_buffer_destroy(txbuf); }
-        //std::cout << "Done Destroying buffer " << std::endl;
-        //std::cout << "Done Destroying context " << std::endl;
-    if (tx0_i) { iio_channel_disable(tx0_i); }
-        //std::cout << "Done Disableing channel i" << std::endl;
-    if (tx0_q) { iio_channel_disable(tx0_q); }
-        //std::cout << "Done Disableing channel q" << std::endl;
-        
-    if (ctx_dma) { iio_context_destroy(ctx_dma); }
-}
-
-static void *monitor_thread_fn(void *data)
-{
-    printf("Thread to Monitor data overflow activated. \n");
-    struct xflow_pthread_data *xflow_pthread_data = data;
-    uint32_t status;
-    int ret;
-    
-    if(!xflow_pthread_data->dev)
-    {
-        fprintf(stderr, "Unable to find IIO device\n");
-        return (void*)-1;
-    }
-    
-    sleep(1);
-    
-    ret = iio_device_reg_write(xflow_pthread_data->dev, 0x80000088, 0x6);
-    
-    while(app_running)
-    {
-        ret = iio_device_reg_read(xflow_pthread_data->dev, 0x80000088, &status);
-        if (ret) {
-            fprintf(stderr,"Failed to read overflow status register: %s\n",
-                    strerror(-ret));
-            continue;
-        }
-
-        if (status & 4)
-        {
-            fprintf(stderr, "Overflow detected\n");
-        }
-    
-        if(status)	
-            iio_device_reg_write(xflow_pthread_data->dev,0x80000088,status);
-        sleep(1);
-    }
-
-    return (void*)0;
-}
-
 // ---------------------- Initialize XCVR ----------------------
 static int init_xcvr(const sdrini_t *ini, sdrstat_t **stat, 
                     struct iio_device **tx, struct iio_device **rx,
@@ -509,46 +416,39 @@ static void load_frame_txmod(int16_t *input)
     memcpy(input, (int16_t *) tx_mod_out, TX_MOD_OUT_SYMS * 2 * sizeof(input[0]));
 }
 
-static void tx_thread_fn(void* args)
+static void* tx_thread_fn(void* args)
 {
     // Loop init
     printf("TX thread started\n");
     uint32_t loop_num = 0;
+    int16_t tx_mod_out[TX_MOD_OUT_SYMS * 2];
+    ssize_t nbytes_tx;
+    char *p_start;
 
-    // Only run if shorts are used
-    int datasize = ((sdr_data*) args)->ini->datasize;
-    if (datasize == 2)	
+    // Run loop
+    while (!stop)
     {
-        int16_t tx_mod_out[TX_MOD_OUT_SYMS * 2];
-        ssize_t nbytes_tx;
-        char *p_start;
+        // WRITE: Get pointers to TX buf and write IQ to TX buf port 0
+        p_start = iio_buffer_first(txbuf, tx0_i);
+        load_frame_txmod(tx_mod_out);
+        memmove(p_start, tx_mod_out, TX_MOD_OUT_SYMS * 2);
 
-        // Run loop
-        while (!stop)
-        {
-            // WRITE: Get pointers to TX buf and write IQ to TX buf port 0
-            p_start = iio_buffer_first(txbuf, tx0_i);
-            load_frame_txmod(tx_mod_out);
-            memmove(p_start, tx_mod_out, TX_MOD_OUT_SYMS * 2);
-
-            // Schecule TX Buffer
-            nbytes_tx = iio_buffer_push(txbuf);
-            if (nbytes_tx < 0)
-            { 
-                printf("Error scheduling tx buf %d\n", (int) nbytes_tx);
-                program_shutdown(); 
-            }
-
-            // Sleep
-            printf("Finished TX thread %d\n", loop_num);
-            usleep(12500000); // 0.5 seconds = 500000
-            loop_num++;
+        // Schecule TX Buffer
+        nbytes_tx = iio_buffer_push(txbuf);
+        if (nbytes_tx < 0)
+        { 
+            printf("Error scheduling tx buf %d\n", (int) nbytes_tx);
+            program_shutdown(); 
         }
+
+        // Sleep
+        printf("Finished TX thread %d\n", loop_num);
+        usleep(thread_period); // 0.5 seconds = 500000
+        loop_num++;
     }
-    else
-    {
-        printf("ini->datasize = %d, exiting TX thread\n", datasize);
-    }
+
+    // Return
+    return NULL;
 }
 
 static void process_frame_rxdemod(uint32_t* uio_pkt, int* sockfd, struct sockaddr_in * addr_con)
@@ -566,12 +466,17 @@ static void process_frame_rxdemod(uint32_t* uio_pkt, int* sockfd, struct sockadd
     fix_payload_packet(output_frame, &payload);
 
     // Print
-    printf("RX payload:\n");
-    printf("    Preamble0: 0x%x\n", uio_pkt[0]);
-    printf("    Preamble1: 0x%x\n", uio_pkt[1]);
-    printf("    Preamble2: 0x%x\n", uio_pkt[2]);
-    printf("    Preamble3: 0x%x\n", uio_pkt[3]);
-    printf("    Name:  %s\n", payload.name);
+    printf("RX payload (before baseband processing):\n");
+    for(int idx = 0; idx < 64; idx++)
+    {
+        printf("    TEST[%d]: 0x%08x\n",idx,uio_pkt[idx]);
+    }
+    printf("    Name:  ");
+    for (int i = 0; i < 4 ; i++)
+    {
+        printf("%c",payload.name[i]);
+    }
+    printf("\n");	
     printf("    Lat:   %f\n", payload.lat);
     printf("    Lon:   %f\n", payload.lon);
     printf("    Speed: %d\n", payload.speed);
@@ -590,7 +495,7 @@ static void process_frame_rxdemod(uint32_t* uio_pkt, int* sockfd, struct sockadd
 #endif
 }
 
-static void rx_thread_fn(void* args)
+static void* rx_thread_fn(void* args)
 {
     // Loop init
     printf("RX thread started\n");
@@ -598,9 +503,6 @@ static void rx_thread_fn(void* args)
 
     // Polling init
     uint32_t rdy = 0;
-    // uint32_t rdy_valid = 0;
-    // uint32_t ver = 0;
-    // uint32_t ver_valid = 0;
     uint32_t uio_pkt[64];
 
     int sockfd = 0;
@@ -608,21 +510,21 @@ static void rx_thread_fn(void* args)
 
 #ifdef USE_UDP_CLIENT
 
-	addr_con.sin_family = AF_INET;
-	addr_con.sin_port = htons(PORT_NO);
-	addr_con.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+    addr_con.sin_family = AF_INET;
+    addr_con.sin_port = htons(PORT_NO);
+    addr_con.sin_addr.s_addr = inet_addr(IP_ADDRESS);
 
-	// socket()
-	sockfd = socket(AF_INET, SOCK_DGRAM,IP_PROTOCOL);
+    // socket()
+    sockfd = socket(AF_INET, SOCK_DGRAM,IP_PROTOCOL);
 
-	if (sockfd < 0)
-	{
-		printf("\nfile descriptor not received!!\n");
-		exit(-1);
-	}
-	else{
-		printf("\nfile descriptor %d received\n", sockfd);
-	}
+    if (sockfd < 0)
+    {
+        printf("\nfile descriptor not received!!\n");
+        exit(-1);
+    }
+    else{
+        printf("\nfile descriptor %d received\n", sockfd);
+    }
 #endif
 
     // Run loop
@@ -630,19 +532,15 @@ static void rx_thread_fn(void* args)
     {
         // Tell RX to listen
         generic_vio_write(RX_CTL_START_AGC, vio_start_agc | 0x1); // set start bit
+        usleep(uio_poll_period);
 
         // Poll ready signal
         while ((!stop) && (rdy == 0))
         {
             rdy = generic_uio_read(RX_IP_RDY);
-            // rdy_valid = generic_uio_read(RX_IP_RDY_VALID);
 
-            usleep(500000); // 0.5 seconds = 500000
+            usleep(uio_poll_period); // 0.5 seconds = 500000
         }
-
-        // // Read version (for IP testing)
-        // ver = generic_uio_read(RX_IP_VER);
-        // ver_valid = generic_uio_read(RX_IP_VER_VALID);
 
         // Read demodulated data
         for (int i = 0; i < 64; i++)
@@ -656,13 +554,16 @@ static void rx_thread_fn(void* args)
         // Sleep and reset RX
         generic_vio_write(RX_CTL_START_AGC, vio_start_agc & 0xFFFFFFFE);
         printf("Finished RX thread %d\n", loop_num);
-        usleep(12500000); // 0.5 seconds = 500000
+        usleep(thread_period); // 0.5 seconds = 500000
         loop_num++;
     }
 
 #ifdef USE_UDP_CLIENT
     close(sockfd);
 #endif
+
+    // Return
+    return NULL;
 }
 
 void rx_ctl_init(sdrini_t *ini)
@@ -677,7 +578,6 @@ void rx_ctl_init(sdrini_t *ini)
     printf("* Writing RX_CTL_AGC_POW_REF = %u\n", ini->rx_ctl_agc_pow_ref);
     printf("* Writing RX_CTL_STORE_DELAY = %u\n", ini->rx_ctl_store_delay);
     printf("* Writing RX_CTL_TIME_SEL    = %u\n", ini->rx_ctl_time_sel);
-
 
     generic_vio_write(RX_CTL_AP_CTRL,     1);
     generic_vio_write(RX_CTL_START_AGC,   ini->rx_ctl_start_agc);
@@ -704,6 +604,7 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
 
     // Initialize
     int numbuf = init_xcvr(ini, &stat, &tx, &rx, &txcfg, &rxcfg);
+    (void) numbuf;
 
     // Initialize generated code
     tx_bb_init();
@@ -717,20 +618,43 @@ int run_xcvr(sdrini_t *ini, sdrstat_t *stat)
     //------------------------- Data acquisition variables -------------------------
     printf("* Starting IO streaming (press CTRL+C to cancel)\n" );
     
-    // Run TX
+    // Define threads and poll periods
     pthread_t tx_thread;
-    sdr_data thread_args;
-    thread_args.ini  = ini;
-    thread_args.stat = stat;
-    pthread_create(&tx_thread, NULL, tx_thread_fn, &thread_args);
+    pthread_t rx_thread;
+    thread_period = ini->thread_period;
+    uio_poll_period = ini->uio_poll_period;
+
+    // Run TX
+    if (ini->tx_thread_enable)
+    {
+        printf("* TX thread enabled \n");
+        pthread_create(&tx_thread, NULL, tx_thread_fn, NULL);
+    }
+    else
+    {
+        printf("* TX thread disabled \n");
+    }
 
     // Run RX
-    pthread_t rx_thread;
-    pthread_create(&rx_thread, NULL, rx_thread_fn, NULL);
+    if (ini->rx_thread_enable)
+    {
+        printf("* RX thread enabled \n");
+        pthread_create(&rx_thread, NULL, rx_thread_fn, NULL);
+    }
+    else
+    {
+        printf("* RX thread disabled \n");
+    }
 
     // Cleanup
-    pthread_join(tx_thread, NULL);
-    pthread_join(rx_thread, NULL);
+    if (ini->tx_thread_enable)
+    {
+        pthread_join(tx_thread, NULL);
+    }
+    if (ini->rx_thread_enable)
+    {
+        pthread_join(rx_thread, NULL);
+    }
     generic_uio_exit();
     generic_vio_exit();
     printf("* Exiting \n");

@@ -37,7 +37,7 @@ static void get_rx_input(uint32_t* uio_pkt)
     uint32_t idx = 0;
     for (uint32_t i = 0; i < RX_BB_IN_DWORD; i++)
     {
-        for (uint32_t j = 31; j >= 0; j--)
+        for (int32_t j = 31; j >= 0; j--)
         {
             if (idx < RX_BB_IN_BITS)
             {
@@ -99,15 +99,11 @@ void get_rx_bb_out(uint32_t* uio_pkt, uint8_T* output_frame)
 // ---------------------- External functions ----------------------
 int fix_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
 {
-    // Reset memory of struct to 0
-    float temp1, temp2, temp3;
-
     /* 
         Use implicit or explicit initialization.
         Note that shorter version requires using memcpy twice
         since struct is not aligned to 32-bits (just some C-weirdness).
     */
-   
 #ifndef EXPLICIT_INITIALIZATION 
     memcpy(pyld->name, &payload[0], 4);
     memcpy(pyld->lat, &payload[4], 4);
@@ -116,22 +112,8 @@ int fix_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
     pyld->dir = payload[13];
     memcpy(pyld->dist_next_step, &payload[14], 4);
 #else
-    memcpy(pyld, &in_frame[0], 14);
-    memcpy(&pyld->dist_next_step, &in_frame[14], 4);
+    memcpy(pyld, &in_frame[0], 18);
 #endif
-
-    temp1 = fix_endianness(pyld->lat);
-    pyld->lat = temp1;
-
-    temp2 = fix_endianness(pyld->lon);
-    pyld->lon = temp2;
-
-    temp3 = fix_endianness(pyld->dist_next_step);
-    pyld->dist_next_step = temp3;
-
-    memcpy(&in_frame[0], pyld, 14);
-    memcpy(&in_frame[14], &pyld->dist_next_step, 4);
-
     return 0;
 }
 
@@ -141,22 +123,17 @@ float fix_endianness(float val)
     // Need to copy floating value to a uint32_t for masking
     unsigned int temp_val = 0;
     memcpy(&temp_val, &val, 4);
-
     float flt_val = 0.0f;
     
-    //create mask of bits 1111
+    // Create mask of bits 1111
     unsigned int mask = 0xF;
 
     // Create array of 4 chars (4 bytes = 1 single pt value) to
     // rearrange bits and produce the correct floating pt value
     unsigned char swapped_bits[4];
-    
-    swapped_bits[3] = (((mask<<4) & temp_val) | ((mask<<0) & temp_val)) >> 0;
-    
-    swapped_bits[2] = (((mask<<12) & temp_val) | ((mask<<8) & temp_val)) >> 8;
-
+    swapped_bits[3] = (((mask<<4) & temp_val)  | ((mask<<0) & temp_val))  >> 0;
+    swapped_bits[2] = (((mask<<12) & temp_val) | ((mask<<8) & temp_val))  >> 8;
     swapped_bits[1] = (((mask<<20) & temp_val) | ((mask<<16) & temp_val)) >> 16;
-
     swapped_bits[0] = (((mask<<28) & temp_val) | ((mask<<24) & temp_val)) >> 24;
 
     // copy 4 bytes into single pt value
@@ -165,6 +142,3 @@ float fix_endianness(float val)
     // return correct floating pt value
     return flt_val;
 }
-
-
-

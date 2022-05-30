@@ -160,6 +160,10 @@ int readinifile(sdrini_t *ini)
     ini->rx_ctl_agc_pow_ref=readiniuint(fendfile,"FEND","RX_CTL_AGC_POW_REF");
     ini->rx_ctl_store_delay=readiniuint(fendfile,"FEND","RX_CTL_STORE_DELAY");
     ini->rx_ctl_time_sel=readiniuint(fendfile,"FEND","RX_CTL_TIME_SEL");
+    ini->tx_thread_enable=readiniint(fendfile,"FEND","TX_THREAD_ENABLE");
+    ini->rx_thread_enable=readiniint(fendfile,"FEND","RX_THREAD_ENABLE");
+    ini->thread_period=readiniuint(fendfile,"FEND","THREAD_PERIOD");
+    ini->uio_poll_period=readiniuint(fendfile,"FEND","UIO_POLL_PERIOD");
 
     // No issues
     return 0;

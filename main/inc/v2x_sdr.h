@@ -102,6 +102,10 @@ typedef struct {
 	uint32_t rx_ctl_agc_pow_ref;
 	uint32_t rx_ctl_store_delay;
 	uint32_t rx_ctl_time_sel;
+	int tx_thread_enable;
+	int rx_thread_enable;
+	uint32_t thread_period;
+	uint32_t uio_poll_period;
 } sdrini_t;
 
 typedef struct {
