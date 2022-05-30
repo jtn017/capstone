@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "v2x_constants.h": "c",
+        "v2x_rx_bb_wrapper.h": "c",
+        "v2x_datatypes.h": "c",
+        "rtwtypes.h": "c"
+    }
+}

@@ -35,9 +35,12 @@ static void get_rx_input(uint32_t* uio_pkt);
 static void get_rx_input(uint32_t* uio_pkt)
 {
     uint32_t idx = 0;
-    for (uint32_t i = 0; i < RX_BB_IN_DWORD; i++)
+    uint32_t i = 0;
+    int32_t j = 0;
+
+    for (i = 0; i < RX_BB_IN_DWORD; i++)
     {
-        for (uint32_t j = 31; j >= 0; j--)
+        for (j = 31; j >= 0; j--)
         {
             if (idx < RX_BB_IN_BITS)
             {
@@ -45,11 +48,14 @@ static void get_rx_input(uint32_t* uio_pkt)
             }
             else
             {
+		//printf("breaking from loop\n");
                 break;
             }
             idx++;
         }
+        //printf("idx=%d, i=%d, uio_pkt=0x%x\n",idx, i,uio_pkt[i]);
     }
+
 }
 
 static void v2x_rx_bb_one_step(RT_MODEL *const rtM)
@@ -93,7 +99,21 @@ void get_rx_bb_out(uint32_t* uio_pkt, uint8_T* output_frame)
 {
     get_rx_input(uio_pkt);
     v2x_rx_bb_one_step(rtMPtr);
+
     memcpy(output_frame, rtY_data_frame, RX_BB_OUT_BYTES*sizeof(rtY_data_frame[0]));
+
+    printf("rtY=****************************\n0x");
+    for(int i = 0; i< 4;i++){
+	    printf("%02x ",rtY_data_frame[i]);
+    }
+    printf("\n");
+
+    printf("output_frame=****************************\n0x");
+    for(int i = 0; i< 4;i++){
+	    printf("%02x ",output_frame[i]);
+    }
+    printf("\n");
+
 }
 
 // ---------------------- External functions ----------------------
@@ -116,10 +136,14 @@ int fix_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
     pyld->dir = payload[13];
     memcpy(pyld->dist_next_step, &payload[14], 4);
 #else
-    memcpy(pyld, &in_frame[0], 14);
+    printf("IN HERE??\n");
+    memcpy(pyld, &in_frame[0], 18);
+    printf("testing float = %f\n",pyld->dist_next_step);
     memcpy(&pyld->dist_next_step, &in_frame[14], 4);
+    printf("testing float = %f\n",pyld->dist_next_step);
 #endif
 
+#if 0
     temp1 = fix_endianness(pyld->lat);
     pyld->lat = temp1;
 
@@ -128,9 +152,9 @@ int fix_payload_packet(uint8_T* in_frame, struct payload_struct * pyld)
 
     temp3 = fix_endianness(pyld->dist_next_step);
     pyld->dist_next_step = temp3;
-
-    memcpy(&in_frame[0], pyld, 14);
-    memcpy(&in_frame[14], &pyld->dist_next_step, 4);
+#endif
+    //memcpy(&in_frame[0], pyld, 18);
+    //memcpy(&in_frame[14], &pyld->dist_next_step, 4);
 
     return 0;
 }

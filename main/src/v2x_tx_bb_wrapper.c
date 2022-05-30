@@ -136,9 +136,8 @@ static void get_tx_input_frame()
     update_info_packet();
 
     // Set data
-    memcpy(rtU_v2x_tx_bb_in, (char*) &g_info_pkt, INFO_PKT_BYTES*sizeof(rtU_v2x_tx_bb_in[0]));
-    memcpy(rtU_v2x_tx_bb_in + INFO_PKT_BYTES, g_audio_pkt[g_audio_pkt_num],
-           AUDIO_PKT_BYTES*sizeof(rtU_v2x_tx_bb_in[0]));
+    memcpy((void *)&rtU_v2x_tx_bb_in[0], (void *)&g_info_pkt, 18);
+    memcpy((void *)&rtU_v2x_tx_bb_in[18], (void *)g_audio_pkt[g_audio_pkt_num], 80);
 
     // Advance audio packet number
     advance_audio_buffer();
