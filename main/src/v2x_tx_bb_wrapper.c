@@ -111,7 +111,8 @@ static void init_audio_buffer(void)
     // Grab data from file
     uint8_t buffer[AUDIO_PKTS * AUDIO_PKT_BYTES];
     FILE * bin_file = fopen("data/sample_audio.bin", "rb");
-    fread(buffer, sizeof(buffer), 1, bin_file);
+    int temp = fread(buffer, sizeof(buffer), 1, bin_file);
+    (void) temp;
     fclose(bin_file);
 
     // Copy into audio buffer
@@ -136,8 +137,8 @@ static void get_tx_input_frame()
     update_info_packet();
 
     // Set data
-    memcpy((void *)&rtU_v2x_tx_bb_in[0], (void *)&g_info_pkt, 18);
-    memcpy((void *)&rtU_v2x_tx_bb_in[18], (void *)g_audio_pkt[g_audio_pkt_num], 80);
+    memcpy(rtU_v2x_tx_bb_in, (void *) &g_info_pkt, INFO_PKT_BYTES);
+    memcpy(rtU_v2x_tx_bb_in + INFO_PKT_BYTES, g_audio_pkt[g_audio_pkt_num], AUDIO_PKT_BYTES);
 
     // Advance audio packet number
     advance_audio_buffer();
