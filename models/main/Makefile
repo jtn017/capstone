@@ -50,6 +50,8 @@ $(ODIR)/%.o: $(MAIN_SDIR)/%.c
 $(ODIR):
 	mkdir -p $(ODIR)
 
+run:
+	./v2x_tx_main	
 # Clean
 .PHONY: clean 
 

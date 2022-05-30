@@ -206,7 +206,7 @@ int_T main(int_T argc, const char *argv[])
     struct payload_struct pyld;
 
     // Set mumber of frames to compare
-    for (int i = 0; i < NUM_FRAMES; i++)
+    for (int i = 1; i < NUM_FRAMES; i++)
     {
         load_bin(i);
         get_tx_bb_out(g_tx_bb_out, i);
@@ -225,6 +225,7 @@ int_T main(int_T argc, const char *argv[])
             {
                 parse_payload_packet(g_rx_bb_out, &pyld);
 #ifdef HTTP_SOCKET
+                usleep(500000);
                 tx_payload_wifimodule2(&pyld);
 #endif
             }
