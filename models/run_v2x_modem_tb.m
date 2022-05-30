@@ -21,11 +21,11 @@ mod_ini = v2x_modem_init();
 mod_dt = mod_ini.intfc_dt;
 
 %% Frame params
-num_frames = 20;
+num_frames = 200;
 audio_pkts = get_audio_pkts();
 audio_pkts = audio_pkts(:, 1:num_frames);
-info_pkts = get_info_pkts();
-%info_pkts = get_info_pkt_v3();
+%info_pkts = get_info_pkts();
+info_pkts = get_info_pkt_v3();
 info_pkts = info_pkts(:, 1:num_frames);
 % info_pkt_v1 = get_info_pkt_v1();
 % info_pkt_v2 = get_info_pkt_v2();
@@ -43,7 +43,7 @@ set_param(sim_name, 'StopTime', num2str(Tsim))
 sim_out = sim(sim_name, Tsim);
 
 %% Save to CSV
-save_to_bin = 0;
+save_to_bin = 1;
 
 % V2X TX Baseband
 if save_to_bin
@@ -86,7 +86,7 @@ if save_to_bin
 end
 
 %% Build script
-build_src = 1;
+build_src = 0;
 
 if build_src
     % Models
