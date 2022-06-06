@@ -1,3 +1,5 @@
+[![alt text](docs/images/thumbnail.png?raw=true)](https://www.youtube.com/watch?v=SJ1P-lReLIU)
+
 # Program Details
 This effort was part of [UCSD MAS WES](https://jacobsschool.ucsd.edu/mas/wes) Cohort 9 (2020-2022), consisting of the following students:
 - Ryan Hiser: rhiser@ucsd.edu
@@ -28,6 +30,21 @@ Each directory may contain its own readme with more details.
 | [udp_server](udp_server)           |         |
 | [vivado_project](vivado_project)   | Archived Vivado Project         |
 
+# Software Requirements
+This repository has saved versions of the latest working build (C code, bit file, kernel image).
+In order to modify and/or regenerate the source code/files, the following programs are required.
+
+- MATLAB/Simulink R2021b (C code generation)
+  - TX Baseband
+  - TX Modulator
+  - RX Baseband
+- Vitis HLS 2019 (IP core generation)
+  - RX Demodulator
+- Vivado 2021.1
+  - Inter-IP Module connections
+- Arduino IDE
+  - ESP8266 Wi-Fi Module
+
 # V2X Motorcycle HUD
 ![alt text](docs/images/v2x.png?raw=true)
 
@@ -37,15 +54,20 @@ The final system consists of 2 motorcycles (wherein each motorcycle mounts a ful
 A custom waveform is used to transmit HUD data (shown on the HUD) and audio (played through speakers).
 This information includes the other vehicle’s name, geographic location, speed, directions, and distance to next step.
 
-## HUD System Diagram and Materials
+## System Diagram and Equipment
 ![alt text](docs/images/apparatus.png?raw=true)
 
-As shown in the diagram above, each motorcycle in the V2X system consists of the 4 main components:
+As shown in the diagram above, each motorcycle HUD in the V2X system consists of these components:
 
 - [Avnet ZedBoard](https://www.avnet.com/wps/portal/us/products/avnet-boards/avnet-board-families/zedboard/)
+  - [AD-FMCOMMS4-EBZ](https://www.analog.com/en/design-center/evaluation-hardware-and-software/evaluation-boards-kits/eval-ad-fmcomms4-ebz.html)
+  - Wi-Fi Antennas (2x)
 - [PYNQ Z2](http://www.pynq.io/board.html)
-- WiFi Module
-- OLED Screen
+- [ESP8266 Wi-Fi Module](https://www.amazon.com/gp/product/B081CSJV2V/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&psc=1)
+- [OLED Display](https://www.amazon.com/gp/product/B09JWN8K99/ref=ppx_yo_dt_b_asin_title_o01_s00?ie=UTF8&th=1)
+
+## Dataflow
+![alt text](docs/images/dataflow.png?raw=true)
 
 The data flow is from one V2X TX to the other V2X RX is described as:
 
@@ -78,3 +100,16 @@ The data packet consists of 784 total bits, where the first 144 bits contain HUD
 | Directions                        | uint8_t      (8  bits)  |
 | Distance to next step             | float        (32 bits)  |
 | Audio (mono, 16bit, 4kHz, 0.01s)  | uint16_t[40] (640 bits) |
+
+## Future Tasks
+The current build (as of June 6, 2022) requires more work in order to get a more complete system build working.
+Currently this build has gotten as far as an OTA loopback with a singular ZedBoard (no success with a 2 way link so far).
+The following list states the components that need more debugging/verification/implementation.
+
+- PLL
+  - Does not consistently behave as desired
+  - Most likely cause of 2 way link issue (clocks on each board likely not matching)
+- TDMA
+  - Unable to start implementation since 2 way link never established
+- Distance between riders
+  - Unable to start implementation since TDMA never implemented
