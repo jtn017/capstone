@@ -31,6 +31,14 @@ Each directory may contain its own readme with more details.
 | [udp_server](udp_server)           |         |
 | [vivado_project](vivado_project)   | Archived Vivado Project         |
 
+# Software Dependencies
+Issue the following commands to make sure you're able to run our sourcecode:
+
+```
+sudo apt-get update && sudo apt-get install -y git build-essential linux-headers-generic dkms
+sudo apt-get install -y libcurl4-openssl-dev libevent-dev gdb
+```
+
 # Software Requirements
 This repository has saved versions of the latest working build (C code, bit file, kernel image).
 In order to modify and/or regenerate the source code/files, the following programs are required.
