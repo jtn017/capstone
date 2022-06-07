@@ -25,3 +25,5 @@ The following table gives a brief summary of the most important top level files 
 | 0x30 | Time Slice Select (3 bits) See TEC for more details |
 
 In our software see [v2x_sdr_vio.h](../../main/inc/v2x_sdr_vio.h) where we handle accessing the axi-registers.
+
+The simplicity of this designed meant no testbench was needed.

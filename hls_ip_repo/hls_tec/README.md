@@ -23,3 +23,5 @@ The following table gives a brief summary of the most important top level files 
 In our research of the frequency correction we also found the same paper useful for timing error correction. So... fred harris’ paper on System Synchronization:
 
 * Harris, F. (2011). Let’s Assume the System Is Synchronized. In: Prasad, R., Dixit, S., van Nee, R., Ojanpera, T. (eds) Globalization of Mobile and Wireless Communications. Signals and Communication Technology. Springer, Dordrecht. https://doi.org/10.1007/978-94-007-0107-6_20
+
+From this paper we implemented two poly-phase filters one is a matched filter (matching the tx shaping filter) and the other a derivative matched filter. These filters were designed in matlab, and then implemented in HLS. The advantage of this design is that the banks of the poly phase filter are cycled through so that a ROM can be used to hold the coefficients of the filter allowing for only 1 tap-delay line per filter. This contrasts with a traditional poly-phase for interpolation where the result of each filter bank is needed simultaneously.

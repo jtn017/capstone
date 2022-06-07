@@ -43,8 +43,12 @@ In order to modify and/or regenerate the source code/files, the following progra
   - RX Demodulator
 - Vivado 2021.1
   - Inter-IP Module connections
+- Petalinux 2021.1
+- Virtual Box 6.1 (VM for creating petalinux builds)
+  - Build boot files
 - Arduino IDE
   - ESP8266 Wi-Fi Module
+
 
 # V2X Motorcycle HUD
 ![alt text](docs/images/v2x.png?raw=true)

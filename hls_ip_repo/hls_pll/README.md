@@ -23,7 +23,7 @@ The following table gives a brief summary of the most important top level files 
 | matlab/saveplot.m |  script to save figures generated in matlab to a file |
 
 ## Notes on Design
-When we had issues with the PLL with the two-way link we modified our design to have two implementations. This is set with a #define in the headder file.
+When we had issues with the PLL with the two-way link we modified our design to have two implementations. This is set with a #define in the header file.
 
 One option, "BETTER", uses the an atan. The other option uses no atan and performs the error calculation as described here: https://dsp.stackexchange.com/questions/31497/how-to-correct-the-phase-offset-for-qpsk-i-q-data
 
@@ -31,4 +31,4 @@ This method allows for an easier implementation because no atan is needed.
 
 We also implemented a [non-HLS version](../../hdl_ip_repo/pll.v).
 
-All of the PLL is still in an experimental state needing futher debugging.
+All of the PLL is still in an experimental state needing further debugging.
