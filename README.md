@@ -27,7 +27,7 @@ Each directory may contain its own readme with more details.
 | [hud](hud)                 | Contains HUD webserver and display code      |
 | [main](main)               | Contains ZedBoard SW code for TX/RX          |
 | [models](models)           | Contains TX/RX MATLAB/Simulink Models        |
-| [udp_server](udp_server)           |         |
+| [udp_server](udp_server)           | Forwards RX Baseband packets from xcvr_demo program to ESP8266 WiFi module attached to the HUD        |
 | [vivado_project](vivado_project)   | Archived Vivado Project         |
 
 # Software Dependencies
