@@ -12,6 +12,9 @@
 //
 void tec(data_t real, data_t imag, dout_t *out_real, dout_t *out_imag, bool *out_vld, unsigned int *bank)
 {
+#pragma HLS STABLE variable=out_real
+#pragma HLS STABLE variable=out_imag
+#pragma HLS STABLE variable=out_vld
 #pragma HLS INTERFACE mode=ap_vld port=real
 #pragma HLS INTERFACE mode=ap_vld port=imag
 
@@ -28,16 +31,10 @@ void tec(data_t real, data_t imag, dout_t *out_real, dout_t *out_imag, bool *out
 	// Filter Banks
 	mf_pfb (real, imag, fbsel-1, &mf_real,  &mf_imag);
 	dmf_pfb(real, imag, fbsel-1, &dmf_real, &dmf_imag);
-	
 	if(scnt == 0){
-		y_t_i = mf_real;
-		y_t_q = mf_imag;
-		dy_t_i = dmf_real;
-		dy_t_q = dmf_imag;
+		tec_loopf(mf_real, mf_imag, dmf_real, dmf_imag, &fbsel);
 		scnt++;
 	}else if(scnt == SPS-1){
-		// TEC LOOP ERROR Calculation
-		tec_loopf(y_t_i, y_t_q, dy_t_i, dy_t_q, &fbsel);
 		scnt=0;
 	}else{
 		scnt++;
@@ -55,7 +52,6 @@ void tec(data_t real, data_t imag, dout_t *out_real, dout_t *out_imag, bool *out
 //
 void mf_pfb(data_t real, data_t imag, unsigned int bank_sel, dout_t *out_real, dout_t *out_imag)
 {
-
 	// Static Variables
     static data_t sr_i[NUMCOEFS]; // Input Data Shift Registers
     static data_t sr_q[NUMCOEFS]; // Input Data Shift Registers
@@ -64,14 +60,14 @@ void mf_pfb(data_t real, data_t imag, unsigned int bank_sel, dout_t *out_real, d
 
 #pragma HLS ARRAY_PARTITION variable=sr_i complete dim=0
 #pragma HLS ARRAY_PARTITION variable=sr_q complete dim=0
-
+//#pragma HLS ARRAY_PARTITION variable=mf_rom complete dim=0
     // Non-Static Variables
 	dout_t summer_i = 0;
 	dout_t summer_q = 0;
 
     // Sample Shift Register Loading and Shifting
 	shift_loop: for(int i = NUMCOEFS-1; i >= 0; i--) {
-#pragma HLS UNROLL factor=4
+#pragma HLS UNROLL factor=8
 		//Data Shift Register
 		if(i == 0){
 			sr_i[0] = real; // shift in new data
@@ -102,7 +98,6 @@ void mf_pfb(data_t real, data_t imag, unsigned int bank_sel, dout_t *out_real, d
 //
 void dmf_pfb(data_t real, data_t imag,unsigned int bank_sel, dout_t *out_real, dout_t *out_imag)
 {
-
 	// Static Variables
     static data_t sr_i[NUMCOEFS];
     // Input Data Shift Registers
@@ -112,14 +107,14 @@ void dmf_pfb(data_t real, data_t imag,unsigned int bank_sel, dout_t *out_real, d
 
 #pragma HLS ARRAY_PARTITION variable=sr_i complete dim=0
 #pragma HLS ARRAY_PARTITION variable=sr_q complete dim=0
-
+//#pragma HLS ARRAY_PARTITION variable=dmf_rom complete dim=0
     // Non-Static Variables
 	dout_t summer_i = 0;
 	dout_t summer_q = 0;
 
     // Sample Shift Register Loading and Shifting
 	shift_loop: for(int i = NUMCOEFS-1; i >= 0; i--) {
-#pragma HLS UNROLL factor=4
+#pragma HLS UNROLL factor=8
 		//Data Shift Register
 		if(i == 0){
 			sr_i[0] = real; // shift in new data
@@ -156,8 +151,8 @@ void dmf_pfb(data_t real, data_t imag,unsigned int bank_sel, dout_t *out_real, d
 		static ap_fixed<32,8> accum = 1;
 #pragma HLS RESET variable=accum
 
-		//float det_t = y_re*dy_re; // Option 0
-		ap_fixed<32,8> det = ((y_re*dy_re)+(y_im*dy_im))>>2; // Option 1 do a shift for divide by two
+		ap_fixed<32,8> det = y_re*dy_re; // Option 0
+		//ap_fixed<32,8> det = ((y_re*dy_re)+(y_im*dy_im))>>2; // Option 1 do a shift for divide by two
 		ap_fixed<32,8> d_error = det;
 
 		// Multiply by Constants

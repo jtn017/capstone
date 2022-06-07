@@ -14,9 +14,11 @@ Our additions consist of adding the following:
 
 For ease all code that was developed resides in our git repo. However, for ease of reuse the complete Vivado project can be found in the google drive located here: [HDL](https://drive.google.com/drive/folders/1hCCl8DFLbI2U8BpWim0KFGjcfS-IHtDU?usp=sharing)
 
+This consists of the rx_ip project that was used to package our main demodulator IP. The drive also holds our complete Vivado project. A
+
 ### Our Additions
 
-The FMCOMMS4 has a minimum sampling rate of 25MHz. Our design is meant to operate at 4 MSPS. As a result we had two options:
+The FMCOMMS4 has a minimum sampling rate of 25MHz. Our design is meant to operate at 4MSPS. As a result we had two options:
 
 * Use the Half-band filters that reside in the AD9361.
 * Add interpolating/decimating filters in the FPGA.
@@ -42,11 +44,14 @@ Then we added our IP and set the addresses appropriately:
 
 | Resource | Utilization | Available | Utilization % |
 | -------- | ------------| --------- | ------------- |
-|LUT|25555|53200|48.035713|
-|LUTRAM|2992|17400|17.195402|
-|FF|34391|106400|32.32237|
-|BRAM|72.5|140|51.785713|
-|DSP|126|220|57.272728|
-|IO|124|200|62.0|
-|BUFG|8|32|25.0|
-|MMCM|2|4|50.0|
+| LUT | 29108 | 53200 | 54.71 |
+| LUTRAM | 2829 | 17400 | 16.25 |
+| FF | 37843 | 106400 | 35.56 |
+| BRAM | 96 | 140 | 68.57 |
+| DSP | 140 | 220 | 63.63 |
+| IO | 124 | 200 | 62.0 |
+| BUFG | 8 | 32 | 25.0 |
+| MMCM | 2 | 4 | 50.0 |
+
+## Our design
+Our main design is packaged as a complete IP. The documentation can be found [here](../hls_ip_repo/README.md).

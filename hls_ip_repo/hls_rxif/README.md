@@ -13,10 +13,15 @@ The following table gives a brief summary of the most important top level files 
 
 | Address Offset        | Description |
 | --------------------- | ------------------------------------------------------------------- |
-| 0x18  | Control  |
-|       | start/restart  (bit 0)|
-|       | AGC Bypass (bit 1) |
-|       | future use (bit 31-2) |
-| 0x20 | AGC Power Reference Q20.6 (26 Bits) |
+| 0x10  | Control  |
+|       | start/restart  (bit 0) active high|
+|       | AGC Bypass (bit 1) active high|
+|       | PLL Bypass (bit 2) active high|
+|       | PLL Selection (bit 3) 1'b1 - do not use HLS version|
+|       | Reserved for future use (bit 31-4) |
+| 0x18 | Peak Detect Threshold |
+| 0x20| AGC Power Reference Q20.6 (26 Bits) |
 | 0x28 | Store Delay (32 bits) |
 | 0x30 | Time Slice Select (3 bits) See TEC for more details |
+
+In our software see [v2x_sdr_vio.h](../../main/inc/v2x_sdr_vio.h) where we handle accessing the axi-registers.

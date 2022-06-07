@@ -12,7 +12,8 @@ Other important work/resources are listed here:
 - [iio_device TX attenuation example](https://wiki.analog.com/resources/tools-software/linux-drivers/iio-transceiver/ad9361#tx_attenuation_control)
 - [ZedBoard Audio (linux device driver)](https://yuhei1-horibe.medium.com/linux-device-driver-for-zedboard-audio-7e2d1efc2941)
 - [Zedboard Audio (bitstream design)](https://yuhei1-horibe.medium.com/zedboard-audio-hardware-design-b19c3a1bf453)
-
+- [Petalinux Notes](./docs/bsp_notes.md)
+  
 # Repository Directories
 The following table gives a brief summary of the contents of the top level directories.
 Each directory may contain its own readme with more details.
